@@ -17,6 +17,8 @@ import java.io.IOException;
  */
 public class UserProfileController {
     
+    private static final int MIN_PASSWORD_LENGTH = 4;
+    
     @FXML private Label welcomeLabel;
     @FXML private Label userIdLabel;
     @FXML private Label usernameLabel;
@@ -70,6 +72,7 @@ public class UserProfileController {
             return;
         }
         
+        String oldEmail = currentUser.getEmail();
         currentUser.setEmail(newEmail);
         
         if (userService.updateUserProfile(currentUser)) {
@@ -78,8 +81,9 @@ public class UserProfileController {
         } else {
             statusLabel.setText("Failed to update email");
             showAlert("Error", "Failed to update email. Please try again.");
-            // Reload the original email
-            emailField.setText(currentUser.getEmail());
+            // Restore the original email on failure
+            currentUser.setEmail(oldEmail);
+            emailField.setText(oldEmail);
         }
     }
     
@@ -109,9 +113,9 @@ public class UserProfileController {
             return;
         }
         
-        if (newPassword.length() < 4) {
-            statusLabel.setText("Password must be at least 4 characters");
-            showAlert("Error", "Password must be at least 4 characters long");
+        if (newPassword.length() < MIN_PASSWORD_LENGTH) {
+            statusLabel.setText("Password must be at least " + MIN_PASSWORD_LENGTH + " characters");
+            showAlert("Error", "Password must be at least " + MIN_PASSWORD_LENGTH + " characters long");
             clearPasswordFields();
             return;
         }
