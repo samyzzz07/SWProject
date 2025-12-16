@@ -6,11 +6,11 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.tournament.ui.GameManagerController">
+            fx:controller="com.example.tournament.ui.GameCoordinatorController">
     
     <top>
         <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
-            <Label fx:id="welcomeLabel" text="Welcome, Game Manager" textFill="white">
+            <Label fx:id="welcomeLabel" text="Welcome, Game Coordinator" textFill="white">
                 <font>
                     <Font name="System Bold" size="24.0"/>
                 </font>

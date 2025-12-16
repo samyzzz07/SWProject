@@ -8,11 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 /**
- * Controller for GameManager interface.
- * GameManager can perform: AddGames, CollectFees, ViewSchedule, ManageReferee, 
+ * Controller for GameCoordinator interface.
+ * GameCoordinator can perform: AddGames, CollectFees, ViewSchedule, ManageReferee, 
  * FinalTournament, PostScores, RecordMatchResults
  */
-public class GameManagerController {
+public class GameCoordinatorController {
     
     @FXML private Label welcomeLabel;
     @FXML private ListView<Match> scheduleListView;
@@ -46,7 +46,7 @@ public class GameManagerController {
     
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        welcomeLabel.setText("Welcome, " + user.getUsername() + " (Game Manager)");
+        welcomeLabel.setText("Welcome, " + user.getUsername() + " (Game Coordinator)");
         loadData();
     }
     
