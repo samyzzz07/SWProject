@@ -58,7 +58,7 @@ public class PlayerController {
     }
     
     @FXML
-    private void handleRegisterTeam() {
+    void handleRegisterTeam() {
         String teamName = teamNameField.getText();
         String contactInfo = contactInfoField.getText();
         

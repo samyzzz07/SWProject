@@ -156,7 +156,7 @@ public class ParticipantTeamController {
      * Handles the Register Team button click.
      */
     @FXML
-    private void handleRegisterTeamButton() {
+    void handleRegisterTeamButton() {
         System.out.println("=== Register Team Action ===");
         
         try {

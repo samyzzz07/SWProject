@@ -67,7 +67,7 @@ public class LoginController {
      * Handles login button click.
      */
     @FXML
-    private void handleLogin() {
+    void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         
@@ -91,7 +91,7 @@ public class LoginController {
      * Handles register button click.
      */
     @FXML
-    private void handleRegister() {
+    void handleRegister() {
         String username = registerUsernameField.getText();
         String password = registerPasswordField.getText();
         String email = registerEmailField.getText();
