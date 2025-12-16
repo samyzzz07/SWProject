@@ -25,6 +25,9 @@ public abstract class User {
     @Column(nullable = false)
     private String email;
     
+    @Column
+    private String phoneNumber;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
@@ -37,6 +40,14 @@ public abstract class User {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
+    }
+    
+    public User(String username, String password, String email, String phoneNumber, UserRole role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.role = role;
     }
     
@@ -81,12 +92,21 @@ public abstract class User {
         this.role = role;
     }
     
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
                 '}';
     }

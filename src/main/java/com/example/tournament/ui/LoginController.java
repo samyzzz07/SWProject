@@ -41,6 +41,9 @@ public class LoginController {
     private TextField registerEmailField;
     
     @FXML
+    private TextField registerPhoneField;
+    
+    @FXML
     private Button registerButton;
     
     private LoginService loginService;
@@ -95,6 +98,7 @@ public class LoginController {
         String username = registerUsernameField.getText();
         String password = registerPasswordField.getText();
         String email = registerEmailField.getText();
+        String phoneNumber = registerPhoneField.getText();
         UserRole role = roleComboBox.getValue();
         
         if (username.isEmpty() || password.isEmpty() || email.isEmpty() || role == null) {
@@ -108,7 +112,7 @@ public class LoginController {
             return;
         }
         
-        User newUser = createUserByRole(username, password, email, role);
+        User newUser = createUserByRole(username, password, email, phoneNumber, role);
         
         if (loginService.registerUser(newUser)) {
             statusLabel.setText("Registration successful! Please login");
@@ -118,6 +122,7 @@ public class LoginController {
             registerUsernameField.clear();
             registerPasswordField.clear();
             registerEmailField.clear();
+            registerPhoneField.clear();
             roleComboBox.setValue(null);
         } else {
             statusLabel.setText("Registration failed");
@@ -128,12 +133,15 @@ public class LoginController {
     /**
      * Creates a user object based on the selected role.
      */
-    private User createUserByRole(String username, String password, String email, UserRole role) {
+    private User createUserByRole(String username, String password, String email, String phoneNumber, UserRole role) {
+        // Normalize empty string to null for consistency
+        String normalizedPhone = (phoneNumber != null && !phoneNumber.trim().isEmpty()) ? phoneNumber : null;
+        
         return switch (role) {
-            case PLAYER -> new Player(username, password, email);
-            case NON_MANAGER -> new NonManager(username, password, email);
-            case GAME_MANAGER -> new GameManager(username, password, email);
-            case REFEREE -> new Referee(username, password, email);
+            case PLAYER -> new Player(username, password, email, normalizedPhone);
+            case NON_MANAGER -> new NonManager(username, password, email, normalizedPhone);
+            case GAME_MANAGER -> new GameManager(username, password, email, normalizedPhone);
+            case REFEREE -> new Referee(username, password, email, normalizedPhone);
             default -> throw new IllegalArgumentException("Unsupported role: " + role);
         };
     }

@@ -18,4 +18,8 @@ public class Player extends User {
     public Player(String username, String password, String email) {
         super(username, password, email, UserRole.PLAYER);
     }
+    
+    public Player(String username, String password, String email, String phoneNumber) {
+        super(username, password, email, phoneNumber, UserRole.PLAYER);
+    }
 }

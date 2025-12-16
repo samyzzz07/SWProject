@@ -18,4 +18,8 @@ public class Referee extends User {
     public Referee(String username, String password, String email) {
         super(username, password, email, UserRole.REFEREE);
     }
+    
+    public Referee(String username, String password, String email, String phoneNumber) {
+        super(username, password, email, phoneNumber, UserRole.REFEREE);
+    }
 }
