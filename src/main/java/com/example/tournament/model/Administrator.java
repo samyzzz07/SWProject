@@ -1,7 +1,7 @@
 package com.example.tournament.model;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 /**
  * Entity representing an administrator user.

@@ -3,7 +3,7 @@ package com.example.tournament.model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
