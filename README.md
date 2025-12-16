@@ -60,8 +60,6 @@ Or run the main class directly:
 mvn exec:java -Dexec.mainClass="com.example.tournament.TournamentManagementApp"
 ```
 
-#### Option 3: Using Gradle
-
 #### Option 3: Using Gradle (if configured)
 
 If you have a `build.gradle` configured with JavaFX plugin:

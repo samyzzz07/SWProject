@@ -47,7 +47,7 @@ mvn exec:java -Dexec.mainClass="com.example.tournament.TournamentManagementApp"
 
 ### From Your IDE:
 1. Open `TournamentManagementApp.java`
-2. Find the `main()` method (line 50)
+2. Find the `main()` method
 3. Click "Run" or right-click and select "Run"
 
 ---
