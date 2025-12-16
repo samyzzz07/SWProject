@@ -1,6 +1,6 @@
 package com.example.tournament.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Abstract entity representing a user in the system.

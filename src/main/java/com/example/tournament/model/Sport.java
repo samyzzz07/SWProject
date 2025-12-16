@@ -1,6 +1,6 @@
 package com.example.tournament.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Entity representing a sport.
