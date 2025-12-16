@@ -71,6 +71,11 @@
                 </VBox>
                 
                 <VBox spacing="8">
+                    <Label text="Phone Number:"/>
+                    <TextField fx:id="registerPhoneField" promptText="e.g., +33 1 23 45 67 89" prefWidth="300"/>
+                </VBox>
+                
+                <VBox spacing="8">
                     <Label text="Role:"/>
                     <ComboBox fx:id="roleComboBox" promptText="Select your role" prefWidth="300"/>
                 </VBox>

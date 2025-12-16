@@ -18,4 +18,8 @@ public class GameManager extends User {
     public GameManager(String username, String password, String email) {
         super(username, password, email, UserRole.GAME_MANAGER);
     }
+    
+    public GameManager(String username, String password, String email, String phoneNumber) {
+        super(username, password, email, phoneNumber, UserRole.GAME_MANAGER);
+    }
 }

@@ -18,4 +18,8 @@ public class NonManager extends User {
     public NonManager(String username, String password, String email) {
         super(username, password, email, UserRole.NON_MANAGER);
     }
+    
+    public NonManager(String username, String password, String email, String phoneNumber) {
+        super(username, password, email, phoneNumber, UserRole.NON_MANAGER);
+    }
 }
