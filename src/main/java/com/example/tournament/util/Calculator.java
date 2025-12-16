@@ -44,26 +44,46 @@ public class Calculator {
         // Remove all whitespace
         expression = expression.replaceAll("\\s+", "");
         
-        // First pass: handle multiplication and division (higher precedence)
-        String[] addSubTerms = expression.split("(?=[+\\-])|(?<=[+\\-])");
+        // Parse and evaluate with proper operator precedence
         double result = 0;
-        String currentOp = "+";
+        char currentOp = '+';
+        int i = 0;
         
-        for (int i = 0; i < addSubTerms.length; i++) {
-            String term = addSubTerms[i].trim();
+        while (i < expression.length()) {
+            // Parse the next term (number with possible mult/div operations)
+            StringBuilder term = new StringBuilder();
             
-            if (term.isEmpty()) continue;
-            
-            if (term.equals("+") || term.equals("-")) {
-                currentOp = term;
-            } else {
-                double value = evaluateMultDiv(term);
+            // Collect characters for this term
+            while (i < expression.length()) {
+                char c = expression.charAt(i);
                 
-                if (currentOp.equals("+")) {
-                    result += value;
-                } else if (currentOp.equals("-")) {
-                    result -= value;
+                // Check if this is an operator at the current level (+ or -)
+                if ((c == '+' || c == '-') && term.length() > 0) {
+                    // Make sure it's not part of a number (e.g., after * or /)
+                    char lastChar = term.charAt(term.length() - 1);
+                    if (lastChar != '*' && lastChar != '/') {
+                        break;
+                    }
                 }
+                
+                term.append(c);
+                i++;
+            }
+            
+            // Evaluate the term (handles mult/div)
+            double value = evaluateMultDiv(term.toString());
+            
+            // Apply the current operation
+            if (currentOp == '+') {
+                result += value;
+            } else if (currentOp == '-') {
+                result -= value;
+            }
+            
+            // Get the next operator if available
+            if (i < expression.length()) {
+                currentOp = expression.charAt(i);
+                i++;
             }
         }
         
@@ -74,35 +94,68 @@ public class Calculator {
      * Evaluates multiplication and division in a term.
      */
     private static double evaluateMultDiv(String term) {
-        // Handle multiplication and division
-        String[] factors = term.split("(?=[*/])|(?<=[*/])");
-        double result = 0;
-        String currentOp = null;
-        boolean initialized = false;
+        if (term == null || term.isEmpty()) {
+            return 0;
+        }
         
-        for (int i = 0; i < factors.length; i++) {
-            String factor = factors[i].trim();
+        double result = 0;
+        char currentOp = 0;
+        int i = 0;
+        boolean firstNumber = true;
+        
+        while (i < term.length()) {
+            // Skip leading + sign
+            if (i == 0 && term.charAt(i) == '+') {
+                i++;
+                continue;
+            }
             
-            if (factor.isEmpty()) continue;
+            // Parse the next number (including potential negative sign)
+            StringBuilder numStr = new StringBuilder();
             
-            if (factor.equals("*") || factor.equals("/")) {
-                currentOp = factor;
-            } else {
-                double value = parseNumber(factor);
-                
-                if (!initialized) {
-                    result = value;
-                    initialized = true;
-                } else if (currentOp != null) {
-                    if (currentOp.equals("*")) {
-                        result *= value;
-                    } else if (currentOp.equals("/")) {
-                        if (value == 0) {
-                            throw new ArithmeticException("Division by zero");
-                        }
-                        result /= value;
-                    }
-                    currentOp = null;
+            // Handle negative sign at start or after operator
+            if (term.charAt(i) == '-' && (i == 0 || currentOp != 0)) {
+                numStr.append('-');
+                i++;
+            }
+            
+            // Collect digits and decimal point
+            while (i < term.length()) {
+                char c = term.charAt(i);
+                if (Character.isDigit(c) || c == '.') {
+                    numStr.append(c);
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            
+            if (numStr.length() == 0 || (numStr.length() == 1 && numStr.charAt(0) == '-')) {
+                throw new IllegalArgumentException("Invalid expression: missing number");
+            }
+            
+            double value = parseNumber(numStr.toString());
+            
+            // Apply operation
+            if (firstNumber) {
+                result = value;
+                firstNumber = false;
+            } else if (currentOp == '*') {
+                result *= value;
+            } else if (currentOp == '/') {
+                if (value == 0) {
+                    throw new ArithmeticException("Division by zero");
+                }
+                result /= value;
+            }
+            
+            // Get next operator if available
+            currentOp = 0;
+            if (i < term.length()) {
+                char c = term.charAt(i);
+                if (c == '*' || c == '/') {
+                    currentOp = c;
+                    i++;
                 }
             }
         }
