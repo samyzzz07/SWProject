@@ -3,6 +3,8 @@ package com.example.tournament.util;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for managing JPA EntityManager instances.
@@ -10,6 +12,7 @@ import jakarta.persistence.Persistence;
  */
 public class JPAUtil {
     
+    private static final Logger logger = LoggerFactory.getLogger(JPAUtil.class);
     private static EntityManagerFactory entityManagerFactory;
     private static final String DEFAULT_PERSISTENCE_UNIT = "TournamentPU-H2";
     
@@ -30,12 +33,11 @@ public class JPAUtil {
     public static void initialize(String persistenceUnitName) {
         if (entityManagerFactory == null || !entityManagerFactory.isOpen()) {
             try {
-                System.out.println("Initializing JPA with persistence unit: " + persistenceUnitName);
+                logger.info("Initializing JPA with persistence unit: {}", persistenceUnitName);
                 entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
-                System.out.println("JPA initialized successfully!");
+                logger.info("JPA initialized successfully!");
             } catch (Exception e) {
-                System.err.println("Failed to initialize JPA: " + e.getMessage());
-                e.printStackTrace();
+                logger.error("Failed to initialize JPA: {}", e.getMessage(), e);
                 throw new RuntimeException("Failed to create EntityManagerFactory", e);
             }
         }
@@ -60,9 +62,9 @@ public class JPAUtil {
      */
     public static void shutdown() {
         if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            System.out.println("Shutting down JPA...");
+            logger.info("Shutting down JPA...");
             entityManagerFactory.close();
-            System.out.println("JPA shutdown complete.");
+            logger.info("JPA shutdown complete.");
         }
     }
     

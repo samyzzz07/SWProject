@@ -9,20 +9,8 @@
     <persistence-unit name="TournamentPU-H2" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
-        <!-- Entity Classes -->
-        <class>com.example.tournament.model.User</class>
-        <class>com.example.tournament.model.Administrator</class>
-        <class>com.example.tournament.model.TeamManager</class>
-        <class>com.example.tournament.model.Organizer</class>
-        <class>com.example.tournament.model.EventOrganizer</class>
-        <class>com.example.tournament.model.Team</class>
-        <class>com.example.tournament.model.Tournament</class>
-        <class>com.example.tournament.model.LeagueTournament</class>
-        <class>com.example.tournament.model.KnockoutTournament</class>
-        <class>com.example.tournament.model.Match</class>
-        <class>com.example.tournament.model.Venue</class>
-        <class>com.example.tournament.model.Sport</class>
-        <class>com.example.tournament.model.TimeSlot</class>
+        <!-- Auto-discover all entities in the classpath -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         
         <properties>
             <!-- H2 Database Connection -->
@@ -48,20 +36,8 @@
     <persistence-unit name="TournamentPU-MySQL" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
-        <!-- Entity Classes -->
-        <class>com.example.tournament.model.User</class>
-        <class>com.example.tournament.model.Administrator</class>
-        <class>com.example.tournament.model.TeamManager</class>
-        <class>com.example.tournament.model.Organizer</class>
-        <class>com.example.tournament.model.EventOrganizer</class>
-        <class>com.example.tournament.model.Team</class>
-        <class>com.example.tournament.model.Tournament</class>
-        <class>com.example.tournament.model.LeagueTournament</class>
-        <class>com.example.tournament.model.KnockoutTournament</class>
-        <class>com.example.tournament.model.Match</class>
-        <class>com.example.tournament.model.Venue</class>
-        <class>com.example.tournament.model.Sport</class>
-        <class>com.example.tournament.model.TimeSlot</class>
+        <!-- Auto-discover all entities in the classpath -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         
         <properties>
             <!-- MySQL Database Connection -->
@@ -82,20 +58,8 @@
     <persistence-unit name="TournamentPU-PostgreSQL" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
-        <!-- Entity Classes -->
-        <class>com.example.tournament.model.User</class>
-        <class>com.example.tournament.model.Administrator</class>
-        <class>com.example.tournament.model.TeamManager</class>
-        <class>com.example.tournament.model.Organizer</class>
-        <class>com.example.tournament.model.EventOrganizer</class>
-        <class>com.example.tournament.model.Team</class>
-        <class>com.example.tournament.model.Tournament</class>
-        <class>com.example.tournament.model.LeagueTournament</class>
-        <class>com.example.tournament.model.KnockoutTournament</class>
-        <class>com.example.tournament.model.Match</class>
-        <class>com.example.tournament.model.Venue</class>
-        <class>com.example.tournament.model.Sport</class>
-        <class>com.example.tournament.model.TimeSlot</class>
+        <!-- Auto-discover all entities in the classpath -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         
         <properties>
             <!-- PostgreSQL Database Connection -->
@@ -116,20 +80,8 @@
     <persistence-unit name="TournamentPU-SQLite" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
-        <!-- Entity Classes -->
-        <class>com.example.tournament.model.User</class>
-        <class>com.example.tournament.model.Administrator</class>
-        <class>com.example.tournament.model.TeamManager</class>
-        <class>com.example.tournament.model.Organizer</class>
-        <class>com.example.tournament.model.EventOrganizer</class>
-        <class>com.example.tournament.model.Team</class>
-        <class>com.example.tournament.model.Tournament</class>
-        <class>com.example.tournament.model.LeagueTournament</class>
-        <class>com.example.tournament.model.KnockoutTournament</class>
-        <class>com.example.tournament.model.Match</class>
-        <class>com.example.tournament.model.Venue</class>
-        <class>com.example.tournament.model.Sport</class>
-        <class>com.example.tournament.model.TimeSlot</class>
+        <!-- Auto-discover all entities in the classpath -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         
         <properties>
             <!-- SQLite Database Connection -->
