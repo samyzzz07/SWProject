@@ -10,10 +10,20 @@ The application now includes a complete login and authentication system with fou
 
 1. **Player** - Tournament participants
 2. **NonManager** - Team captains and general users
-3. **GameManager** - Primary tournament administrators
+3. **GameCoordinator** - Game creation, scheduling, and tournament operations
 4. **Referee** - Officials responsible for scoring
 
 Each role has specific permissions aligned with the Sports Tournament Management use cases.
+
+### SQL Database Integration
+
+The system uses JPA/Hibernate for database persistence with support for multiple database backends:
+- **H2** (default) - In-memory database for development
+- **MySQL** - Production-ready relational database
+- **PostgreSQL** - Advanced open-source database
+- **SQLite** - Lightweight file-based database
+
+All user login credentials and tournament data are stored securely in the database, enabling seamless integration between user registration and authentication.
 
 ## Quick Start
 
@@ -44,23 +54,38 @@ Each role has specific permissions aligned with the Sports Tournament Management
 
 ## User Roles and Capabilities
 
-### Player
+### Administrator
 - View tournaments and sports
-- Register teams
 - Update team information
+- Register teams
+- High-level operations and management
 
-### NonManager
+### Team_Manager
 - View tournaments and schedules
 - Register teams
 - Add games to the schedule
+- Manage team-specific tasks
 
-### GameManager
+### Game Coordinator (GameCoordinator)
 - Full tournament management access
 - Add and schedule games
 - Collect registration fees
 - Manage referees
 - Post scores and record results
 - Finalize tournaments
+- View all games and tournaments
+
+### Tournament Organizer (TournamentOrganizer)
+- Submit final scores and results
+- Manage tournament outcomes
+
+### Player
+- View tournaments and sports
+- Participate in teams
+
+### NonManager
+- View tournaments and schedules
+- Team captains and general users
 
 ### Referee
 - View all matches
