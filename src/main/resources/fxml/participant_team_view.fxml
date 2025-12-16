@@ -18,7 +18,7 @@
                             <Font name="System Bold" size="24.0"/>
                         </font>
                     </Label>
-                    <Label text="Team Registration and Time Slot Management" textFill="white">
+                    <Label fx:id="welcomeLabel" text="Team Registration and Time Slot Management" textFill="white">
                         <font>
                             <Font size="14.0"/>
                         </font>

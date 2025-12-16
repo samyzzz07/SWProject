@@ -63,7 +63,10 @@ public class LoginController {
             UserRole.REFEREE
         );
         
-        statusLabel.setText("Please login or register");
+        statusLabel.setText("Ready - Please login or register");
+        statusLabel.setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+        
+        System.out.println("LoginController initialized successfully");
     }
     
     /**
@@ -74,18 +77,29 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         
+        System.out.println("Login attempt for username: " + username);
+        
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Please enter username and password");
+            statusLabel.setStyle("-fx-text-fill: #f44336; -fx-font-weight: bold;");
+            System.out.println("Login failed: Empty credentials");
             return;
         }
+        
+        statusLabel.setText("Authenticating...");
+        statusLabel.setStyle("-fx-text-fill: #2196F3; -fx-font-weight: bold;");
         
         User user = loginService.authenticate(username, password);
         
         if (user != null) {
-            statusLabel.setText("Login successful!");
+            statusLabel.setText("Login successful! Redirecting to dashboard...");
+            statusLabel.setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+            System.out.println("Login successful for user: " + username + " with role: " + user.getRole());
             openRoleBasedView(user);
         } else {
-            statusLabel.setText("Invalid credentials");
+            statusLabel.setText("Invalid credentials - Please check username and password");
+            statusLabel.setStyle("-fx-text-fill: #f44336; -fx-font-weight: bold;");
+            System.out.println("Login failed: Invalid credentials for username: " + username);
             showAlert("Login Failed", "Invalid username or password");
         }
     }
@@ -100,21 +114,35 @@ public class LoginController {
         String email = registerEmailField.getText();
         UserRole role = roleComboBox.getValue();
         
+        System.out.println("Registration attempt for username: " + username + " with role: " + role);
+        
         if (username.isEmpty() || password.isEmpty() || email.isEmpty() || role == null) {
             statusLabel.setText("Please fill all registration fields");
+            statusLabel.setStyle("-fx-text-fill: #f44336; -fx-font-weight: bold;");
+            System.out.println("Registration failed: Missing fields");
             return;
         }
         
+        statusLabel.setText("Checking username availability...");
+        statusLabel.setStyle("-fx-text-fill: #2196F3; -fx-font-weight: bold;");
+        
         if (loginService.usernameExists(username)) {
-            statusLabel.setText("Username already exists");
+            statusLabel.setText("Username already exists - Please choose another");
+            statusLabel.setStyle("-fx-text-fill: #f44336; -fx-font-weight: bold;");
+            System.out.println("Registration failed: Username already exists: " + username);
             showAlert("Registration Failed", "Username already exists");
             return;
         }
         
+        statusLabel.setText("Creating account...");
+        statusLabel.setStyle("-fx-text-fill: #2196F3; -fx-font-weight: bold;");
+        
         User newUser = createUserByRole(username, password, email, role);
         
         if (loginService.registerUser(newUser)) {
-            statusLabel.setText("Registration successful! Please login");
+            statusLabel.setText("Registration successful! You can now login");
+            statusLabel.setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
+            System.out.println("Registration successful for user: " + username + " with role: " + role);
             showAlert("Success", "Registration successful! You can now login.");
             
             // Clear registration fields
@@ -123,7 +151,9 @@ public class LoginController {
             registerEmailField.clear();
             roleComboBox.setValue(null);
         } else {
-            statusLabel.setText("Registration failed");
+            statusLabel.setText("Registration failed - Please try again");
+            statusLabel.setStyle("-fx-text-fill: #f44336; -fx-font-weight: bold;");
+            System.out.println("Registration failed for user: " + username);
             showAlert("Error", "Registration failed. Please try again.");
         }
     }
@@ -149,6 +179,8 @@ public class LoginController {
      */
     private void openRoleBasedView(User user) {
         try {
+            System.out.println("Opening view for user role: " + user.getRole());
+            
             String fxmlFile = switch (user.getRole()) {
                 case ADMINISTRATOR -> "/fxml/participant_team_view.fxml"; // Using fallback for now
                 case TEAM_MANAGER -> "/fxml/participant_team_view.fxml"; // Using fallback for now
@@ -160,11 +192,14 @@ public class LoginController {
                 default -> "/fxml/participant_team_view.fxml"; // Fallback
             };
             
+            System.out.println("Loading FXML file: " + fxmlFile);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
             
             // Set the current user in the controller
             Object controller = loader.getController();
+            System.out.println("Controller loaded: " + controller.getClass().getSimpleName());
+            
             if (controller instanceof PlayerController) {
                 ((PlayerController) controller).setCurrentUser(user);
             } else if (controller instanceof NonManagerController) {
@@ -173,7 +208,11 @@ public class LoginController {
                 ((GameCoordinatorController) controller).setCurrentUser(user);
             } else if (controller instanceof RefereeController) {
                 ((RefereeController) controller).setCurrentUser(user);
+            } else if (controller instanceof ParticipantTeamController) {
+                ((ParticipantTeamController) controller).setCurrentUser(user);
             }
+            
+            System.out.println("User set in controller successfully");
             
             // Get current stage and set new scene
             Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -181,7 +220,10 @@ public class LoginController {
             stage.setScene(scene);
             stage.setTitle("Tournament Management System - " + user.getRole());
             
+            System.out.println("View successfully loaded for user: " + user.getUsername());
+            
         } catch (IOException e) {
+            System.err.println("Error loading view: " + e.getMessage());
             e.printStackTrace();
             showAlert("Error", "Failed to load view: " + e.getMessage());
         }

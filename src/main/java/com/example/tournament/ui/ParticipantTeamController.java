@@ -1,8 +1,6 @@
 package com.example.tournament.ui;
 
-import com.example.tournament.model.Team;
-import com.example.tournament.model.TeamManager;
-import com.example.tournament.model.TimeSlot;
+import com.example.tournament.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -53,9 +51,15 @@ public class ParticipantTeamController {
     @FXML
     private ComboBox<String> sportComboBox;
     
+    @FXML
+    private Label welcomeLabel;
+    
     // Observable lists for UI binding
     private ObservableList<TimeSlot> timeSlots;
     private ObservableList<Team> teams;
+    
+    // Current user (can be any type of user)
+    private User currentUser;
     
     // Current team manager (would be set from login session)
     private TeamManager currentManager;
@@ -225,12 +229,37 @@ public class ParticipantTeamController {
      * Sets the current team manager (called from login or session management).
      */
     public void setCurrentManager(TeamManager manager) {
-        this.currentManager = manager;
-        System.out.println("Team manager set: " + manager.getUsername());
+        // Delegate to setCurrentUser to avoid duplication
+        setCurrentUser(manager);
+    }
+    
+    /**
+     * Sets the current user (called from login).
+     * This is a generic method that works for all user types.
+     */
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        System.out.println("Current user set: " + user.getUsername() + " with role: " + user.getRole());
         
-        // Load teams managed by this manager
+        // Update welcome label if it exists
+        if (welcomeLabel != null) {
+            welcomeLabel.setText("Welcome, " + user.getUsername() + " (" + user.getRole() + ")");
+        }
+        
+        // If the user is a TeamManager, also set as currentManager and load teams
+        if (user instanceof TeamManager) {
+            this.currentManager = (TeamManager) user;
+            loadTeamsForManager(currentManager);
+        }
+    }
+    
+    /**
+     * Loads teams for the given team manager.
+     */
+    private void loadTeamsForManager(TeamManager manager) {
         teams.clear();
         teams.addAll(manager.getTeams());
+        System.out.println("Loaded " + teams.size() + " teams for manager: " + manager.getUsername());
     }
     
     /**
@@ -238,9 +267,7 @@ public class ParticipantTeamController {
      */
     public void refreshTeamList() {
         if (currentManager != null) {
-            teams.clear();
-            teams.addAll(currentManager.getTeams());
-            System.out.println("Team list refreshed. Total teams: " + teams.size());
+            loadTeamsForManager(currentManager);
         }
     }
     
