@@ -111,4 +111,20 @@ public class NumberSeriesCalculatorTest {
         long result = NumberSeriesCalculator.evaluateAdditionExpression(expression);
         assertEquals(6000000, result, "Should handle large numbers correctly");
     }
+    
+    @Test
+    public void testCalculateSumList_WithNullElement() {
+        List<Long> numbers = Arrays.asList(10L, null, 20L);
+        assertThrows(IllegalArgumentException.class, () -> {
+            NumberSeriesCalculator.calculateSum(numbers);
+        }, "List with null element should throw IllegalArgumentException");
+    }
+    
+    @Test
+    public void testEvaluateAdditionExpression_MalformedNumber() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            // This would cause a NumberFormatException internally
+            NumberSeriesCalculator.evaluateAdditionExpression("999999999999999999999999999999");
+        }, "Malformed number should throw IllegalArgumentException");
+    }
 }

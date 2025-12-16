@@ -36,6 +36,7 @@ public class NumberSeriesCalculator {
      * 
      * @param expression The expression to parse
      * @return List of numbers found in the expression
+     * @throws IllegalArgumentException if the expression contains invalid characters or malformed numbers
      */
     private static List<Long> parseNumbers(String expression) {
         List<Long> numbers = new ArrayList<>();
@@ -47,7 +48,11 @@ public class NumberSeriesCalculator {
             if (c == '+') {
                 // Skip leading + signs
                 if (currentNumber.length() > 0) {
-                    numbers.add(Long.parseLong(currentNumber.toString()));
+                    try {
+                        numbers.add(Long.parseLong(currentNumber.toString()));
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid number format: " + currentNumber.toString(), e);
+                    }
                     currentNumber = new StringBuilder();
                 }
             } else if (Character.isDigit(c)) {
@@ -59,7 +64,11 @@ public class NumberSeriesCalculator {
         
         // Add the last number if present
         if (currentNumber.length() > 0) {
-            numbers.add(Long.parseLong(currentNumber.toString()));
+            try {
+                numbers.add(Long.parseLong(currentNumber.toString()));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid number format: " + currentNumber.toString(), e);
+            }
         }
         
         return numbers;
@@ -70,6 +79,7 @@ public class NumberSeriesCalculator {
      * 
      * @param numbers List of numbers to sum
      * @return The sum of all numbers
+     * @throws IllegalArgumentException if the list contains null elements
      */
     public static long calculateSum(List<Long> numbers) {
         if (numbers == null || numbers.isEmpty()) {
@@ -78,6 +88,9 @@ public class NumberSeriesCalculator {
         
         long sum = 0;
         for (Long number : numbers) {
+            if (number == null) {
+                throw new IllegalArgumentException("List contains null element");
+            }
             sum += number;
         }
         return sum;
