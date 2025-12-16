@@ -95,7 +95,7 @@ public class Calculator {
      */
     private static double evaluateMultDiv(String term) {
         if (term == null || term.isEmpty()) {
-            return 0;
+            throw new IllegalArgumentException("Term cannot be null or empty");
         }
         
         double result = 0;
@@ -114,7 +114,7 @@ public class Calculator {
             StringBuilder numStr = new StringBuilder();
             
             // Handle negative sign at start or after operator
-            if (term.charAt(i) == '-' && (i == 0 || currentOp != 0)) {
+            if (i < term.length() && term.charAt(i) == '-' && (i == 0 || currentOp != 0)) {
                 numStr.append('-');
                 i++;
             }
