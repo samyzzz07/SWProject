@@ -16,9 +16,12 @@ This class contains the `main` method that serves as the entry point for the ent
 
 ### Prerequisites
 
-- Java Development Kit (JDK) 11 or higher
-- JavaFX SDK (if not included with your JDK)
-- Maven or Gradle (optional, for dependency management)
+- Java Development Kit (JDK) 17 or higher
+- Maven (for dependency management and building)
+- The project includes all necessary dependencies via Maven:
+  - JavaFX (UI framework)
+  - JPA/Hibernate (database persistence)
+  - Database drivers (H2, MySQL, PostgreSQL, SQLite)
 
 ### Running from Command Line
 
@@ -112,6 +115,7 @@ The Tournament Management System provides the following features:
 
 ```
 SWProject/
+├── pom.xml                                          (Maven build configuration)
 ├── src/
 │   └── main/
 │       ├── java/
@@ -119,14 +123,55 @@ SWProject/
 │       │       └── example/
 │       │           └── tournament/
 │       │               ├── TournamentManagementApp.java  ← MAIN APPLICATION
-│       │               ├── model/                        (Domain models)
+│       │               ├── model/                        (JPA entities)
 │       │               ├── service/                      (Business logic)
-│       │               └── ui/                          (UI controllers)
+│       │               ├── ui/                          (JavaFX controllers)
+│       │               └── util/                        (JPA utilities)
 │       └── resources/
+│           ├── META-INF/
+│           │   └── persistence.xml                  (JPA configuration)
 │           └── fxml/
-│               └── participant_team_view.fxml           (UI layout)
+│               └── participant_team_view.fxml       (UI layout)
 └── README.md
 ```
+
+## Database Configuration
+
+The project includes JPA/Hibernate implementation with support for multiple database drivers:
+
+### Supported Databases
+
+1. **H2 (Default)** - In-memory database for development
+   - Persistence Unit: `TournamentPU-H2`
+   - No setup required, works out of the box
+   
+2. **MySQL** - Production-ready relational database
+   - Persistence Unit: `TournamentPU-MySQL`
+   - Requires MySQL server running on localhost:3306
+   
+3. **PostgreSQL** - Advanced open-source database
+   - Persistence Unit: `TournamentPU-PostgreSQL`
+   - Requires PostgreSQL server running on localhost:5432
+   
+4. **SQLite** - Lightweight file-based database
+   - Persistence Unit: `TournamentPU-SQLite`
+   - Creates a local file `tournament.db`
+
+### JPA Configuration
+
+The JPA configuration is located in `src/main/resources/META-INF/persistence.xml` and includes all entity mappings and database connection settings.
+
+To use a different database, modify the persistence unit in `JPAUtil.java` or pass it as a parameter when initializing.
+
+### Database Drivers Included
+
+All necessary JDBC drivers are included in the Maven dependencies:
+- H2 Database Engine
+- MySQL Connector/J
+- PostgreSQL JDBC Driver
+- SQLite JDBC Driver
+- HikariCP (Connection pooling)
+- Hibernate ORM (JPA implementation)
 
 ## Main Class Details
 
@@ -142,12 +187,14 @@ SWProject/
 
 ### "JavaFX runtime components are missing"
 
-If you get this error, you need to add JavaFX to your module path:
+If you get this error when not using Maven, add JavaFX to your module path:
 
 ```bash
 java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
   -cp bin com.example.tournament.TournamentManagementApp
 ```
+
+**Solution:** Use Maven to run the application (`mvn javafx:run`) which handles dependencies automatically.
 
 ### "Error loading FXML file"
 
@@ -156,37 +203,41 @@ Make sure the resources directory is in your classpath. The FXML file should be 
 src/main/resources/fxml/participant_team_view.fxml
 ```
 
-### Build Tool Configuration
+**Solution:** Use Maven build which correctly includes resources in the classpath.
 
-For Maven, add this to your `pom.xml`:
+### Database Connection Issues
 
-```xml
-<dependencies>
-    <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-controls</artifactId>
-        <version>17.0.2</version>
-    </dependency>
-    <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-fxml</artifactId>
-        <version>17.0.2</version>
-    </dependency>
-</dependencies>
+If you encounter database connection errors:
 
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>0.0.8</version>
-            <configuration>
-                <mainClass>com.example.tournament.TournamentManagementApp</mainClass>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
-```
+1. **For H2 (default):** No setup needed, it should work automatically
+2. **For MySQL:** Ensure MySQL server is running and update credentials in `persistence.xml`
+3. **For PostgreSQL:** Ensure PostgreSQL server is running and update credentials in `persistence.xml`
+4. **For SQLite:** Ensure write permissions in the application directory
+
+### Maven Dependencies
+
+The project includes a complete `pom.xml` with all required dependencies:
+
+- **JavaFX** (UI framework)
+  - javafx-controls
+  - javafx-fxml
+  
+- **JPA/Hibernate** (Database persistence)
+  - jakarta.persistence-api
+  - hibernate-core
+  - hibernate-validator
+  
+- **Database Drivers**
+  - H2 Database
+  - MySQL Connector/J
+  - PostgreSQL JDBC
+  - SQLite JDBC
+  
+- **Additional Libraries**
+  - HikariCP (Connection pooling)
+  - SLF4J & Logback (Logging)
+
+Simply run `mvn clean install` to download all dependencies automatically.
 
 ## Additional Documentation
 
