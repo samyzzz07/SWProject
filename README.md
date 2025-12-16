@@ -1,6 +1,75 @@
 # Tournament Management System
 
-A JavaFX-based application for managing tournaments, teams, and scheduling.
+A JavaFX-based application for managing tournaments, teams, and scheduling with comprehensive role-based access control.
+
+## New Features
+
+### Role-Based Access Control System
+
+The application now includes a complete login and authentication system with four distinct user roles:
+
+1. **Player** - Tournament participants
+2. **NonManager** - Team captains and general users
+3. **GameManager** - Primary tournament administrators
+4. **Referee** - Officials responsible for scoring
+
+Each role has specific permissions aligned with the Sports Tournament Management use cases.
+
+## Quick Start
+
+### First Time Setup
+
+1. **Build the Application**
+   ```bash
+   mvn clean package
+   ```
+
+2. **Run the Application**
+   ```bash
+   java -jar target/tournament-management-app.jar
+   ```
+   
+   Or use Maven:
+   ```bash
+   mvn javafx:run
+   ```
+
+3. **Register a User**
+   - On the login screen, use the right panel to register
+   - Choose your role from the dropdown
+   - After registration, login using the left panel
+
+4. **Access Role-Specific Features**
+   - Each role has a customized interface with appropriate functionalities
+
+## User Roles and Capabilities
+
+### Player
+- View tournaments and sports
+- Register teams
+- Update team information
+
+### NonManager
+- View tournaments and schedules
+- Register teams
+- Add games to the schedule
+
+### GameManager
+- Full tournament management access
+- Add and schedule games
+- Collect registration fees
+- Manage referees
+- Post scores and record results
+- Finalize tournaments
+
+### Referee
+- View all matches
+- Post final scores for games
+
+## Documentation
+
+- **[USER_GUIDE.md](USER_GUIDE.md)** - Comprehensive user guide for all roles
+- **[QUICK_START.md](QUICK_START.md)** - Quick start guide for developers
 
 ## Main Application Entry Point
 

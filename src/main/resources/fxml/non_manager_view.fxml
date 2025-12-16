@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tournament.ui.NonManagerController">
+    
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
+            <Label fx:id="welcomeLabel" text="Welcome, Non-Manager" textFill="white">
+                <font>
+                    <Font name="System Bold" size="24.0"/>
+                </font>
+            </Label>
+            <Label text="View Tournaments | Register Team | Add Games | View Schedule" textFill="white">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </Label>
+        </VBox>
+    </top>
+    
+    <center>
+        <SplitPane dividerPositions="0.5">
+            
+            <!-- Left Panel: View Tournament and Schedule -->
+            <VBox spacing="15" style="-fx-padding: 20;">
+                <Label text="View Tournaments" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <ListView fx:id="tournamentListView" prefHeight="200.0"/>
+                
+                <Separator/>
+                
+                <Label text="View Schedule" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <ListView fx:id="scheduleListView" prefHeight="250.0"/>
+                <Button text="View Details" onAction="#handleViewScheduleDetails" 
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            </VBox>
+            
+            <!-- Right Panel: Register Team and Add Games -->
+            <VBox spacing="15" style="-fx-padding: 20;">
+                <Label text="Register Team" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                
+                <VBox spacing="8">
+                    <Label text="Team Name:"/>
+                    <TextField fx:id="teamNameField" promptText="Enter team name"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <Label text="Contact Information:"/>
+                    <TextField fx:id="contactInfoField" promptText="Enter contact info"/>
+                </VBox>
+                
+                <Button fx:id="registerTeamButton" text="Register Team" onAction="#handleRegisterTeam"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                
+                <Separator/>
+                
+                <Label text="Add Games" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <Button fx:id="addGameButton" text="Add New Game" onAction="#handleAddGame"
+                        style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"
+                        prefHeight="40.0"/>
+                <Label text="Opens a dialog to add a new game to the schedule" 
+                       style="-fx-font-style: italic; -fx-text-fill: #666;"/>
+            </VBox>
+            
+        </SplitPane>
+    </center>
+    
+    <bottom>
+        <HBox style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <Label text="Status: " style="-fx-font-weight: bold;"/>
+            <Label fx:id="statusLabel" text="Ready"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

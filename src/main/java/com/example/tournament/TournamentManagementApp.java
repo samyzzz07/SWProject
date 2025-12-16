@@ -15,9 +15,9 @@ public class TournamentManagementApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Load the FXML file
+            // Load the login FXML file
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/participant_team_view.fxml")
+                getClass().getResource("/fxml/login.fxml")
             );
             Parent root = loader.load();
             
@@ -25,10 +25,10 @@ public class TournamentManagementApp extends Application {
             Scene scene = new Scene(root, 800, 600);
             
             // Configure the primary stage
-            primaryStage.setTitle("Tournament Management System");
+            primaryStage.setTitle("Tournament Management System - Login");
             primaryStage.setScene(scene);
-            primaryStage.setMinWidth(600);
-            primaryStage.setMinHeight(400);
+            primaryStage.setMinWidth(800);
+            primaryStage.setMinHeight(600);
             
             // Show the application window
             primaryStage.show();
