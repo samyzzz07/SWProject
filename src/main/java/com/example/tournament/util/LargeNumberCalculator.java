@@ -115,7 +115,8 @@ public class LargeNumberCalculator {
         if (input == null) {
             throw new IllegalArgumentException(fieldName + " cannot be null");
         }
-        if (input.trim().isEmpty()) {
+        String trimmedInput = input.trim();
+        if (trimmedInput.isEmpty()) {
             throw new IllegalArgumentException(fieldName + " cannot be empty");
         }
     }

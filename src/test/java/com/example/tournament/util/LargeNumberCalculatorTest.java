@@ -81,6 +81,13 @@ public class LargeNumberCalculatorTest {
     }
     
     @Test
+    public void testWhitespaceOnlyInput() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            LargeNumberCalculator.add("   ", "5");
+        }, "Whitespace-only input should throw IllegalArgumentException");
+    }
+    
+    @Test
     public void testInvalidNumberFormat() {
         assertThrows(IllegalArgumentException.class, () -> {
             LargeNumberCalculator.add("abc", "5");
