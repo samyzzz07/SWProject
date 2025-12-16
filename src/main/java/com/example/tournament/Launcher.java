@@ -1,5 +1,7 @@
 package com.example.tournament;
 
+import javafx.application.Application;
+
 /**
  * Launcher class for the Tournament Management System.
  * 
@@ -9,7 +11,7 @@ package com.example.tournament;
  * when running a shaded JAR with java -jar.
  * 
  * The Maven Shade Plugin uses this class as the main class in the MANIFEST.MF,
- * which then delegates to the actual JavaFX Application class (TournamentManagementApp).
+ * which then delegates to the JavaFX Application launcher.
  * 
  * This pattern is necessary because JavaFX's launcher checks if the main class
  * extends Application. When packaged in a fat JAR, this check can fail,
@@ -25,6 +27,7 @@ public class Launcher {
      * @param args command line arguments passed to the JavaFX application
      */
     public static void main(String[] args) {
-        TournamentManagementApp.main(args);
+        System.out.println("Starting Tournament Management System...");
+        Application.launch(TournamentManagementApp.class, args);
     }
 }
