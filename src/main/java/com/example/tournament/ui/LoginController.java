@@ -173,6 +173,8 @@ public class LoginController {
                 ((GameCoordinatorController) controller).setCurrentUser(user);
             } else if (controller instanceof RefereeController) {
                 ((RefereeController) controller).setCurrentUser(user);
+            } else if (controller instanceof ParticipantTeamController) {
+                ((ParticipantTeamController) controller).setCurrentUser(user);
             }
             
             // Get current stage and set new scene
