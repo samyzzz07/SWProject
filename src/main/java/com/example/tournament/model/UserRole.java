@@ -6,5 +6,9 @@ package com.example.tournament.model;
 public enum UserRole {
     ADMINISTRATOR,
     ORGANIZER,
-    TEAM_MANAGER
+    TEAM_MANAGER,
+    PLAYER,
+    NON_MANAGER,
+    GAME_MANAGER,
+    REFEREE
 }

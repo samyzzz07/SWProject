@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tournament.ui.LoginController">
+    
+    <!-- Top Section: Title -->
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
+            <Label text="Sports Tournament Management System" textFill="white">
+                <font>
+                    <Font name="System Bold" size="28.0"/>
+                </font>
+            </Label>
+            <Label text="Login or Register to Continue" textFill="white">
+                <font>
+                    <Font size="16.0"/>
+                </font>
+            </Label>
+        </VBox>
+    </top>
+    
+    <!-- Center Section: Login and Registration Forms -->
+    <center>
+        <HBox spacing="20" style="-fx-padding: 40;" alignment="CENTER">
+            
+            <!-- Login Panel -->
+            <VBox spacing="15" style="-fx-padding: 20; -fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: white;" prefWidth="350">
+                <Label text="Login" style="-fx-font-weight: bold; -fx-font-size: 20px;"/>
+                
+                <VBox spacing="8">
+                    <Label text="Username:"/>
+                    <TextField fx:id="usernameField" promptText="Enter username" prefWidth="300"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <Label text="Password:"/>
+                    <PasswordField fx:id="passwordField" promptText="Enter password" prefWidth="300"/>
+                </VBox>
+                
+                <Button fx:id="loginButton" text="Login" onAction="#handleLogin"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"
+                        prefWidth="300" prefHeight="35"/>
+                
+                <Label text="Don't have an account? Register on the right →" 
+                       style="-fx-font-style: italic; -fx-text-fill: #666; -fx-font-size: 11px;"
+                       wrapText="true"/>
+            </VBox>
+            
+            <!-- Registration Panel -->
+            <VBox spacing="15" style="-fx-padding: 20; -fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-color: white;" prefWidth="350">
+                <Label text="Register New Account" style="-fx-font-weight: bold; -fx-font-size: 20px;"/>
+                
+                <VBox spacing="8">
+                    <Label text="Username:"/>
+                    <TextField fx:id="registerUsernameField" promptText="Choose username" prefWidth="300"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <Label text="Password:"/>
+                    <PasswordField fx:id="registerPasswordField" promptText="Choose password" prefWidth="300"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <Label text="Email:"/>
+                    <TextField fx:id="registerEmailField" promptText="Enter email" prefWidth="300"/>
+                </VBox>
+                
+                <VBox spacing="8">
+                    <Label text="Role:"/>
+                    <ComboBox fx:id="roleComboBox" promptText="Select your role" prefWidth="300"/>
+                </VBox>
+                
+                <Button fx:id="registerButton" text="Register" onAction="#handleRegister"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"
+                        prefWidth="300" prefHeight="35"/>
+                
+                <Label text="Already have an account? Login on the left ←" 
+                       style="-fx-font-style: italic; -fx-text-fill: #666; -fx-font-size: 11px;"
+                       wrapText="true"/>
+            </VBox>
+            
+        </HBox>
+    </center>
+    
+    <!-- Bottom Section: Status Bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <Label text="Status: " style="-fx-font-weight: bold;"/>
+            <Label fx:id="statusLabel" text="Ready"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>
