@@ -15,6 +15,9 @@ public final class Calculator {
     /**
      * Calculates the sum of multiple numbers.
      * 
+     * Note: This method uses int arithmetic and may overflow for large values.
+     * If overflow is a concern, consider using long or BigInteger.
+     * 
      * @param numbers variable number of integers to sum
      * @return the sum of all provided numbers
      */
