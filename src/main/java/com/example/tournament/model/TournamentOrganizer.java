@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entity representing an organizer user.
+ * Entity representing a tournament organizer user.
+ * Responsible for submitting final scores and results.
  */
 @Entity
-@DiscriminatorValue("ORGANIZER")
-public class Organizer extends User {
+@DiscriminatorValue("TOURNAMENT_ORGANIZER")
+public class TournamentOrganizer extends User {
     
     private String organization;
     
@@ -17,17 +18,17 @@ public class Organizer extends User {
     private List<Tournament> tournaments = new ArrayList<>();
     
     // Constructors
-    public Organizer() {
+    public TournamentOrganizer() {
         super();
-        setRole(UserRole.ORGANIZER);
+        setRole(UserRole.TOURNAMENT_ORGANIZER);
     }
     
-    public Organizer(String username, String password, String email) {
-        super(username, password, email, UserRole.ORGANIZER);
+    public TournamentOrganizer(String username, String password, String email) {
+        super(username, password, email, UserRole.TOURNAMENT_ORGANIZER);
     }
     
-    public Organizer(String username, String password, String email, String organization) {
-        super(username, password, email, UserRole.ORGANIZER);
+    public TournamentOrganizer(String username, String password, String email, String organization) {
+        super(username, password, email, UserRole.TOURNAMENT_ORGANIZER);
         this.organization = organization;
     }
     
@@ -54,19 +55,19 @@ public class Organizer extends User {
     public void createTournament(Tournament tournament) {
         tournaments.add(tournament);
         tournament.setOrganizer(this);
-        System.out.println("Organizer " + getUsername() + " created tournament: " + tournament.getName());
+        System.out.println("TournamentOrganizer " + getUsername() + " created tournament: " + tournament.getName());
     }
     
     /**
      * Placeholder method for managing tournaments.
      */
     public void manageTournaments() {
-        System.out.println("Organizer " + getUsername() + " is managing " + tournaments.size() + " tournaments.");
+        System.out.println("TournamentOrganizer " + getUsername() + " is managing " + tournaments.size() + " tournaments.");
     }
     
     @Override
     public String toString() {
-        return "Organizer{" +
+        return "TournamentOrganizer{" +
                 "id=" + getId() +
                 ", username='" + getUsername() + '\'' +
                 ", email='" + getEmail() + '\'' +

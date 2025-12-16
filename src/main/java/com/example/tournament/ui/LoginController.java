@@ -56,7 +56,7 @@ public class LoginController {
         roleComboBox.getItems().addAll(
             UserRole.PLAYER,
             UserRole.NON_MANAGER,
-            UserRole.GAME_MANAGER,
+            UserRole.GAME_COORDINATOR,
             UserRole.REFEREE
         );
         
@@ -132,7 +132,7 @@ public class LoginController {
         return switch (role) {
             case PLAYER -> new Player(username, password, email);
             case NON_MANAGER -> new NonManager(username, password, email);
-            case GAME_MANAGER -> new GameManager(username, password, email);
+            case GAME_COORDINATOR -> new GameCoordinator(username, password, email);
             case REFEREE -> new Referee(username, password, email);
             default -> throw new IllegalArgumentException("Unsupported role: " + role);
         };
@@ -146,7 +146,7 @@ public class LoginController {
             String fxmlFile = switch (user.getRole()) {
                 case PLAYER -> "/fxml/player_view.fxml";
                 case NON_MANAGER -> "/fxml/non_manager_view.fxml";
-                case GAME_MANAGER -> "/fxml/game_manager_view.fxml";
+                case GAME_COORDINATOR -> "/fxml/game_coordinator_view.fxml";
                 case REFEREE -> "/fxml/referee_view.fxml";
                 default -> "/fxml/participant_team_view.fxml"; // Fallback
             };
@@ -160,8 +160,8 @@ public class LoginController {
                 ((PlayerController) controller).setCurrentUser(user);
             } else if (controller instanceof NonManagerController) {
                 ((NonManagerController) controller).setCurrentUser(user);
-            } else if (controller instanceof GameManagerController) {
-                ((GameManagerController) controller).setCurrentUser(user);
+            } else if (controller instanceof GameCoordinatorController) {
+                ((GameCoordinatorController) controller).setCurrentUser(user);
             } else if (controller instanceof RefereeController) {
                 ((RefereeController) controller).setCurrentUser(user);
             }

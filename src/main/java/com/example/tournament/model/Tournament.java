@@ -46,7 +46,7 @@ public abstract class Tournament {
     
     @ManyToOne
     @JoinColumn(name = "organizer_id")
-    private Organizer organizer;
+    private TournamentOrganizer organizer;
     
     // Constructors
     public Tournament() {
@@ -125,11 +125,11 @@ public abstract class Tournament {
         this.status = status;
     }
     
-    public Organizer getOrganizer() {
+    public TournamentOrganizer getOrganizer() {
         return organizer;
     }
     
-    public void setOrganizer(Organizer organizer) {
+    public void setOrganizer(TournamentOrganizer organizer) {
         this.organizer = organizer;
     }
     
