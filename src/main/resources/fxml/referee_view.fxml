@@ -72,9 +72,12 @@
     </center>
     
     <bottom>
-        <HBox style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+        <HBox style="-fx-background-color: #f0f0f0; -fx-padding: 10;" spacing="20">
             <Label text="Status: " style="-fx-font-weight: bold;"/>
             <Label fx:id="statusLabel" text="Ready"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Profile Settings" onAction="#handleProfileSettings" 
+                    style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
         </HBox>
     </bottom>
     

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.tournament.ui.ProfileSettingsController"
+      spacing="20" padding="20" prefWidth="500" prefHeight="450">
+    
+    <!-- Header -->
+    <HBox alignment="CENTER">
+        <Label text="Profile Settings" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <!-- User Information -->
+    <VBox spacing="10">
+        <Label text="User Information" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Username:" prefWidth="120"/>
+            <Label fx:id="usernameLabel" style="-fx-font-weight: bold;"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Current Email:" prefWidth="120"/>
+            <Label fx:id="currentEmailLabel" style="-fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Update Email Section -->
+    <VBox spacing="10">
+        <Label text="Update Email" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="New Email:" prefWidth="120"/>
+            <TextField fx:id="newEmailField" promptText="Enter new email address" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="updateEmailButton" text="Update Email" onAction="#handleUpdateEmail" 
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Update Password Section -->
+    <VBox spacing="10">
+        <Label text="Change Password" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Current Password:" prefWidth="150"/>
+            <PasswordField fx:id="currentPasswordField" promptText="Enter current password" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="New Password:" prefWidth="150"/>
+            <PasswordField fx:id="newPasswordField" promptText="Enter new password" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Confirm Password:" prefWidth="150"/>
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="updatePasswordButton" text="Update Password" onAction="#handleUpdatePassword"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Status and Close -->
+    <VBox spacing="10">
+        <Label fx:id="statusLabel" text="Ready" style="-fx-font-style: italic;"/>
+        
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="closeButton" text="Close" onAction="#handleClose" prefWidth="100"/>
+        </HBox>
+    </VBox>
+    
+</VBox>
