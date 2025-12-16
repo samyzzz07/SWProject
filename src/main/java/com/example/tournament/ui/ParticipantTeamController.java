@@ -229,18 +229,8 @@ public class ParticipantTeamController {
      * Sets the current team manager (called from login or session management).
      */
     public void setCurrentManager(TeamManager manager) {
-        this.currentManager = manager;
-        this.currentUser = manager;
-        System.out.println("Team manager set: " + manager.getUsername());
-        
-        // Update welcome label if it exists
-        if (welcomeLabel != null) {
-            welcomeLabel.setText("Welcome, " + manager.getUsername() + " (" + manager.getRole() + ")");
-        }
-        
-        // Load teams managed by this manager
-        teams.clear();
-        teams.addAll(manager.getTeams());
+        // Delegate to setCurrentUser to avoid duplication
+        setCurrentUser(manager);
     }
     
     /**
@@ -256,12 +246,20 @@ public class ParticipantTeamController {
             welcomeLabel.setText("Welcome, " + user.getUsername() + " (" + user.getRole() + ")");
         }
         
-        // If the user is a TeamManager, also set as currentManager
+        // If the user is a TeamManager, also set as currentManager and load teams
         if (user instanceof TeamManager) {
             this.currentManager = (TeamManager) user;
-            teams.clear();
-            teams.addAll(currentManager.getTeams());
+            loadTeamsForManager(currentManager);
         }
+    }
+    
+    /**
+     * Loads teams for the given team manager.
+     */
+    private void loadTeamsForManager(TeamManager manager) {
+        teams.clear();
+        teams.addAll(manager.getTeams());
+        System.out.println("Loaded " + teams.size() + " teams for manager: " + manager.getUsername());
     }
     
     /**
@@ -269,9 +267,7 @@ public class ParticipantTeamController {
      */
     public void refreshTeamList() {
         if (currentManager != null) {
-            teams.clear();
-            teams.addAll(currentManager.getTeams());
-            System.out.println("Team list refreshed. Total teams: " + teams.size());
+            loadTeamsForManager(currentManager);
         }
     }
     
