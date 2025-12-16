@@ -134,24 +134,16 @@ public class LoginController {
      * Creates a user object based on the selected role.
      */
     private User createUserByRole(String username, String password, String email, String phoneNumber, UserRole role) {
-        // Use the phoneNumber if provided, otherwise use the constructor without it
-        if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-            return switch (role) {
-                case PLAYER -> new Player(username, password, email, phoneNumber);
-                case NON_MANAGER -> new NonManager(username, password, email, phoneNumber);
-                case GAME_MANAGER -> new GameManager(username, password, email, phoneNumber);
-                case REFEREE -> new Referee(username, password, email, phoneNumber);
-                default -> throw new IllegalArgumentException("Unsupported role: " + role);
-            };
-        } else {
-            return switch (role) {
-                case PLAYER -> new Player(username, password, email);
-                case NON_MANAGER -> new NonManager(username, password, email);
-                case GAME_MANAGER -> new GameManager(username, password, email);
-                case REFEREE -> new Referee(username, password, email);
-                default -> throw new IllegalArgumentException("Unsupported role: " + role);
-            };
-        }
+        // Normalize empty string to null for consistency
+        String normalizedPhone = (phoneNumber != null && !phoneNumber.trim().isEmpty()) ? phoneNumber : null;
+        
+        return switch (role) {
+            case PLAYER -> new Player(username, password, email, normalizedPhone);
+            case NON_MANAGER -> new NonManager(username, password, email, normalizedPhone);
+            case GAME_MANAGER -> new GameManager(username, password, email, normalizedPhone);
+            case REFEREE -> new Referee(username, password, email, normalizedPhone);
+            default -> throw new IllegalArgumentException("Unsupported role: " + role);
+        };
     }
     
     /**
