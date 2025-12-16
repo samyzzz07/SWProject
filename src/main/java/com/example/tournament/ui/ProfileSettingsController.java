@@ -59,8 +59,9 @@ public class ProfileSettingsController {
             return;
         }
         
-        // Basic email validation
-        if (!newEmail.contains("@") || !newEmail.contains(".")) {
+        // Improved email validation using regex
+        String emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        if (!newEmail.matches(emailPattern)) {
             statusLabel.setText("Invalid email format");
             showAlert("Validation Error", "Please enter a valid email address");
             return;
@@ -107,7 +108,8 @@ public class ProfileSettingsController {
         
         if (profileService.updatePassword(currentUser.getId(), currentPassword, newPassword)) {
             statusLabel.setText("Password updated successfully!");
-            currentUser.setPassword(newPassword); // Update local copy
+            // Note: Password is stored in the database. Local User object password 
+            // is not updated to avoid keeping sensitive data in memory.
             currentPasswordField.clear();
             newPasswordField.clear();
             confirmPasswordField.clear();

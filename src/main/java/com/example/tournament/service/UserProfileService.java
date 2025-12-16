@@ -49,9 +49,15 @@ public class UserProfileService {
     /**
      * Updates the password for a user.
      * 
-     * NOTE: This implementation stores plain-text passwords for demonstration purposes.
-     * In a production environment, passwords should be hashed using a secure algorithm 
-     * (e.g., BCrypt, Argon2) before storage.
+     * SECURITY NOTE: This implementation stores and compares plain-text passwords 
+     * for demonstration purposes only. This is consistent with the existing 
+     * LoginService implementation in this codebase.
+     * 
+     * In a production environment:
+     * - Passwords should be hashed using a secure algorithm (e.g., BCrypt, Argon2)
+     * - Comparisons should use constant-time comparison to prevent timing attacks
+     * - Consider implementing password history to prevent reuse
+     * - Add rate limiting to prevent brute force attacks
      * 
      * @param userId the ID of the user
      * @param currentPassword the current password for verification
@@ -69,7 +75,7 @@ public class UserProfileService {
                 return false;
             }
             
-            // Verify current password
+            // Verify current password (plain text comparison - see security note above)
             if (!user.getPassword().equals(currentPassword)) {
                 return false;
             }
