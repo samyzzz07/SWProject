@@ -17,7 +17,7 @@ This class contains the `main` method that serves as the entry point for the ent
 ### Prerequisites
 
 - Java Development Kit (JDK) 17 or higher
-- Maven (for dependency management and building)
+- Maven (for building the project)
 - The project includes all necessary dependencies via Maven:
   - JavaFX (UI framework)
   - JPA/Hibernate (database persistence)
@@ -25,25 +25,22 @@ This class contains the `main` method that serves as the entry point for the ent
 
 ### Running from Command Line
 
-#### Option 1: Using Java directly (without build tool)
+#### Option 1: Using the Executable JAR (Recommended)
 
-If you have JavaFX installed separately, run:
+Build and run the application with all dependencies bundled:
 
 ```bash
 # Navigate to the project root directory
 cd /path/to/SWProject
 
-# Compile the application
-javac --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
-  -d bin src/main/java/com/example/tournament/*.java \
-  src/main/java/com/example/tournament/model/*.java \
-  src/main/java/com/example/tournament/service/*.java \
-  src/main/java/com/example/tournament/ui/*.java
+# Build the executable JAR with all dependencies
+mvn clean package
 
 # Run the application
-java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
-  -cp bin com.example.tournament.TournamentManagementApp
+java -jar target/tournament-management-app.jar
 ```
+
+The build creates a standalone JAR file (`tournament-management-app.jar`) that includes all JavaFX runtime components and dependencies, so you don't need to configure module paths or classpath manually.
 
 #### Option 2: Using Maven
 
@@ -53,7 +50,7 @@ If you have a `pom.xml` configured with JavaFX dependencies:
 # Compile
 mvn clean compile
 
-# Run
+# Run using JavaFX Maven Plugin
 mvn javafx:run
 ```
 
@@ -65,6 +62,8 @@ mvn exec:java -Dexec.mainClass="com.example.tournament.TournamentManagementApp"
 
 #### Option 3: Using Gradle
 
+#### Option 3: Using Gradle (if configured)
+
 If you have a `build.gradle` configured with JavaFX plugin:
 
 ```bash
@@ -74,21 +73,21 @@ gradle run
 
 ### Running from IDE
 
+The project uses Maven as its build tool and includes all JavaFX dependencies automatically.
+
 #### IntelliJ IDEA
 
 1. Open the project in IntelliJ IDEA
-2. Navigate to `src/main/java/com/example/tournament/TournamentManagementApp.java`
-3. Right-click on the file and select "Run 'TournamentManagementApp.main()'"
-
-**Note:** You may need to configure JavaFX in your IDE:
-- Go to File → Project Structure → Libraries
-- Add the JavaFX SDK library
+2. Import as a Maven project (if not automatically detected)
+3. Navigate to `src/main/java/com/example/tournament/TournamentManagementApp.java`
+4. Right-click on the file and select "Run 'TournamentManagementApp.main()'"
 
 #### Eclipse
 
 1. Open the project in Eclipse
-2. Navigate to `src/main/java/com/example/tournament/TournamentManagementApp.java`
-3. Right-click on the file and select "Run As → Java Application"
+2. Import as a Maven project
+3. Navigate to `src/main/java/com/example/tournament/TournamentManagementApp.java`
+4. Right-click on the file and select "Run As → Java Application"
 
 #### VS Code
 
@@ -187,14 +186,25 @@ All necessary JDBC drivers are included in the Maven dependencies:
 
 ### "JavaFX runtime components are missing"
 
-If you get this error when not using Maven, add JavaFX to your module path:
+This error has been resolved! The project now includes Maven Shade Plugin that creates a standalone executable JAR with all JavaFX runtime components bundled.
 
-```bash
-java --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml \
-  -cp bin com.example.tournament.TournamentManagementApp
-```
+**Solutions:**
 
-**Solution:** Use Maven to run the application (`mvn javafx:run`) which handles dependencies automatically.
+1. **Using the executable JAR (Recommended):**
+   ```bash
+   mvn clean package
+   java -jar target/tournament-management-app.jar
+   ```
+
+2. **Using Maven JavaFX Plugin:**
+   ```bash
+   mvn javafx:run
+   ```
+
+3. **Using Maven Exec Plugin:**
+   ```bash
+   mvn exec:java -Dexec.mainClass="com.example.tournament.TournamentManagementApp"
+   ```
 
 ### "Error loading FXML file"
 
@@ -213,6 +223,18 @@ If you encounter database connection errors:
 2. **For MySQL:** Ensure MySQL server is running and update credentials in `persistence.xml`
 3. **For PostgreSQL:** Ensure PostgreSQL server is running and update credentials in `persistence.xml`
 4. **For SQLite:** Ensure write permissions in the application directory
+
+### Building the Project
+
+To build the standalone executable JAR:
+
+```bash
+mvn clean package
+```
+
+This creates two JAR files in the `target` directory:
+- `tournament-management-1.0-SNAPSHOT.jar` - Standard JAR (requires classpath configuration)
+- `tournament-management-app.jar` - **Executable JAR with all dependencies** (recommended)
 
 ### Maven Dependencies
 
