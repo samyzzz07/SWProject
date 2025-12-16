@@ -3,7 +3,14 @@ package com.example.tournament.util;
 /**
  * Simple calculator utility for performing arithmetic operations.
  */
-public class Calculator {
+public final class Calculator {
+    
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private Calculator() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     
     /**
      * Calculates the sum of multiple numbers.
