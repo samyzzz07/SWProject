@@ -6,8 +6,13 @@ import com.example.tournament.model.TimeSlot;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -236,6 +241,25 @@ public class ParticipantTeamController {
             teams.clear();
             teams.addAll(currentManager.getTeams());
             System.out.println("Team list refreshed. Total teams: " + teams.size());
+        }
+    }
+    
+    /**
+     * Handles logout button click.
+     */
+    @FXML
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) statusLabel.getScene().getWindow();
+            Scene scene = new Scene(root, 800, 600);
+            stage.setScene(scene);
+            stage.setTitle("Tournament Management System - Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to return to login screen: " + e.getMessage());
         }
     }
 }

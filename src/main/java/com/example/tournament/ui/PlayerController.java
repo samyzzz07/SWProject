@@ -5,7 +5,13 @@ import com.example.tournament.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Controller for Player interface.
@@ -111,6 +117,22 @@ public class PlayerController {
         Sport selected = sportListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
             showAlert("Sport Details", selected.toString());
+        }
+    }
+    
+    @FXML
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            Parent root = loader.load();
+            
+            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+            Scene scene = new Scene(root, 800, 600);
+            stage.setScene(scene);
+            stage.setTitle("Tournament Management System - Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to return to login screen: " + e.getMessage());
         }
     }
     
