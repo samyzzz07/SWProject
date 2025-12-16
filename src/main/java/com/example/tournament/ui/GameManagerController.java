@@ -5,7 +5,14 @@ import com.example.tournament.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * Controller for GameManager interface.
@@ -127,6 +134,27 @@ public class GameManagerController {
     private void handleCollectFees() {
         statusLabel.setText("Fee collection functionality");
         showAlert("Collect Fees", "This would open a dialog for fee collection");
+    }
+    
+    @FXML
+    private void handleProfileSettings() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/profile_settings.fxml"));
+            Parent root = loader.load();
+            
+            ProfileSettingsController controller = loader.getController();
+            controller.setCurrentUser(currentUser);
+            
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Profile Settings");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open profile settings: " + e.getMessage());
+        }
     }
     
     private void showAlert(String title, String message) {
