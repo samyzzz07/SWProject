@@ -130,7 +130,9 @@ public class GameManagerController {
     }
     
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert.AlertType type = title.toLowerCase().contains("error") || title.toLowerCase().contains("fail") 
+            ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION;
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

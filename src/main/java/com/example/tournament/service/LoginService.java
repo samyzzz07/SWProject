@@ -14,6 +14,10 @@ public class LoginService {
     /**
      * Authenticates a user with username and password.
      * 
+     * NOTE: This implementation uses plain-text password comparison for demonstration purposes.
+     * In a production environment, passwords should be hashed using a secure algorithm 
+     * (e.g., BCrypt, Argon2) before storage and comparison.
+     * 
      * @param username the username
      * @param password the password
      * @return the authenticated User object, or null if authentication fails

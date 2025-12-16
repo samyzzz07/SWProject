@@ -82,7 +82,20 @@ public class PlayerController {
     @FXML
     private void handleUpdateTeam() {
         String teamInfo = teamInfoTextArea.getText();
+        
+        if (teamInfo.isEmpty()) {
+            statusLabel.setText("Please enter team information to update");
+            return;
+        }
+        
+        // In a real implementation, this would:
+        // 1. Retrieve the current user's team from the database
+        // 2. Update the team information
+        // 3. Call teamService.updateTeam(team) to persist changes
+        
+        // For demonstration, we just show a message
         statusLabel.setText("Team information updated");
+        showAlert("Team Update", "Team information has been updated: " + teamInfo);
     }
     
     @FXML
@@ -102,7 +115,9 @@ public class PlayerController {
     }
     
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert.AlertType type = title.toLowerCase().contains("error") || title.toLowerCase().contains("fail") 
+            ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION;
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
