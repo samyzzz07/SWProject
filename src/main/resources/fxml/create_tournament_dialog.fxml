@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.CreateTournamentDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Create New Tournament" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Details Form -->
+    <GridPane hgap="15" vgap="12">
+        
+        <!-- Tournament Name -->
+        <Label text="Tournament Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="tournamentNameField" promptText="Enter tournament name" 
+                   prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        
+        <!-- Sport -->
+        <Label text="Sport:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="sportComboBox" promptText="Select sport" 
+                  prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        
+        <!-- Tournament Type -->
+        <Label text="Tournament Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentTypeComboBox" promptText="Select type" 
+                  prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        
+        <!-- Start Date -->
+        <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="startDatePicker" promptText="Select start date" 
+                    prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        
+        <!-- End Date -->
+        <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="endDatePicker" promptText="Select end date" 
+                    prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        
+        <!-- Max Teams (Optional) -->
+        <Label text="Maximum Teams:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-font-weight: bold;"/>
+        <Spinner fx:id="maxTeamsSpinner" prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        
+        <!-- Registration Deadline -->
+        <Label text="Registration Deadline:" GridPane.columnIndex="0" GridPane.rowIndex="6" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="registrationDeadlinePicker" promptText="Select deadline" 
+                    prefWidth="300" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        
+    </GridPane>
+    
+    <!-- Description -->
+    <VBox spacing="5">
+        <Label text="Description (Optional):" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="descriptionArea" promptText="Enter tournament description..." 
+                  prefHeight="80" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" text="" style="-fx-text-fill: #666;"/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Create Tournament" onAction="#handleCreate" 
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="140"/>
+        <Button text="Cancel" onAction="#handleCancel" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

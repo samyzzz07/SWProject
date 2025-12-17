@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.DefineTournamentRulesDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Define Tournament Rules" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose tournament..." prefWidth="400"
+                  onAction="#handleTournamentSelection"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Tournament Rules Form -->
+    <ScrollPane fitToWidth="true" prefHeight="350" style="-fx-background-color: transparent;">
+        <VBox spacing="15">
+            
+            <!-- Tournament Info (Read-only) -->
+            <VBox spacing="5" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+                <Label text="Tournament Information:" style="-fx-font-weight: bold;"/>
+                <GridPane hgap="10" vgap="5">
+                    <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="tournamentNameLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="tournamentTypeLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Sport:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="sportLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- General Rules -->
+            <VBox spacing="8" style="-fx-padding: 10; -fx-border-color: #2196F3; -fx-border-width: 1; -fx-border-radius: 5;">
+                <Label text="General Rules" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                
+                <GridPane hgap="15" vgap="10">
+                    <Label text="Players per Team:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Spinner fx:id="playersPerTeamSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Substitutes Allowed:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Spinner fx:id="substitutesSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Match Duration (mins):" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Spinner fx:id="matchDurationSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- League-Specific Rules (shown for League/Round Robin) -->
+            <VBox fx:id="leagueRulesBox" spacing="8" style="-fx-padding: 10; -fx-border-color: #FF9800; -fx-border-width: 1; -fx-border-radius: 5;">
+                <Label text="League-Specific Rules" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                
+                <GridPane hgap="15" vgap="10">
+                    <Label text="Points for Win:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Spinner fx:id="pointsForWinSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Points for Draw:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Spinner fx:id="pointsForDrawSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Points for Loss:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Spinner fx:id="pointsForLossSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- Knockout-Specific Rules -->
+            <VBox fx:id="knockoutRulesBox" spacing="8" style="-fx-padding: 10; -fx-border-color: #9C27B0; -fx-border-width: 1; -fx-border-radius: 5;">
+                <Label text="Knockout-Specific Rules" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                
+                <GridPane hgap="15" vgap="10">
+                    <Label text="Number of Rounds:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Spinner fx:id="numberOfRoundsSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Extra Time (mins):" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Spinner fx:id="extraTimeSpinner" prefWidth="150" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Penalty Shootout:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <CheckBox fx:id="penaltyShootoutCheckBox" 
+                             GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- Additional Rules -->
+            <VBox spacing="5">
+                <Label text="Additional Rules / Notes:" style="-fx-font-weight: bold;"/>
+                <TextArea fx:id="additionalRulesArea" promptText="Enter any additional rules or notes..." 
+                          prefHeight="80" wrapText="true"/>
+            </VBox>
+            
+        </VBox>
+    </ScrollPane>
+    
+    <Separator/>
+    
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" text="" style="-fx-text-fill: #666;"/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Save Rules" onAction="#handleSaveRules" 
+                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

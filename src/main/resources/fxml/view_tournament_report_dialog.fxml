@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.ViewTournamentReportDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="View Tournament Report" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose tournament..." prefWidth="400"
+                  onAction="#handleTournamentSelection"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Report Content -->
+    <ScrollPane fitToWidth="true" prefHeight="450" style="-fx-background-color: transparent;">
+        <VBox spacing="15">
+            
+            <!-- Tournament Overview -->
+            <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #2196F3; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;">
+                <Label text="Tournament Overview" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <GridPane hgap="15" vgap="8">
+                    <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="nameLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Sport:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="sportLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="typeLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    
+                    <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="statusLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    
+                    <Label text="Start Date:" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="startDateLabel" text="-" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                    
+                    <Label text="End Date:" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="endDateLabel" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- Statistics -->
+            <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #4CAF50; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;">
+                <Label text="Statistics" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <GridPane hgap="20" vgap="8">
+                    <Label text="Total Teams:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="totalTeamsLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Total Matches:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="totalMatchesLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Completed Matches:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="completedMatchesLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    
+                    <Label text="Upcoming Matches:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="upcomingMatchesLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    
+                    <Label text="Total Goals/Points:" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="totalGoalsLabel" text="0" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Average Score:" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="averageScoreLabel" text="0.0" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                    
+                    <Label text="Completion:" GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="completionLabel" text="0%" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+            
+            <!-- Team Standings (if applicable) -->
+            <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #FF9800; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;">
+                <Label text="Team Standings" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <TableView fx:id="standingsTableView" prefHeight="200">
+                    <columns>
+                        <TableColumn fx:id="positionColumn" text="Pos" prefWidth="50"/>
+                        <TableColumn fx:id="teamNameColumn" text="Team Name" prefWidth="180"/>
+                        <TableColumn fx:id="matchesPlayedColumn" text="Played" prefWidth="70"/>
+                        <TableColumn fx:id="winsColumn" text="Wins" prefWidth="60"/>
+                        <TableColumn fx:id="drawsColumn" text="Draws" prefWidth="60"/>
+                        <TableColumn fx:id="lossesColumn" text="Losses" prefWidth="70"/>
+                        <TableColumn fx:id="pointsColumn" text="Points" prefWidth="70"/>
+                    </columns>
+                </TableView>
+            </VBox>
+            
+            <!-- Recent Matches -->
+            <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #9C27B0; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;">
+                <Label text="Recent Matches" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                <TableView fx:id="matchesTableView" prefHeight="200">
+                    <columns>
+                        <TableColumn fx:id="matchDateColumn" text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="team1Column" text="Team 1" prefWidth="150"/>
+                        <TableColumn fx:id="scoreColumn" text="Score" prefWidth="80"/>
+                        <TableColumn fx:id="team2Column" text="Team 2" prefWidth="150"/>
+                        <TableColumn fx:id="matchStatusColumn" text="Status" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+            
+        </VBox>
+    </ScrollPane>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Export Report" onAction="#handleExportReport" 
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Print" onAction="#handlePrint"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                prefWidth="80"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>
