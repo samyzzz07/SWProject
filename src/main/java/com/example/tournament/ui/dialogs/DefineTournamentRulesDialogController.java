@@ -179,6 +179,25 @@ public class DefineTournamentRulesDialogController {
                         pointsForLossSpinner.getValueFactory().setValue(league.getPointsForLoss());
                     }
                     
+                } else if (selectedTournament instanceof RoundRobinTournament) {
+                    tournamentTypeLabel.setText("Round Robin");
+                    leagueRulesBox.setVisible(true);
+                    leagueRulesBox.setManaged(true);
+                    knockoutRulesBox.setVisible(false);
+                    knockoutRulesBox.setManaged(false);
+                    
+                    // Load existing round robin rules
+                    RoundRobinTournament roundRobin = (RoundRobinTournament) selectedTournament;
+                    if (roundRobin.getPointsForWin() != null) {
+                        pointsForWinSpinner.getValueFactory().setValue(roundRobin.getPointsForWin());
+                    }
+                    if (roundRobin.getPointsForDraw() != null) {
+                        pointsForDrawSpinner.getValueFactory().setValue(roundRobin.getPointsForDraw());
+                    }
+                    if (roundRobin.getPointsForLoss() != null) {
+                        pointsForLossSpinner.getValueFactory().setValue(roundRobin.getPointsForLoss());
+                    }
+                    
                 } else if (selectedTournament instanceof KnockoutTournament) {
                     tournamentTypeLabel.setText("Knockout");
                     leagueRulesBox.setVisible(false);
@@ -227,6 +246,11 @@ public class DefineTournamentRulesDialogController {
                 league.setPointsForWin(pointsForWinSpinner.getValue());
                 league.setPointsForDraw(pointsForDrawSpinner.getValue());
                 league.setPointsForLoss(pointsForLossSpinner.getValue());
+            } else if (selectedTournament instanceof RoundRobinTournament) {
+                RoundRobinTournament roundRobin = (RoundRobinTournament) selectedTournament;
+                roundRobin.setPointsForWin(pointsForWinSpinner.getValue());
+                roundRobin.setPointsForDraw(pointsForDrawSpinner.getValue());
+                roundRobin.setPointsForLoss(pointsForLossSpinner.getValue());
             } else if (selectedTournament instanceof KnockoutTournament) {
                 KnockoutTournament knockout = (KnockoutTournament) selectedTournament;
                 knockout.setCurrentRound(numberOfRoundsSpinner.getValue());
@@ -248,6 +272,11 @@ public class DefineTournamentRulesDialogController {
                 
                 if (selectedTournament instanceof LeagueTournament) {
                     rulesMessage.append("\nLeague Rules:\n");
+                    rulesMessage.append("- Points for Win: ").append(pointsForWinSpinner.getValue()).append("\n");
+                    rulesMessage.append("- Points for Draw: ").append(pointsForDrawSpinner.getValue()).append("\n");
+                    rulesMessage.append("- Points for Loss: ").append(pointsForLossSpinner.getValue()).append("\n");
+                } else if (selectedTournament instanceof RoundRobinTournament) {
+                    rulesMessage.append("\nRound Robin Rules:\n");
                     rulesMessage.append("- Points for Win: ").append(pointsForWinSpinner.getValue()).append("\n");
                     rulesMessage.append("- Points for Draw: ").append(pointsForDrawSpinner.getValue()).append("\n");
                     rulesMessage.append("- Points for Loss: ").append(pointsForLossSpinner.getValue()).append("\n");

@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.List;
+import java.util.Map;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -192,6 +193,8 @@ public class ViewTournamentReportDialogController {
         
         if (selectedTournament instanceof LeagueTournament) {
             typeLabel.setText("League/Round Robin");
+        } else if (selectedTournament instanceof RoundRobinTournament) {
+            typeLabel.setText("Round Robin");
         } else if (selectedTournament instanceof KnockoutTournament) {
             typeLabel.setText("Knockout");
         } else {
@@ -250,9 +253,14 @@ public class ViewTournamentReportDialogController {
     private void populateStandings() {
         ObservableList<StandingData> standings = FXCollections.observableArrayList();
         
-        if (selectedTournament instanceof LeagueTournament) {
-            LeagueTournament league = (LeagueTournament) selectedTournament;
-            var standingsMap = league.getStandings();
+        if (selectedTournament instanceof LeagueTournament || selectedTournament instanceof RoundRobinTournament) {
+            // Both League and Round Robin tournaments use the same standings logic
+            Map<Team, Integer> standingsMap;
+            if (selectedTournament instanceof LeagueTournament) {
+                standingsMap = ((LeagueTournament) selectedTournament).getStandings();
+            } else {
+                standingsMap = ((RoundRobinTournament) selectedTournament).getStandings();
+            }
             
             int position = 1;
             for (var entry : standingsMap.entrySet()) {
