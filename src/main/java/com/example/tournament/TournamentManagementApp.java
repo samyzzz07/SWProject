@@ -14,15 +14,16 @@ import javafx.stage.Stage;
 public class TournamentManagementApp extends Application {
     
     @Override
-    public void init() {
+    public void init() throws Exception {
         // Initialize database connection at startup
         System.out.println("Initializing database connection...");
         try {
             JPAUtil.initialize();
             System.out.println("Database connection initialized successfully!");
         } catch (Exception e) {
-            System.err.println("Failed to initialize database: " + e.getMessage());
+            System.err.println("FATAL: Failed to initialize database: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("Cannot start application without database connection", e);
         }
     }
     
@@ -43,12 +44,6 @@ public class TournamentManagementApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
-            
-            // Set up shutdown hook to close database connection
-            primaryStage.setOnCloseRequest(event -> {
-                System.out.println("Application closing...");
-                JPAUtil.shutdown();
-            });
             
             // Show the application window
             primaryStage.show();
