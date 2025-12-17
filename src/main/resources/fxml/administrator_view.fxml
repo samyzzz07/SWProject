@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.example.tournament.ui.AdministratorController">
+    
+    <!-- Top Section: Title -->
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #2196F3; -fx-padding: 20;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Tournament Management System" textFill="white">
+                        <font>
+                            <Font name="System Bold" size="24.0"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="welcomeLabel" text="Administrator Dashboard" textFill="white">
+                        <font>
+                            <Font size="14.0"/>
+                        </font>
+                    </Label>
+                </VBox>
+                <Button text="Logout" onAction="#handleLogout" 
+                        style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;"
+                        prefWidth="100" prefHeight="35"/>
+            </HBox>
+        </VBox>
+    </top>
+    
+    <!-- Center Section: Main Content -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30;" alignment="TOP_CENTER">
+            
+            <Label text="Administrator Functions" style="-fx-font-weight: bold; -fx-font-size: 20px;"/>
+            
+            <!-- Tournament Management Grid -->
+            <GridPane hgap="20" vgap="20" alignment="CENTER">
+                
+                <!-- Create Tournament -->
+                <VBox spacing="10" style="-fx-padding: 20; -fx-border-color: #2196F3; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;" 
+                      prefWidth="350" prefHeight="200" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="Create Tournament" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    <Label text="Create a new tournament in the system" wrapText="true" style="-fx-text-fill: #666;"/>
+                    
+                    <VBox spacing="8" VBox.vgrow="ALWAYS">
+                        <Label text="Tournament Name:"/>
+                        <TextField fx:id="tournamentNameField" promptText="Enter tournament name"/>
+                    </VBox>
+                    
+                    <Button fx:id="createTournamentButton" text="Create Tournament" 
+                            onAction="#handleCreateTournament"
+                            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+                            prefWidth="200"/>
+                </VBox>
+                
+                <!-- Define Tournament Rules -->
+                <VBox spacing="10" style="-fx-padding: 20; -fx-border-color: #FF9800; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;" 
+                      prefWidth="350" prefHeight="200" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="Define Tournament Rules" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    <Label text="Set rules and regulations for tournaments" wrapText="true" style="-fx-text-fill: #666;"/>
+                    
+                    <VBox spacing="8" VBox.vgrow="ALWAYS">
+                        <Label text="Tournament:"/>
+                        <ComboBox fx:id="rulesComboBox" promptText="Select tournament" prefWidth="200"/>
+                    </VBox>
+                    
+                    <Button fx:id="defineRulesButton" text="Define Rules" 
+                            onAction="#handleDefineTournamentRules"
+                            style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"
+                            prefWidth="200"/>
+                </VBox>
+                
+                <!-- View Tournament Report -->
+                <VBox spacing="10" style="-fx-padding: 20; -fx-border-color: #9C27B0; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;" 
+                      prefWidth="350" prefHeight="200" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <Label text="View Tournament Report" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    <Label text="View detailed reports and statistics" wrapText="true" style="-fx-text-fill: #666;"/>
+                    
+                    <VBox spacing="8" VBox.vgrow="ALWAYS">
+                        <Label text="Tournament:"/>
+                        <ComboBox fx:id="reportComboBox" promptText="Select tournament" prefWidth="200"/>
+                    </VBox>
+                    
+                    <Button fx:id="viewReportButton" text="View Report" 
+                            onAction="#handleViewTournamentReport"
+                            style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-weight: bold;"
+                            prefWidth="200"/>
+                </VBox>
+                
+                <!-- End Tournament -->
+                <VBox spacing="10" style="-fx-padding: 20; -fx-border-color: #f44336; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #f5f5f5;" 
+                      prefWidth="350" prefHeight="200" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <Label text="End Tournament" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    <Label text="Finalize and close a tournament" wrapText="true" style="-fx-text-fill: #666;"/>
+                    
+                    <VBox spacing="8" VBox.vgrow="ALWAYS">
+                        <Label text="Tournament:"/>
+                        <ComboBox fx:id="endTournamentComboBox" promptText="Select tournament" prefWidth="200"/>
+                    </VBox>
+                    
+                    <Button fx:id="endTournamentButton" text="End Tournament" 
+                            onAction="#handleEndTournament"
+                            style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;"
+                            prefWidth="200"/>
+                </VBox>
+                
+            </GridPane>
+            
+            <!-- Activity Log -->
+            <Separator/>
+            <Label text="Activity Log" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <TextArea fx:id="activityLogArea" editable="false" prefHeight="150" 
+                      style="-fx-font-family: monospace;" wrapText="true"/>
+            
+        </VBox>
+    </center>
+    
+    <!-- Bottom Section: Status Bar -->
+    <bottom>
+        <HBox style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <Label text="Status: " style="-fx-font-weight: bold;"/>
+            <Label fx:id="statusLabel" text="Ready"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane>

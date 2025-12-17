@@ -6,7 +6,7 @@ package com.example.tournament.model;
  */
 public enum UserRole {
     ADMINISTRATOR,           // Top-level operations, high-level management
-    TEAM_MANAGER,           // Team-specific tasks, registration
+    TEAM,                   // Team-specific tasks, registration
     GAME_COORDINATOR,       // Game creation, scheduling, referee management
     TOURNAMENT_ORGANIZER    // Submitting final scores and results
 }
