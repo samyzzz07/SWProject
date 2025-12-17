@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.RequestMenuDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Tournament Requests Management" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Filter Section -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Filter by Type:"/>
+        <ComboBox fx:id="requestTypeComboBox" promptText="All Requests" prefWidth="150" onAction="#handleFilterChange"/>
+        <Label text="Status:"/>
+        <ComboBox fx:id="statusFilterComboBox" promptText="All" prefWidth="120" onAction="#handleFilterChange"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#handleRefresh" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+    </HBox>
+    
+    <!-- Requests Table -->
+    <TableView fx:id="requestsTableView" VBox.vgrow="ALWAYS" prefHeight="280">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="typeColumn" text="Request Type" prefWidth="150"/>
+            <TableColumn fx:id="requesterColumn" text="Requester" prefWidth="120"/>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="80"/>
+        </columns>
+    </TableView>
+    
+    <!-- Request Details -->
+    <VBox spacing="5" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+        <Label text="Request Details:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="requestDetailsArea" editable="false" prefHeight="100" wrapText="true"
+                  style="-fx-font-family: monospace;"/>
+    </VBox>
+    
+    <!-- Response Section -->
+    <VBox spacing="5">
+        <Label text="Response/Notes:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="responseArea" promptText="Enter response or notes..." 
+                  prefHeight="60" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Approve" onAction="#handleApprove"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="100"/>
+        <Button text="Reject" onAction="#handleReject"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                prefWidth="80"/>
+        <Button text="View Details" onAction="#handleViewDetails"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="120"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

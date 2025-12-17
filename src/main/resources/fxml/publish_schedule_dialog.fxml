@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.PublishScheduleDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Publish Tournament Schedule" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose tournament..." prefWidth="400"
+                  onAction="#handleTournamentSelection"/>
+    </VBox>
+    
+    <!-- Schedule Preview -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Schedule Preview:" style="-fx-font-weight: bold;"/>
+        <TableView fx:id="scheduleTableView" prefHeight="250">
+            <columns>
+                <TableColumn fx:id="matchColumn" text="Match" prefWidth="180"/>
+                <TableColumn fx:id="dateTimeColumn" text="Date & Time" prefWidth="130"/>
+                <TableColumn fx:id="venueColumn" text="Venue" prefWidth="120"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+    
+    <!-- Schedule Info -->
+    <VBox spacing="5" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+        <Label text="Schedule Information:" style="-fx-font-weight: bold;"/>
+        <GridPane hgap="10" vgap="8">
+            <Label text="Total Matches:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalMatchesLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <Label fx:id="startDateLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+            <Label fx:id="endDateLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            
+            <Label text="Published:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+            <Label fx:id="publishedStatusLabel" text="Not Published" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        </GridPane>
+    </VBox>
+    
+    <!-- Publication Options -->
+    <VBox spacing="5">
+        <Label text="Publication Options:" style="-fx-font-weight: bold;"/>
+        <CheckBox fx:id="notifyTeamsCheckBox" text="Notify teams via email" selected="true"/>
+        <CheckBox fx:id="publicAccessCheckBox" text="Make schedule publicly accessible" selected="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Publish Schedule" onAction="#handlePublish" 
+                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="140"/>
+        <Button text="Preview" onAction="#handlePreview"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="80"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>
