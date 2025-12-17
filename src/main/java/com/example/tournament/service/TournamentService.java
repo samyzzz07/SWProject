@@ -24,7 +24,10 @@ public class TournamentService {
         
         try {
             TypedQuery<Tournament> query = em.createQuery(
-                "SELECT t FROM Tournament t ORDER BY t.startDate DESC",
+                "SELECT DISTINCT t FROM Tournament t " +
+                "LEFT JOIN FETCH t.teams " +
+                "LEFT JOIN FETCH t.matches " +
+                "ORDER BY t.startDate DESC",
                 Tournament.class
             );
             return query.getResultList();
@@ -44,7 +47,16 @@ public class TournamentService {
         EntityManager em = JPAUtil.getEntityManager();
         
         try {
-            return em.find(Tournament.class, tournamentId);
+            TypedQuery<Tournament> query = em.createQuery(
+                "SELECT t FROM Tournament t " +
+                "LEFT JOIN FETCH t.teams " +
+                "LEFT JOIN FETCH t.matches " +
+                "WHERE t.id = :id",
+                Tournament.class
+            );
+            query.setParameter("id", tournamentId);
+            List<Tournament> results = query.getResultList();
+            return results.isEmpty() ? null : results.get(0);
             
         } finally {
             em.close();
