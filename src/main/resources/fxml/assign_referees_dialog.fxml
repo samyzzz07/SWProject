@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.AssignRefereesDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Assign Referees to Matches" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Match Selection -->
+    <VBox spacing="5">
+        <Label text="Select Match:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="matchComboBox" promptText="Choose a match..." prefWidth="400"/>
+        <Label fx:id="matchDetailsLabel" text="" wrapText="true" style="-fx-text-fill: #666;"/>
+    </VBox>
+    
+    <!-- Referee List -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Available Referees:" style="-fx-font-weight: bold;"/>
+        <ListView fx:id="refereeListView" prefHeight="200"/>
+    </VBox>
+    
+    <!-- Currently Assigned Referee -->
+    <VBox spacing="5">
+        <Label text="Currently Assigned:" style="-fx-font-weight: bold;"/>
+        <Label fx:id="currentRefereeLabel" text="None" style="-fx-text-fill: #2196F3;"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Assign Referee" onAction="#handleAssign" 
+                style="-fx-background-color: #3F51B5; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Clear Assignment" onAction="#handleClear"
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

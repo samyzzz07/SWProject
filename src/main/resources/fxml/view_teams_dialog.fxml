@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.ViewTeamsDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Registered Teams" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Filter Section -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Filter by Status:"/>
+        <ComboBox fx:id="statusFilterComboBox" promptText="All" prefWidth="150" onAction="#handleFilterChange"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#handleRefresh" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+    </HBox>
+    
+    <!-- Teams Table -->
+    <TableView fx:id="teamsTableView" VBox.vgrow="ALWAYS" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="teamNameColumn" text="Team Name" prefWidth="150"/>
+            <TableColumn fx:id="managerColumn" text="Manager" prefWidth="120"/>
+            <TableColumn fx:id="contactColumn" text="Contact" prefWidth="150"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+        </columns>
+    </TableView>
+    
+    <!-- Team Details -->
+    <VBox spacing="5">
+        <Label text="Team Details:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="teamDetailsArea" editable="false" prefHeight="80" wrapText="true"
+                  style="-fx-font-family: monospace;"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="View Details" onAction="#handleViewDetails"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="120"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

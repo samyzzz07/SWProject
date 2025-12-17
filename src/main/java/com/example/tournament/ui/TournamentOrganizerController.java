@@ -87,18 +87,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Viewed registered teams");
+            logActivity("Opened View Registered Teams dialog");
             
             statusLabel.setText("Displaying registered teams");
-            System.out.println("✓ Registered teams displayed");
+            System.out.println("✓ Opening View Teams dialog");
             
-            // Show information
-            showAlert("Registered Teams", "Viewing all registered teams across tournaments.\n\n" +
-                     "Sample Teams:\n" +
-                     "- Team Alpha (Status: Approved)\n" +
-                     "- Team Beta (Status: Pending)\n" +
-                     "- Team Gamma (Status: Approved)\n" +
-                     "- Team Delta (Status: Pending)");
+            // Open the dialog
+            openDialog("/fxml/view_teams_dialog.fxml", "Registered Teams", 650, 600);
             
         } catch (Exception e) {
             statusLabel.setText("Error viewing teams: " + e.getMessage());
@@ -121,13 +116,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Approved a team");
+            logActivity("Opened Approve Team dialog");
             
-            statusLabel.setText("Team approved successfully!");
-            System.out.println("✓ Team approved");
+            statusLabel.setText("Approve team dialog opened");
+            System.out.println("✓ Opening Approve Team dialog");
             
-            // Show confirmation
-            showAlert("Success", "Team has been approved for tournament participation!");
+            // Open the dialog
+            openDialog("/fxml/approve_team_dialog.fxml", "Approve Team", 550, 550);
             
         } catch (Exception e) {
             statusLabel.setText("Error approving team: " + e.getMessage());
@@ -151,17 +146,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Published tournament schedule");
+            logActivity("Opened Publish Schedule dialog");
             
-            statusLabel.setText("Schedule published successfully!");
-            System.out.println("✓ Schedule published");
+            statusLabel.setText("Publish schedule dialog opened");
+            System.out.println("✓ Opening Publish Schedule dialog");
             
-            // Show confirmation
-            String message = "Tournament schedule has been published!\n\n";
-            if (schedule != null && schedule.getPublishedDate() != null) {
-                message += "Published on: " + schedule.getPublishedDate();
-            }
-            showAlert("Success", message);
+            // Open the dialog
+            openDialog("/fxml/publish_schedule_dialog.fxml", "Publish Schedule", 650, 650);
             
         } catch (Exception e) {
             statusLabel.setText("Error publishing schedule: " + e.getMessage());
@@ -184,18 +175,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Collected fees from teams");
+            logActivity("Opened Collect Fees dialog");
             
-            statusLabel.setText("Fee collection initiated");
-            System.out.println("✓ Fee collection processed");
+            statusLabel.setText("Fee collection dialog opened");
+            System.out.println("✓ Opening Collect Fees dialog");
             
-            // Show information
-            showAlert("Fee Collection", "Fee collection process initiated.\n\n" +
-                     "Sample fee status:\n" +
-                     "- Team Alpha: Paid\n" +
-                     "- Team Beta: Pending\n" +
-                     "- Team Gamma: Paid\n" +
-                     "- Team Delta: Pending");
+            // Open the dialog
+            openDialog("/fxml/collect_fees_dialog.fxml", "Fee Collection Management", 650, 600);
             
         } catch (Exception e) {
             statusLabel.setText("Error collecting fees: " + e.getMessage());
@@ -218,18 +204,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Finding sponsors for tournament");
+            logActivity("Opened Find Sponsor dialog");
             
-            statusLabel.setText("Sponsor search initiated");
-            System.out.println("✓ Sponsor search processed");
+            statusLabel.setText("Sponsor management dialog opened");
+            System.out.println("✓ Opening Find Sponsor dialog");
             
-            // Show information
-            showAlert("Find Sponsor", "Sponsor search process initiated.\n\n" +
-                     "Potential sponsors:\n" +
-                     "- Sports Inc.\n" +
-                     "- Athletic Gear Co.\n" +
-                     "- Tournament Partners LLC\n" +
-                     "- Championship Sponsors");
+            // Open the dialog
+            openDialog("/fxml/find_sponsor_dialog.fxml", "Sponsor Management", 550, 650);
             
         } catch (Exception e) {
             statusLabel.setText("Error finding sponsor: " + e.getMessage());
@@ -252,18 +233,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Checked tournament schedule");
+            logActivity("Opened Check Schedule dialog");
             
-            statusLabel.setText("Schedule validation complete");
-            System.out.println("✓ Schedule checked");
+            statusLabel.setText("Schedule validation dialog opened");
+            System.out.println("✓ Opening Check Schedule dialog");
             
-            // Show information
-            showAlert("Schedule Status", "Tournament schedule has been validated.\n\n" +
-                     "Schedule Status:\n" +
-                     "✓ All matches scheduled\n" +
-                     "✓ No venue conflicts\n" +
-                     "✓ All referees assigned\n" +
-                     "✓ Ready for publication");
+            // Open the dialog
+            openDialog("/fxml/check_schedule_dialog.fxml", "Schedule Validation", 700, 650);
             
         } catch (Exception e) {
             statusLabel.setText("Error checking schedule: " + e.getMessage());
@@ -286,17 +262,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Assigned referees to matches");
+            logActivity("Opened Assign Referees dialog");
             
-            statusLabel.setText("Referees assigned successfully!");
-            System.out.println("✓ Referees assigned");
+            statusLabel.setText("Assign referees dialog opened");
+            System.out.println("✓ Opening Assign Referees dialog");
             
-            // Show confirmation
-            showAlert("Success", "Referees have been assigned to tournament matches!\n\n" +
-                     "Sample assignments:\n" +
-                     "- Match 1: Referee John Smith\n" +
-                     "- Match 2: Referee Jane Doe\n" +
-                     "- Match 3: Referee Mike Johnson");
+            // Open the dialog
+            openDialog("/fxml/assign_referees_dialog.fxml", "Assign Referees to Matches", 550, 550);
             
         } catch (Exception e) {
             statusLabel.setText("Error assigning referees: " + e.getMessage());
@@ -319,14 +291,13 @@ public class TournamentOrganizerController {
             }
             
             // Log the action
-            logActivity("Postponed a match");
+            logActivity("Opened Postpone Match dialog");
             
-            statusLabel.setText("Match postponed successfully!");
-            System.out.println("✓ Match postponed");
+            statusLabel.setText("Postpone match dialog opened");
+            System.out.println("✓ Opening Postpone Match dialog");
             
-            // Show confirmation
-            showAlert("Success", "Match has been postponed.\n\n" +
-                     "The affected teams will be notified and a new date will be scheduled.");
+            // Open the dialog
+            openDialog("/fxml/postpone_match_dialog.fxml", "Postpone Match", 550, 650);
             
         } catch (Exception e) {
             statusLabel.setText("Error postponing match: " + e.getMessage());
@@ -351,16 +322,11 @@ public class TournamentOrganizerController {
             // Log the action
             logActivity("Opened request menu");
             
-            statusLabel.setText("Request menu displayed");
-            System.out.println("✓ Request menu shown");
+            statusLabel.setText("Request menu opened");
+            System.out.println("✓ Opening Request Menu dialog");
             
-            // Show request menu
-            showAlert("Request Menu", "Available Requests:\n\n" +
-                     "- Team registration requests\n" +
-                     "- Schedule change requests\n" +
-                     "- Referee assignment requests\n" +
-                     "- Venue change requests\n" +
-                     "- Postponement requests");
+            // Open the dialog
+            openDialog("/fxml/request_menu_dialog.fxml", "Tournament Requests Management", 700, 650);
             
         } catch (Exception e) {
             statusLabel.setText("Error showing request menu: " + e.getMessage());
@@ -407,6 +373,34 @@ public class TournamentOrganizerController {
         if (user instanceof TournamentOrganizer) {
             this.currentOrganizer = (TournamentOrganizer) user;
             logActivity("Tournament Organizer " + user.getUsername() + " logged in");
+        }
+    }
+    
+    /**
+     * Opens a dialog window with the specified FXML file.
+     * 
+     * @param fxmlPath the path to the FXML file
+     * @param title the title of the dialog window
+     * @param width the width of the dialog window
+     * @param height the height of the dialog window
+     */
+    private void openDialog(String fxmlPath, String title, double width, double height) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(title);
+            dialogStage.initOwner(statusLabel.getScene().getWindow());
+            dialogStage.setScene(new Scene(root, width, height));
+            dialogStage.setResizable(false);
+            dialogStage.show();
+            
+            System.out.println("✓ Dialog opened: " + title);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open dialog: " + e.getMessage());
         }
     }
     

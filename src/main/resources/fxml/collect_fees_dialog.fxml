@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.CollectFeesDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Fee Collection Management" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Summary Section -->
+    <HBox spacing="20" style="-fx-padding: 10; -fx-background-color: #e3f2fd; -fx-border-radius: 5;">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Total Teams:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalTeamsLabel" text="0" style="-fx-font-size: 16px;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Paid:" style="-fx-font-weight: bold; -fx-text-fill: green;"/>
+            <Label fx:id="paidCountLabel" text="0" style="-fx-font-size: 16px; -fx-text-fill: green;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Pending:" style="-fx-font-weight: bold; -fx-text-fill: orange;"/>
+            <Label fx:id="pendingCountLabel" text="0" style="-fx-font-size: 16px; -fx-text-fill: orange;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Total Collected:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalCollectedLabel" text="$0" style="-fx-font-size: 16px;"/>
+        </VBox>
+    </HBox>
+    
+    <!-- Teams Fee Table -->
+    <TableView fx:id="feesTableView" VBox.vgrow="ALWAYS" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="teamNameColumn" text="Team Name" prefWidth="150"/>
+            <TableColumn fx:id="amountColumn" text="Fee Amount" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+            <TableColumn fx:id="paymentDateColumn" text="Payment Date" prefWidth="120"/>
+        </columns>
+    </TableView>
+    
+    <!-- Action Section -->
+    <VBox spacing="10">
+        <Label text="Record Payment:" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Team:" prefWidth="60"/>
+            <ComboBox fx:id="teamComboBox" promptText="Select team..." prefWidth="200"/>
+            <Label text="Amount:" prefWidth="60"/>
+            <TextField fx:id="amountField" promptText="0.00" prefWidth="100"/>
+            <Button text="Mark as Paid" onAction="#handleMarkAsPaid"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Export Report" onAction="#handleExport"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="120"/>
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #9C27B0; -fx-text-fill: white;"
+                prefWidth="80"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.ApproveTeamDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Approve Team Registration" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Pending Teams Section -->
+    <VBox spacing="5">
+        <Label text="Select Team to Approve:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="teamComboBox" promptText="Choose a pending team..." prefWidth="400" 
+                  onAction="#handleTeamSelection"/>
+    </VBox>
+    
+    <!-- Team Information -->
+    <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+        <Label text="Team Information:" style="-fx-font-weight: bold;"/>
+        <GridPane hgap="10" vgap="8">
+            <Label text="Team Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <Label fx:id="teamNameLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Manager:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <Label fx:id="managerLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="Contact:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+            <Label fx:id="contactLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            
+            <Label text="Players:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+            <Label fx:id="playersLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            
+            <Label text="Registration Date:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-weight: bold;"/>
+            <Label fx:id="registrationDateLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        </GridPane>
+    </VBox>
+    
+    <!-- Notes Section -->
+    <VBox spacing="5">
+        <Label text="Approval Notes (Optional):" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="notesArea" promptText="Enter any notes about this approval..." 
+                  prefHeight="80" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Approve Team" onAction="#handleApprove" 
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Reject" onAction="#handleReject"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                prefWidth="80"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

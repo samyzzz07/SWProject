@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.PostponeMatchDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Postpone Match" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Match Selection -->
+    <VBox spacing="5">
+        <Label text="Select Match to Postpone:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="matchComboBox" promptText="Choose a scheduled match..." prefWidth="400"
+                  onAction="#handleMatchSelection"/>
+        <Label fx:id="matchDetailsLabel" text="" wrapText="true" style="-fx-text-fill: #666;"/>
+    </VBox>
+    
+    <!-- Current Schedule Info -->
+    <VBox spacing="5" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+        <Label text="Current Schedule:" style="-fx-font-weight: bold;"/>
+        <GridPane hgap="10" vgap="8">
+            <Label text="Date & Time:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <Label fx:id="currentDateLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Venue:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <Label fx:id="currentVenueLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
+    </VBox>
+    
+    <!-- New Schedule -->
+    <VBox spacing="10">
+        <Label text="New Schedule:" style="-fx-font-weight: bold;"/>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Date:" prefWidth="80"/>
+            <DatePicker fx:id="newDatePicker" prefWidth="200"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Time:" prefWidth="80"/>
+            <TextField fx:id="newTimeField" promptText="HH:mm (e.g., 14:30)" prefWidth="200"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Venue:" prefWidth="80"/>
+            <ComboBox fx:id="venueComboBox" promptText="Select venue..." prefWidth="200"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Reason -->
+    <VBox spacing="5">
+        <Label text="Reason for Postponement:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="reasonArea" promptText="Enter the reason for postponing this match..." 
+                  prefHeight="80" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Postpone Match" onAction="#handlePostpone" 
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="130"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

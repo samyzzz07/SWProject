@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.FindSponsorDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Sponsor Management" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Current Sponsors -->
+    <VBox spacing="5">
+        <Label text="Current Sponsors:" style="-fx-font-weight: bold;"/>
+        <ListView fx:id="sponsorsListView" prefHeight="150"/>
+    </VBox>
+    
+    <!-- Add New Sponsor -->
+    <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;">
+        <Label text="Add New Sponsor:" style="-fx-font-weight: bold;"/>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Company Name:" prefWidth="120"/>
+            <TextField fx:id="companyNameField" promptText="Enter company name..." prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Contact Person:" prefWidth="120"/>
+            <TextField fx:id="contactPersonField" promptText="Enter contact person..." prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Email:" prefWidth="120"/>
+            <TextField fx:id="emailField" promptText="sponsor@company.com" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Phone:" prefWidth="120"/>
+            <TextField fx:id="phoneField" promptText="(XXX) XXX-XXXX" prefWidth="250"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Contribution:" prefWidth="120"/>
+            <TextField fx:id="contributionField" promptText="0.00" prefWidth="120"/>
+            <Label text="USD"/>
+        </HBox>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Type:" prefWidth="120"/>
+            <ComboBox fx:id="sponsorTypeComboBox" promptText="Select type..." prefWidth="250"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Notes -->
+    <VBox spacing="5">
+        <Label text="Additional Notes:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="notesArea" promptText="Enter any additional details..." 
+                  prefHeight="60" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Add Sponsor" onAction="#handleAddSponsor"
+                style="-fx-background-color: #00BCD4; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Remove Selected" onAction="#handleRemoveSponsor"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                prefWidth="130"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.CheckScheduleDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Schedule Validation" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose tournament..." prefWidth="400"
+                  onAction="#handleTournamentSelection"/>
+    </VBox>
+    
+    <!-- Validation Results -->
+    <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #e8f5e9; -fx-border-radius: 5;">
+        <Label text="Validation Results:" style="-fx-font-weight: bold;"/>
+        <GridPane hgap="15" vgap="8">
+            <Label text="✓ All matches scheduled:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="matchesScheduledLabel" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="0" 
+                   style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+            
+            <Label text="✓ No venue conflicts:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="venueConflictsLabel" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                   style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+            
+            <Label text="✓ Referees assigned:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="refereesAssignedLabel" text="Yes" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                   style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+            
+            <Label text="✓ Time conflicts:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Label fx:id="timeConflictsLabel" text="None" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                   style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+        </GridPane>
+    </VBox>
+    
+    <!-- Schedule Details -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Schedule Details:" style="-fx-font-weight: bold;"/>
+        <TableView fx:id="scheduleTableView" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="matchColumn" text="Match" prefWidth="150"/>
+                <TableColumn fx:id="dateTimeColumn" text="Date & Time" prefWidth="130"/>
+                <TableColumn fx:id="venueColumn" text="Venue" prefWidth="100"/>
+                <TableColumn fx:id="refereeColumn" text="Referee" prefWidth="100"/>
+                <TableColumn fx:id="issuesColumn" text="Issues" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+    
+    <!-- Issues Log -->
+    <VBox spacing="5">
+        <Label text="Issues & Warnings:" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="issuesArea" editable="false" prefHeight="80" wrapText="true"
+                  style="-fx-font-family: monospace;"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Run Validation" onAction="#handleValidate"
+                style="-fx-background-color: #009688; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="120"/>
+        <Button text="Export Report" onAction="#handleExport"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="120"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>
