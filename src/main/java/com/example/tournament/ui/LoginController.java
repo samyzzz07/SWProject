@@ -208,7 +208,7 @@ public class LoginController {
             Scene scene = new Scene(root, 1000, 700);
             stage.setScene(scene);
             stage.setTitle("Tournament Management System - " + user.getRole());
-            stage.setFullScreen(true);  // Maintain fullscreen mode
+            stage.setMaximized(true);  // Maintain maximized mode
             
             System.out.println("View successfully loaded for user: " + user.getUsername());
             
