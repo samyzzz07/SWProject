@@ -8,10 +8,10 @@ A JavaFX-based application for managing tournaments, teams, and scheduling with 
 
 The application now includes a complete login and authentication system with four distinct user roles:
 
-1. **Player** - Tournament participants
-2. **NonManager** - Team captains and general users
+1. **Administrator** - Top-level operations and high-level management
+2. **Team_Manager** - Team-specific tasks and registration
 3. **GameCoordinator** - Game creation, scheduling, and tournament operations
-4. **Referee** - Officials responsible for scoring
+4. **TournamentOrganizer** - Submitting final scores and results
 
 Each role has specific permissions aligned with the Sports Tournament Management use cases.
 
@@ -70,7 +70,6 @@ All user login credentials and tournament data are stored securely in the databa
 - Full tournament management access
 - Add and schedule games
 - Collect registration fees
-- Manage referees
 - Post scores and record results
 - Finalize tournaments
 - View all games and tournaments
@@ -78,18 +77,6 @@ All user login credentials and tournament data are stored securely in the databa
 ### Tournament Organizer (TournamentOrganizer)
 - Submit final scores and results
 - Manage tournament outcomes
-
-### Player
-- View tournaments and sports
-- Participate in teams
-
-### NonManager
-- View tournaments and schedules
-- Team captains and general users
-
-### Referee
-- View all matches
-- Post final scores for games
 
 ## Documentation
 

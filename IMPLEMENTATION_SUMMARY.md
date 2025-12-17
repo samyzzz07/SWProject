@@ -1,17 +1,17 @@
 # Sports Tournament Management System - Implementation Summary
 
 ## Overview
-This implementation provides a complete Sports Tournament Management System with role-based access control, fulfilling all requirements specified in the problem statement.
+This implementation provides a complete Sports Tournament Management System with role-based access control for the core tournament management actors.
 
 ## Implementation Details
 
 ### 1. Actor Models (User Roles)
 
 #### Implemented Actors:
-- **Player** (`Player.java`) - A participant in the tournament
-- **NonManager** (`NonManager.java`) - A user who is not a Game Manager, possibly a team captain
-- **GameManager** (`GameManager.java`) - Primary administrator for tournament management
-- **Referee** (`Referee.java`) - Official responsible for posting game scores
+- **Administrator** (`Administrator.java`) - Top-level operations and high-level management
+- **TeamManager** (`TeamManager.java`) - Team-specific tasks and registration
+- **GameCoordinator** (`GameCoordinator.java`) - Game creation, scheduling, and tournament operations
+- **TournamentOrganizer** (`TournamentOrganizer.java`) - Submitting final scores and results
 
 All actors extend the base `User` entity and use JPA single-table inheritance strategy.
 
@@ -19,51 +19,46 @@ All actors extend the base `User` entity and use JPA single-table inheritance st
 
 #### Primary Functions
 1. **ViewTournament** - `TournamentService.viewAllTournaments()`
-   - Available to: Player, NonManager, GameManager
+   - Available to: All roles
    - Allows users to see tournament structure and status
 
 2. **ViewSport** - `SportService.viewAllSports()`
-   - Available to: Player
    - View details about specific sports
 
 3. **ViewSchedule** - `ScheduleService.viewSchedule()`
-   - Available to: NonManager, GameManager
+   - Available to: GameCoordinator, TeamManager
    - Check dates, times, and locations of games
 
 4. **PostScores** - `ScoringService.postScores()`
-   - Available to: Referee, GameManager
+   - Available to: GameCoordinator, TournamentOrganizer
    - Submit final scores for games
 
 5. **FinalTournament** - `TournamentService.finalizeTournament()`
-   - Available to: GameManager
+   - Available to: GameCoordinator
    - Conclude the tournament
 
 #### Management Functions
 1. **RegisterTeam** - `TeamService.registerTeam()`
-   - Available to: Player, NonManager
+   - Available to: Administrator, TeamManager
    - Add new teams to tournament
    - Includes **CollectFees** sub-process
    - Includes **UpdateTeamInfo** sub-process
 
 2. **UpdateTeam** - `TeamService.updateTeam()`
-   - Available to: Player
+   - Available to: Administrator
    - Modify team details
 
 3. **AddGames** - `GameService.addGame()`
-   - Available to: NonManager, GameManager
+   - Available to: GameCoordinator, TeamManager
    - Create and schedule new games
 
 4. **ViewGames** - `GameService.viewAllGames()`
-   - Available to: GameManager
+   - Available to: GameCoordinator
    - Review all scheduled games
-
-5. **ManageReferee** - `RefereeService` (add/update/remove methods)
-   - Available to: GameManager
-   - Add, update, or remove referees
 
 #### Scoring and Match Results
 1. **RecordMatchResults** - `ScoringService.recordMatchResults()`
-   - Available to: GameManager
+   - Available to: GameCoordinator
    - Main process for inputting game outcomes
    - Includes **UpdateGame** sub-process
    - Includes **UpdateScore** sub-process
@@ -78,59 +73,50 @@ Created comprehensive service classes:
 - `ScoringService` - Score posting and match results
 - `TeamService` - Team registration and updates
 - `GameService` - Game management
-- `RefereeService` - Referee management
 
 ### 4. UI Components
 
 #### Login System
-- **login.fxml** - Login/registration interface
+- **login.fxml** - Login/registration interface with success status messages
 - **LoginController.java** - Handles authentication and user creation
 
 #### Role-Based Views
-1. **player_view.fxml** + **PlayerController.java**
-   - View tournaments and sports
-   - Register and update teams
+1. **participant_team_view.fxml** + **ParticipantTeamController.java**
+   - Used for Administrator, TeamManager, and TournamentOrganizer roles
+   - View tournaments and manage teams
 
-2. **non_manager_view.fxml** + **NonManagerController.java**
-   - View tournaments and schedules
-   - Register teams and add games
-
-3. **game_manager_view.fxml** + **GameManagerController.java**
+2. **game_coordinator_view.fxml** + **GameCoordinatorController.java**
    - Tabbed interface with full management access
    - Schedule & Scoring tab
    - Tournament Management tab
-   - Referee Management tab
-
-4. **referee_view.fxml** + **RefereeController.java**
-   - View matches
-   - Post scores for selected matches
 
 ### 5. Actor-Use Case Associations
 
 All associations from the problem statement are implemented:
 
-#### Player Can Perform:
+#### Administrator Can Perform:
 - ✓ ViewTournament
 - ✓ UpdateTeam
 - ✓ ViewSport
 - ✓ RegisterTeam
 
-#### NonManager Can Perform:
+#### TeamManager Can Perform:
 - ✓ ViewTournament
 - ✓ RegisterTeam
 - ✓ AddGames
 - ✓ ViewSchedule
 
-#### GameManager Can Perform:
+#### GameCoordinator Can Perform:
 - ✓ AddGames
 - ✓ CollectFees
 - ✓ ViewSchedule
-- ✓ ManageReferee
 - ✓ FinalTournament
 - ✓ PostScores
 - ✓ RecordMatchResults
+- ✓ ViewGames
+- ✓ ViewTournament
 
-#### Referee Can Perform:
+#### TournamentOrganizer Can Perform:
 - ✓ PostScores
 
 ### 6. Technical Architecture
@@ -148,6 +134,7 @@ All associations from the problem statement are implemented:
 - JavaFX FXML-based interfaces
 - Role-specific controllers
 - Session management via user context
+- Status messages for successful registration and login
 
 ### 7. Security Considerations
 
@@ -164,18 +151,31 @@ All associations from the problem statement are implemented:
 - ✓ Alert types properly configured (ERROR vs INFORMATION)
 - ✓ All use cases accessible through appropriate actor interfaces
 
-## Files Created/Modified
+## Recent Changes
 
-### New Model Files (4):
-- `src/main/java/com/example/tournament/model/Player.java`
-- `src/main/java/com/example/tournament/model/NonManager.java`
-- `src/main/java/com/example/tournament/model/GameManager.java`
-- `src/main/java/com/example/tournament/model/Referee.java`
+### Removed Deprecated Roles
+- Removed `Player` role and associated functionality
+- Removed `NonManager` role and associated functionality
+- Removed `Referee` role and associated functionality
+- Removed `RefereeService` as it's no longer needed
+- Updated `GameCoordinatorController` to remove referee management
 
-### Modified Model Files (1):
-- `src/main/java/com/example/tournament/model/UserRole.java` - Added new roles
+### Enhanced Login Experience
+- Login now properly navigates to role-specific dashboards
+- Registration success message displayed in status label and alert dialog
+- Login success message displayed in status label before navigation
+- All status updates are visible to users
 
-### New Service Files (8):
+## Files in Current Implementation
+
+### Core Model Files:
+- `src/main/java/com/example/tournament/model/Administrator.java`
+- `src/main/java/com/example/tournament/model/TeamManager.java`
+- `src/main/java/com/example/tournament/model/GameCoordinator.java`
+- `src/main/java/com/example/tournament/model/TournamentOrganizer.java`
+- `src/main/java/com/example/tournament/model/UserRole.java`
+
+### Service Files:
 - `src/main/java/com/example/tournament/service/LoginService.java`
 - `src/main/java/com/example/tournament/service/TournamentService.java`
 - `src/main/java/com/example/tournament/service/SportService.java`
@@ -183,45 +183,38 @@ All associations from the problem statement are implemented:
 - `src/main/java/com/example/tournament/service/ScoringService.java`
 - `src/main/java/com/example/tournament/service/TeamService.java`
 - `src/main/java/com/example/tournament/service/GameService.java`
-- `src/main/java/com/example/tournament/service/RefereeService.java`
 
-### New UI Controllers (5):
+### UI Controllers:
 - `src/main/java/com/example/tournament/ui/LoginController.java`
-- `src/main/java/com/example/tournament/ui/PlayerController.java`
-- `src/main/java/com/example/tournament/ui/NonManagerController.java`
-- `src/main/java/com/example/tournament/ui/GameManagerController.java`
-- `src/main/java/com/example/tournament/ui/RefereeController.java`
+- `src/main/java/com/example/tournament/ui/GameCoordinatorController.java`
+- `src/main/java/com/example/tournament/ui/ParticipantTeamController.java`
 
-### New FXML Files (5):
+### FXML Files:
 - `src/main/resources/fxml/login.fxml`
-- `src/main/resources/fxml/player_view.fxml`
-- `src/main/resources/fxml/non_manager_view.fxml`
-- `src/main/resources/fxml/game_manager_view.fxml`
-- `src/main/resources/fxml/referee_view.fxml`
+- `src/main/resources/fxml/game_coordinator_view.fxml`
+- `src/main/resources/fxml/participant_team_view.fxml`
 
-### Modified Application Files (1):
-- `src/main/java/com/example/tournament/TournamentManagementApp.java` - Updated to start with login
+### Application Files:
+- `src/main/java/com/example/tournament/TournamentManagementApp.java`
 
-### Documentation Files (2):
-- `USER_GUIDE.md` - Comprehensive user guide
-- `README.md` - Updated with new features
-
-## Total Changes
-- **24 files created**
-- **3 files modified**
-- **~2,100 lines of code added**
+### Documentation Files:
+- `USER_GUIDE.md`
+- `README.md`
+- `ACTOR_ROLES.md`
+- `IMPLEMENTATION_DETAILS.md`
 
 ## Conclusion
 
-This implementation successfully delivers all requirements from the problem statement:
-1. ✓ All actor models implemented
-2. ✓ All use cases implemented and accessible
-3. ✓ Login interface for each actor type
+This implementation successfully delivers a streamlined tournament management system:
+1. ✓ Four core actor models implemented (Administrator, TeamManager, GameCoordinator, TournamentOrganizer)
+2. ✓ All essential use cases implemented and accessible
+3. ✓ Login interface with clear status messages for registration and login
 4. ✓ Role-based access control
 5. ✓ Complete UI for all functionalities
 6. ✓ Service layer for business logic
 7. ✓ Database persistence
 8. ✓ Security validation passed
 9. ✓ Comprehensive documentation
+10. ✓ Removed deprecated roles (Player, NonManager, Referee) for simplified management
 
 The system is ready for use and can be extended further with additional features as needed.

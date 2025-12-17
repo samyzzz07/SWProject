@@ -43,7 +43,6 @@ This document describes the actor roles in the Sports Tournament Management Syst
 - Add_Games - Create and schedule new game entries
 - Collect_Fees - Handle registration fees
 - View_Schedule - Check dates, times, and locations of games
-- Manage_Referee - Add, update, or remove referees
 - Final_Tournament - Conclude the tournament
 - Post_Scores - Submit final scores for a game
 - Record_Match_Results - Input game outcomes
@@ -107,19 +106,16 @@ This document describes the actor roles in the Sports Tournament Management Syst
 11. **View_Games**
     - Allows users to review all scheduled games
 
-12. **Manage_Referee**
-    - Process for adding, updating, or removing referees
-
-13. **Record_Match_Results**
+12. **Record_Match_Results**
     - The main process for inputting game outcomes
     - Includes: Update_Game
     - Includes: Update_Score
 
-14. **Update_Game**
+13. **Update_Game**
     - Sub-process to update the game entity with the result
     - Dependency: include (parent: Record_Match_Results)
 
-15. **Update_Score**
+14. **Update_Score**
     - Sub-process to update the official score entity
     - Dependency: include (parent: Record_Match_Results)
 
@@ -138,14 +134,6 @@ The actor roles are implemented in the system as follows:
 | Game_Coordinator | GAME_COORDINATOR | GameCoordinator | GAME_COORDINATOR |
 | Tournament_Organizer | TOURNAMENT_ORGANIZER | TournamentOrganizer | TOURNAMENT_ORGANIZER |
 
-### Additional Roles
-
-The system also includes these additional user roles for flexibility:
-
-- **Player** (PLAYER) - Tournament participants
-- **NonManager** (NON_MANAGER) - Team captains and general users
-- **Referee** (REFEREE) - Officials responsible for scoring
-
 ---
 
 ## Database Schema
@@ -156,7 +144,6 @@ The SQL schema is defined in `/src/main/resources/sql/schema.sql` and includes:
 - **tournaments** table - Tournament information
 - **teams** table - Team registration and management
 - **matches** table - Game scheduling and results
-- **referees** table - Referee assignments
 - Other supporting tables for venues, time slots, sports, etc.
 
 The database supports login/registration integration through JPA/Hibernate with multiple backend options (H2, MySQL, PostgreSQL, SQLite).
