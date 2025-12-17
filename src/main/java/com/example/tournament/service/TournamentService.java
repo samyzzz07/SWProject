@@ -33,6 +33,8 @@ public class TournamentService {
             List<Tournament> tournaments = query1.getResultList();
             
             // Second query: fetch matches for the tournaments
+            // The query result is not stored because the matches are populated
+            // into the tournaments already loaded in the persistence context
             if (!tournaments.isEmpty()) {
                 TypedQuery<Tournament> query2 = em.createQuery(
                     "SELECT DISTINCT t FROM Tournament t " +
@@ -78,6 +80,8 @@ public class TournamentService {
             Tournament tournament = results.get(0);
             
             // Second query: fetch matches for the tournament
+            // The query result is not stored because the matches are populated
+            // into the tournament already loaded in the persistence context
             TypedQuery<Tournament> query2 = em.createQuery(
                 "SELECT t FROM Tournament t " +
                 "LEFT JOIN FETCH t.matches " +
