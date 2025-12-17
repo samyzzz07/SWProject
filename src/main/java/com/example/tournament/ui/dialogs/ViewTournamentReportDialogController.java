@@ -263,16 +263,20 @@ public class ViewTournamentReportDialogController {
                 int played = 0, wins = 0, draws = 0, losses = 0;
                 for (Match match : selectedTournament.getMatches()) {
                     if (match.getStatus() == Match.MatchStatus.COMPLETED &&
+                        match.getTeam1Score() != null && match.getTeam2Score() != null &&
                         (match.getTeam1().equals(team) || match.getTeam2().equals(team))) {
                         played++;
                         
+                        int score1 = match.getTeam1Score();
+                        int score2 = match.getTeam2Score();
+                        
                         if (match.getTeam1().equals(team)) {
-                            if (match.getTeam1Score() > match.getTeam2Score()) wins++;
-                            else if (match.getTeam1Score().equals(match.getTeam2Score())) draws++;
+                            if (score1 > score2) wins++;
+                            else if (score1 == score2) draws++;
                             else losses++;
                         } else {
-                            if (match.getTeam2Score() > match.getTeam1Score()) wins++;
-                            else if (match.getTeam2Score().equals(match.getTeam1Score())) draws++;
+                            if (score2 > score1) wins++;
+                            else if (score2 == score1) draws++;
                             else losses++;
                         }
                     }
