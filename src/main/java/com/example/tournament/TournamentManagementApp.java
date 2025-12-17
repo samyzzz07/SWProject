@@ -45,6 +45,10 @@ public class TournamentManagementApp extends Application {
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
             
+            // Set fullscreen mode
+            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreenExitHint("Press ESC to exit fullscreen");
+            
             // Show the application window
             primaryStage.show();
             
