@@ -229,12 +229,20 @@ public class VenueManagementDialogController {
             this.id = id;
             this.name = new SimpleStringProperty(name);
             this.location = new SimpleStringProperty(location);
-            this.capacity = new SimpleIntegerProperty(capacity != null ? capacity : 0);
+            // Use -1 to indicate no capacity set, to distinguish from actual 0 capacity
+            this.capacity = new SimpleIntegerProperty(capacity != null ? capacity : -1);
         }
         
         public Long getId() { return id; }
         public String getName() { return name.get(); }
         public String getLocation() { return location.get(); }
-        public Integer getCapacity() { return capacity.get(); }
+        public Integer getCapacity() { 
+            int cap = capacity.get();
+            return cap == -1 ? null : cap;
+        }
+        public String getCapacityDisplay() {
+            int cap = capacity.get();
+            return cap == -1 ? "N/A" : String.valueOf(cap);
+        }
     }
 }

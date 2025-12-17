@@ -10,6 +10,10 @@ import java.util.List;
 /**
  * Service class for match-related operations.
  * Handles CRUD operations for matches.
+ * 
+ * Thread-Safety: This service is thread-safe as each method creates
+ * its own EntityManager instance. EntityManager instances are not shared
+ * between method calls, ensuring concurrent access is safe.
  */
 public class MatchService {
     
