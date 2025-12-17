@@ -9,114 +9,99 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 /**
  * Controller for GameCoordinator interface.
- * GameCoordinator can perform: AddGames, CollectFees, ViewSchedule, 
- * FinalTournament, PostScores, RecordMatchResults
+ * GameCoordinator can perform: manageTimeWindows, recordResult, computeStandings
  */
 public class GameCoordinatorController {
     
     @FXML private Label welcomeLabel;
-    @FXML private ListView<Match> scheduleListView;
-    @FXML private ListView<Tournament> tournamentListView;
-    @FXML private TextField team1ScoreField;
-    @FXML private TextField team2ScoreField;
-    @FXML private Button postScoreButton;
-    @FXML private Button addGameButton;
-    @FXML private Button finalizeButton;
     @FXML private Label statusLabel;
     
     private User currentUser;
-    private ScheduleService scheduleService;
-    private TournamentService tournamentService;
-    private ScoringService scoringService;
-    private GameService gameService;
     
     @FXML
     public void initialize() {
-        scheduleService = new ScheduleService();
-        tournamentService = new TournamentService();
-        scoringService = new ScoringService();
-        gameService = new GameService();
-        
         statusLabel.setText("Ready");
     }
     
     public void setCurrentUser(User user) {
         this.currentUser = user;
         welcomeLabel.setText("Welcome, " + user.getUsername() + " (Game Coordinator)");
-        loadData();
     }
     
-    private void loadData() {
-        // ViewSchedule
-        ObservableList<Match> schedule = FXCollections.observableArrayList(
-            scheduleService.viewSchedule()
-        );
-        scheduleListView.setItems(schedule);
-        
-        // View Tournaments
-        ObservableList<Tournament> tournaments = FXCollections.observableArrayList(
-            tournamentService.viewAllTournaments()
-        );
-        tournamentListView.setItems(tournaments);
-    }
-    
+    /**
+     * Opens dialog to manage time windows for tournaments and matches.
+     */
     @FXML
-    private void handlePostScore() {
-        Match selected = scheduleListView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            statusLabel.setText("Please select a match first");
-            return;
-        }
-        
+    private void manageTimeWindows() {
         try {
-            int team1Score = Integer.parseInt(team1ScoreField.getText());
-            int team2Score = Integer.parseInt(team2ScoreField.getText());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/manage_time_windows_dialog.fxml"));
+            Parent root = loader.load();
             
-            if (scoringService.postScores(selected.getId(), team1Score, team2Score)) {
-                statusLabel.setText("Scores posted successfully!");
-                team1ScoreField.clear();
-                team2ScoreField.clear();
-                loadData(); // Refresh
-            } else {
-                statusLabel.setText("Failed to post scores");
-            }
-        } catch (NumberFormatException e) {
-            statusLabel.setText("Invalid score values");
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Manage Time Windows");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(welcomeLabel.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+            
+            statusLabel.setText("Time windows management completed");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open time windows dialog: " + e.getMessage());
         }
     }
     
+    /**
+     * Opens dialog to record match results for tournaments.
+     */
     @FXML
-    private void handleAddGame() {
-        statusLabel.setText("Add game functionality");
-        showAlert("Add Game", "This would open a dialog to add a new game");
+    private void recordResult() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/record_result_dialog.fxml"));
+            Parent root = loader.load();
+            
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Record Match Result");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(welcomeLabel.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+            
+            statusLabel.setText("Result recording completed");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open record result dialog: " + e.getMessage());
+        }
     }
     
+    /**
+     * Opens dialog to compute tournament standings.
+     */
     @FXML
-    private void handleFinalizeTournament() {
-        Tournament selected = tournamentListView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            statusLabel.setText("Please select a tournament first");
-            return;
+    private void computeStandings() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/compute_standings_dialog.fxml"));
+            Parent root = loader.load();
+            
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Compute Tournament Standings");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(welcomeLabel.getScene().getWindow());
+            dialogStage.setScene(new Scene(root));
+            dialogStage.showAndWait();
+            
+            statusLabel.setText("Standings computation completed");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open compute standings dialog: " + e.getMessage());
         }
-        
-        if (tournamentService.finalizeTournament(selected.getId())) {
-            statusLabel.setText("Tournament finalized successfully!");
-            loadData(); // Refresh
-        } else {
-            statusLabel.setText("Failed to finalize tournament");
-        }
-    }
-    
-    @FXML
-    private void handleCollectFees() {
-        statusLabel.setText("Fee collection functionality");
-        showAlert("Collect Fees", "This would open a dialog for fee collection");
     }
     
     @FXML

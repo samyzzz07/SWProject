@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.ManageTimeWindowsDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Manage Time Windows" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose a tournament..." prefWidth="400"/>
+    </VBox>
+    
+    <!-- Match Selection -->
+    <VBox spacing="5">
+        <Label text="Select Match:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="matchComboBox" promptText="Choose a match..." prefWidth="400"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Time Window Assignment -->
+    <Label text="Assign Time Window:" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+    
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Date:"/>
+            <DatePicker fx:id="datePicker" prefWidth="150"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Start Time (HH:MM):"/>
+            <TextField fx:id="startTimeField" promptText="14:00" prefWidth="100"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="End Time (HH:MM):"/>
+            <TextField fx:id="endTimeField" promptText="16:00" prefWidth="100"/>
+        </VBox>
+    </HBox>
+    
+    <VBox spacing="5">
+        <Label text="Venue:"/>
+        <ComboBox fx:id="venueComboBox" promptText="Select venue..." prefWidth="400"/>
+    </VBox>
+    
+    <Button text="Assign Time Window" onAction="#handleAssignTimeWindow"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+            prefWidth="150"/>
+    
+    <Separator/>
+    
+    <!-- Existing Time Slots -->
+    <Label text="Existing Time Slots:" style="-fx-font-weight: bold;"/>
+    <ListView fx:id="timeSlotListView" prefHeight="200" VBox.vgrow="ALWAYS"/>
+    
+    <!-- Status and Actions -->
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+        <Label text="Status:" style="-fx-font-weight: bold;"/>
+        <Label fx:id="statusLabel" text="Ready" HBox.hgrow="ALWAYS"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="100"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="100"/>
+    </HBox>
+    
+</VBox>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.RecordResultDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Record Match Result" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose a tournament..." prefWidth="450"/>
+    </VBox>
+    
+    <!-- Match Selection -->
+    <VBox spacing="5">
+        <Label text="Select Match:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="matchComboBox" promptText="Choose a match..." prefWidth="450"/>
+    </VBox>
+    
+    <!-- Match Details -->
+    <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-radius: 5;">
+        <Label fx:id="matchDetailsLabel" text="" style="-fx-font-size: 12px;"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Score Entry -->
+    <Label text="Enter Scores:" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+    
+    <HBox spacing="20" alignment="CENTER">
+        <VBox spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Label fx:id="team1Label" text="-" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <TextField fx:id="team1ScoreField" promptText="Score" alignment="CENTER" 
+                      prefWidth="100" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </VBox>
+        <Label text="VS" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+        <VBox spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Label fx:id="team2Label" text="-" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <TextField fx:id="team2ScoreField" promptText="Score" alignment="CENTER" 
+                      prefWidth="100" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </VBox>
+    </HBox>
+    
+    <Button text="Record Result" onAction="#handleRecordResult"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"
+            prefWidth="150" prefHeight="40"/>
+    
+    <Separator/>
+    
+    <!-- Recently Completed Matches -->
+    <Label text="Recently Completed Matches:" style="-fx-font-weight: bold;"/>
+    <ListView fx:id="completedMatchesListView" prefHeight="150" VBox.vgrow="ALWAYS"/>
+    
+    <!-- Status and Actions -->
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+        <Label text="Status:" style="-fx-font-weight: bold;"/>
+        <Label fx:id="statusLabel" text="Ready" HBox.hgrow="ALWAYS"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="100"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="100"/>
+    </HBox>
+    
+</VBox>

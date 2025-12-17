@@ -1,35 +1,84 @@
 package com.example.tournament.model;
 
+import jakarta.persistence.*;
+
 /**
- * Class representing statistics for a team.
+ * Entity representing statistics for a team in a tournament.
  */
+@Entity
+@Table(name = "team_stats")
 public class TeamStats {
     
-    private int gamesPlayed;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+    
+    @ManyToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+    
+    private int matchesPlayed;
     private int wins;
     private int losses;
     private int draws;
-    private int goalsScored;
-    private int goalsConceded;
+    private int goalsFor;
+    private int goalsAgainst;
+    private int points;
     
     // Constructors
     public TeamStats() {
     }
     
-    public TeamStats(int gamesPlayed, int wins, int losses, int draws) {
-        this.gamesPlayed = gamesPlayed;
+    public TeamStats(int matchesPlayed, int wins, int losses, int draws) {
+        this.matchesPlayed = matchesPlayed;
         this.wins = wins;
         this.losses = losses;
         this.draws = draws;
     }
     
     // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public Team getTeam() {
+        return team;
+    }
+    
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+    
+    public Tournament getTournament() {
+        return tournament;
+    }
+    
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
+    }
+    
+    public int getMatchesPlayed() {
+        return matchesPlayed;
+    }
+    
+    public void setMatchesPlayed(int matchesPlayed) {
+        this.matchesPlayed = matchesPlayed;
+    }
+    
     public int getGamesPlayed() {
-        return gamesPlayed;
+        return matchesPlayed;
     }
     
     public void setGamesPlayed(int gamesPlayed) {
-        this.gamesPlayed = gamesPlayed;
+        this.matchesPlayed = gamesPlayed;
     }
     
     public int getWins() {
@@ -56,40 +105,60 @@ public class TeamStats {
         this.draws = draws;
     }
     
+    public int getGoalsFor() {
+        return goalsFor;
+    }
+    
+    public void setGoalsFor(int goalsFor) {
+        this.goalsFor = goalsFor;
+    }
+    
+    public int getGoalsAgainst() {
+        return goalsAgainst;
+    }
+    
+    public void setGoalsAgainst(int goalsAgainst) {
+        this.goalsAgainst = goalsAgainst;
+    }
+    
     public int getGoalsScored() {
-        return goalsScored;
+        return goalsFor;
     }
     
     public void setGoalsScored(int goalsScored) {
-        this.goalsScored = goalsScored;
+        this.goalsFor = goalsScored;
     }
     
     public int getGoalsConceded() {
-        return goalsConceded;
+        return goalsAgainst;
     }
     
     public void setGoalsConceded(int goalsConceded) {
-        this.goalsConceded = goalsConceded;
+        this.goalsAgainst = goalsConceded;
     }
     
     public int getPoints() {
-        return (wins * 3) + draws;
+        return points;
+    }
+    
+    public void setPoints(int points) {
+        this.points = points;
     }
     
     public int getGoalDifference() {
-        return goalsScored - goalsConceded;
+        return goalsFor - goalsAgainst;
     }
     
     @Override
     public String toString() {
         return "TeamStats{" +
-                "gamesPlayed=" + gamesPlayed +
+                "gamesPlayed=" + matchesPlayed +
                 ", wins=" + wins +
                 ", losses=" + losses +
                 ", draws=" + draws +
-                ", goalsScored=" + goalsScored +
-                ", goalsConceded=" + goalsConceded +
-                ", points=" + getPoints() +
+                ", goalsFor=" + goalsFor +
+                ", goalsAgainst=" + goalsAgainst +
+                ", points=" + points +
                 ", goalDifference=" + getGoalDifference() +
                 '}';
     }
