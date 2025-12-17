@@ -37,17 +37,31 @@ public class Administrator extends User {
     }
     
     /**
-     * Placeholder method for managing users.
+     * Create a new tournament.
      */
-    public void manageUsers() {
-        System.out.println("Administrator " + getUsername() + " is managing users.");
+    public void createTournament() {
+        System.out.println("Administrator " + getUsername() + " is creating a tournament.");
     }
     
     /**
-     * Placeholder method for system configuration.
+     * Define tournament rules.
      */
-    public void configureSystem() {
-        System.out.println("Administrator " + getUsername() + " is configuring the system.");
+    public void defineTournamentRules() {
+        System.out.println("Administrator " + getUsername() + " is defining tournament rules.");
+    }
+    
+    /**
+     * View tournament report.
+     */
+    public void viewTournamentReport() {
+        System.out.println("Administrator " + getUsername() + " is viewing tournament report.");
+    }
+    
+    /**
+     * End a tournament.
+     */
+    public void endTournament() {
+        System.out.println("Administrator " + getUsername() + " is ending tournament.");
     }
     
     @Override

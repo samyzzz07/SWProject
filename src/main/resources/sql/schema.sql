@@ -18,7 +18,7 @@ CREATE TABLE users (
     -- Administrator specific fields
     department VARCHAR(255),
     
-    -- Team_Manager specific fields
+    -- Team specific fields
     phone_number VARCHAR(50),
     
     -- Tournament_Organizer specific fields
@@ -213,7 +213,7 @@ CREATE INDEX idx_tournaments_organizer ON tournaments(organizer_id);
 -- ADMINISTRATOR
 --   Can perform: View_Tournament, Update_Team, View_Sport, Register_Team
 
--- TEAM_MANAGER  
+-- TEAM  
 --   Can perform: View_Tournament, Register_Team, Add_Games, View_Schedule
 
 -- GAME_COORDINATOR

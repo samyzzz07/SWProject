@@ -55,7 +55,7 @@ public class LoginController {
         // Populate role combo box
         roleComboBox.getItems().addAll(
             UserRole.ADMINISTRATOR,
-            UserRole.TEAM_MANAGER,
+            UserRole.TEAM,
             UserRole.GAME_COORDINATOR,
             UserRole.TOURNAMENT_ORGANIZER
         );
@@ -161,7 +161,7 @@ public class LoginController {
     private User createUserByRole(String username, String password, String email, UserRole role) {
         return switch (role) {
             case ADMINISTRATOR -> new Administrator(username, password, email);
-            case TEAM_MANAGER -> new TeamManager(username, password, email);
+            case TEAM -> new TeamManager(username, password, email);
             case GAME_COORDINATOR -> new GameCoordinator(username, password, email);
             case TOURNAMENT_ORGANIZER -> new TournamentOrganizer(username, password, email);
             default -> throw new IllegalArgumentException("Unsupported role: " + role);
@@ -176,8 +176,8 @@ public class LoginController {
             System.out.println("Opening view for user role: " + user.getRole());
             
             String fxmlFile = switch (user.getRole()) {
-                case ADMINISTRATOR -> "/fxml/participant_team_view.fxml";
-                case TEAM_MANAGER -> "/fxml/participant_team_view.fxml";
+                case ADMINISTRATOR -> "/fxml/administrator_view.fxml";
+                case TEAM -> "/fxml/participant_team_view.fxml";
                 case GAME_COORDINATOR -> "/fxml/game_coordinator_view.fxml";
                 case TOURNAMENT_ORGANIZER -> "/fxml/participant_team_view.fxml";
                 default -> "/fxml/participant_team_view.fxml"; // Fallback
@@ -195,6 +195,8 @@ public class LoginController {
                 ((GameCoordinatorController) controller).setCurrentUser(user);
             } else if (controller instanceof ParticipantTeamController) {
                 ((ParticipantTeamController) controller).setCurrentUser(user);
+            } else if (controller instanceof AdministratorController) {
+                ((AdministratorController) controller).setCurrentUser(user);
             }
             
             System.out.println("User set in controller successfully");

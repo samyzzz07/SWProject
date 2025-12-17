@@ -8,7 +8,7 @@ import java.util.List;
  * Entity representing a team manager user.
  */
 @Entity
-@DiscriminatorValue("TEAM_MANAGER")
+@DiscriminatorValue("TEAM")
 public class TeamManager extends User {
     
     @OneToMany(mappedBy = "manager")
@@ -19,15 +19,15 @@ public class TeamManager extends User {
     // Constructors
     public TeamManager() {
         super();
-        setRole(UserRole.TEAM_MANAGER);
+        setRole(UserRole.TEAM);
     }
     
     public TeamManager(String username, String password, String email) {
-        super(username, password, email, UserRole.TEAM_MANAGER);
+        super(username, password, email, UserRole.TEAM);
     }
     
     public TeamManager(String username, String password, String email, String phoneNumber) {
-        super(username, password, email, UserRole.TEAM_MANAGER);
+        super(username, password, email, UserRole.TEAM);
         this.phoneNumber = phoneNumber;
     }
     
