@@ -186,7 +186,6 @@ public class PublishScheduleDialogController {
             scheduleTableView.setItems(scheduleData);
         }
     }
-    }
     
     /**
      * Handle publish button click.
