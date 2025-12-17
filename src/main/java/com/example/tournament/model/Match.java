@@ -34,6 +34,10 @@ public class Match {
     @JoinColumn(name = "timeslot_id")
     private TimeSlot timeSlot;
     
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
+    
     private LocalDateTime scheduledTime;
     
     private Integer team1Score;
@@ -107,6 +111,14 @@ public class Match {
     
     public void setTimeSlot(TimeSlot timeSlot) {
         this.timeSlot = timeSlot;
+    }
+    
+    public Schedule getSchedule() {
+        return schedule;
+    }
+    
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
     
     public LocalDateTime getScheduledTime() {
