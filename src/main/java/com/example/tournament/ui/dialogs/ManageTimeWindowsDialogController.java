@@ -136,7 +136,19 @@ public class ManageTimeWindowsDialogController {
                         }
                     }
                 });
-                matchComboBox.setButtonCell(matchComboBox.getCellFactory().call(null));
+                matchComboBox.setButtonCell(new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            setText(team1 + " vs " + team2);
+                        }
+                    }
+                });
             } finally {
                 em.close();
             }
@@ -183,9 +195,7 @@ public class ManageTimeWindowsDialogController {
                 Match match = em.find(Match.class, selectedMatch.getId());
                 match.setTimeSlot(timeSlot);
                 match.setScheduledTime(startDateTime);
-                if (selectedVenue != null) {
-                    match.setVenue(selectedVenue);
-                }
+                // Venue is set on TimeSlot, Match will reference it through TimeSlot
                 em.merge(match);
                 
                 em.getTransaction().commit();

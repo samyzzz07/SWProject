@@ -207,6 +207,10 @@ public class ComputeStandingsDialogController {
         }
     }
     
+    /**
+     * Handles export of standings report.
+     * TODO: Implement PDF export functionality using a PDF library (e.g., iText, Apache PDFBox)
+     */
     @FXML
     private void handleExport() {
         if (standingsTable.getItems().isEmpty()) {
@@ -214,9 +218,10 @@ public class ComputeStandingsDialogController {
             return;
         }
         
-        showAlert("Export", "Standings have been exported to standings_report.pdf", 
+        statusLabel.setText("Export functionality requires additional PDF library implementation");
+        showAlert("Export Not Implemented", 
+                 "Export functionality requires PDF library integration.\nStandings are saved to database and can be viewed here.", 
                  Alert.AlertType.INFORMATION);
-        statusLabel.setText("Standings exported");
     }
     
     @FXML

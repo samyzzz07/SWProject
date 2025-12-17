@@ -93,7 +93,21 @@ public class RecordResultDialogController {
                         }
                     }
                 });
-                matchComboBox.setButtonCell(matchComboBox.getCellFactory().call(null));
+                matchComboBox.setButtonCell(new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            String time = item.getScheduledTime() != null ? 
+                                " (" + item.getScheduledTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + ")" : "";
+                            setText(team1 + " vs " + team2 + time);
+                        }
+                    }
+                });
                 
                 // Clear previous selection
                 clearMatchDetails();
@@ -206,9 +220,9 @@ public class RecordResultDialogController {
                     } else {
                         String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
                         String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
-                        String score = (item.getTeam1Score() != null ? item.getTeam1Score() : 0) + " - " +
-                                      (item.getTeam2Score() != null ? item.getTeam2Score() : 0);
-                        setText(team1 + " " + score + " " + team2);
+                        String score1 = item.getTeam1Score() != null ? item.getTeam1Score().toString() : "-";
+                        String score2 = item.getTeam2Score() != null ? item.getTeam2Score().toString() : "-";
+                        setText(team1 + " " + score1 + " - " + score2 + " " + team2);
                     }
                 }
             });
