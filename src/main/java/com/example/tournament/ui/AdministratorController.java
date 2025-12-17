@@ -1,6 +1,7 @@
 package com.example.tournament.ui;
 
 import com.example.tournament.model.*;
+import com.example.tournament.service.TournamentService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * JavaFX Controller for administrator dashboard.
@@ -22,18 +24,6 @@ public class AdministratorController {
     
     @FXML
     private Label statusLabel;
-    
-    @FXML
-    private TextField tournamentNameField;
-    
-    @FXML
-    private ComboBox<String> rulesComboBox;
-    
-    @FXML
-    private ComboBox<String> reportComboBox;
-    
-    @FXML
-    private ComboBox<String> endTournamentComboBox;
     
     @FXML
     private Button createTournamentButton;
@@ -64,10 +54,8 @@ public class AdministratorController {
     public void initialize() {
         System.out.println("Initializing AdministratorController...");
         
-        // Initialize combo boxes with placeholder data
-        rulesComboBox.getItems().addAll("Tournament A", "Tournament B", "Tournament C");
-        reportComboBox.getItems().addAll("Tournament A", "Tournament B", "Tournament C");
-        endTournamentComboBox.getItems().addAll("Tournament A", "Tournament B", "Tournament C");
+        // Load tournaments from database
+        refreshTournamentLists();
         
         statusLabel.setText("Ready");
         activityLogArea.setText("Administrator Dashboard initialized.\n");
@@ -83,40 +71,29 @@ public class AdministratorController {
         System.out.println("=== Create Tournament Action ===");
         
         try {
-            if (tournamentNameField.getText().isEmpty()) {
-                statusLabel.setText("Error: Tournament name is required.");
-                showAlert("Missing Information", "Please enter a tournament name.");
-                return;
-            }
+            // Open the Create Tournament Dialog
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/create_tournament_dialog.fxml"));
+            Parent root = loader.load();
             
-            String tournamentName = tournamentNameField.getText();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Create New Tournament");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             
-            // Call the administrator's createTournament method
-            if (currentAdmin != null) {
-                currentAdmin.createTournament();
-            }
+            dialogStage.showAndWait();
             
-            // Log the action
-            logActivity("Created tournament: " + tournamentName);
+            // Refresh tournament lists after dialog closes
+            refreshTournamentLists();
             
-            statusLabel.setText("Tournament created successfully!");
-            System.out.println("✓ Tournament created: " + tournamentName);
-            
-            // Add to combo boxes for other operations
-            rulesComboBox.getItems().add(tournamentName);
-            reportComboBox.getItems().add(tournamentName);
-            endTournamentComboBox.getItems().add(tournamentName);
-            
-            // Clear input field
-            tournamentNameField.clear();
-            
-            // Show confirmation
-            showAlert("Success", "Tournament '" + tournamentName + "' has been created successfully!");
+            logActivity("Opened Create Tournament dialog");
+            statusLabel.setText("Create Tournament dialog closed.");
             
         } catch (Exception e) {
-            statusLabel.setText("Error creating tournament: " + e.getMessage());
+            statusLabel.setText("Error opening Create Tournament dialog: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
-            showAlert("Error", "Failed to create tournament: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Failed to open Create Tournament dialog: " + e.getMessage());
         }
     }
     
@@ -128,37 +105,26 @@ public class AdministratorController {
         System.out.println("=== Define Tournament Rules Action ===");
         
         try {
-            if (rulesComboBox.getValue() == null) {
-                statusLabel.setText("Error: Please select a tournament.");
-                showAlert("Missing Information", "Please select a tournament.");
-                return;
-            }
+            // Open the Define Tournament Rules Dialog
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/define_tournament_rules_dialog.fxml"));
+            Parent root = loader.load();
             
-            String tournamentName = rulesComboBox.getValue();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Define Tournament Rules");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             
-            // Call the administrator's defineTournamentRules method
-            if (currentAdmin != null) {
-                currentAdmin.defineTournamentRules();
-            }
+            dialogStage.showAndWait();
             
-            // Log the action
-            logActivity("Defined rules for tournament: " + tournamentName);
-            
-            statusLabel.setText("Tournament rules defined successfully!");
-            System.out.println("✓ Tournament rules defined for: " + tournamentName);
-            
-            // Show confirmation with some sample rules
-            showAlert("Success", "Tournament rules have been defined for '" + tournamentName + "'.\n\n" +
-                     "Sample rules:\n" +
-                     "- Match duration: 90 minutes\n" +
-                     "- Teams per group: 4\n" +
-                     "- Points for win: 3\n" +
-                     "- Points for draw: 1");
+            logActivity("Opened Define Tournament Rules dialog");
+            statusLabel.setText("Define Tournament Rules dialog closed.");
             
         } catch (Exception e) {
-            statusLabel.setText("Error defining rules: " + e.getMessage());
+            statusLabel.setText("Error opening Define Rules dialog: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
-            showAlert("Error", "Failed to define tournament rules: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Failed to open Define Rules dialog: " + e.getMessage());
         }
     }
     
@@ -170,38 +136,25 @@ public class AdministratorController {
         System.out.println("=== View Tournament Report Action ===");
         
         try {
-            if (reportComboBox.getValue() == null) {
-                statusLabel.setText("Error: Please select a tournament.");
-                showAlert("Missing Information", "Please select a tournament.");
-                return;
-            }
+            // Open the View Tournament Report Dialog
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/view_tournament_report_dialog.fxml"));
+            Parent root = loader.load();
             
-            String tournamentName = reportComboBox.getValue();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("View Tournament Report");
+            dialogStage.setScene(new Scene(root, 700, 700));
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             
-            // Call the administrator's viewTournamentReport method
-            if (currentAdmin != null) {
-                currentAdmin.viewTournamentReport();
-            }
+            dialogStage.showAndWait();
             
-            // Log the action
-            logActivity("Viewed report for tournament: " + tournamentName);
-            
-            statusLabel.setText("Tournament report displayed successfully!");
-            System.out.println("✓ Tournament report viewed for: " + tournamentName);
-            
-            // Show sample report
-            showAlert("Tournament Report", "Report for: " + tournamentName + "\n\n" +
-                     "Status: Active\n" +
-                     "Total Teams: 16\n" +
-                     "Matches Played: 24\n" +
-                     "Matches Remaining: 8\n" +
-                     "Total Goals: 67\n" +
-                     "Average Attendance: 1,250");
+            logActivity("Opened View Tournament Report dialog");
+            statusLabel.setText("View Tournament Report dialog closed.");
             
         } catch (Exception e) {
-            statusLabel.setText("Error viewing report: " + e.getMessage());
+            statusLabel.setText("Error opening View Report dialog: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
-            showAlert("Error", "Failed to view tournament report: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Failed to open View Report dialog: " + e.getMessage());
         }
     }
     
@@ -213,48 +166,29 @@ public class AdministratorController {
         System.out.println("=== End Tournament Action ===");
         
         try {
-            if (endTournamentComboBox.getValue() == null) {
-                statusLabel.setText("Error: Please select a tournament.");
-                showAlert("Missing Information", "Please select a tournament.");
-                return;
-            }
+            // Open the End Tournament Dialog
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/end_tournament_dialog.fxml"));
+            Parent root = loader.load();
             
-            String tournamentName = endTournamentComboBox.getValue();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("End Tournament");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             
-            // Confirm action
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirm End Tournament");
-            confirmAlert.setHeaderText("End Tournament: " + tournamentName);
-            confirmAlert.setContentText("Are you sure you want to end this tournament? This action cannot be undone.");
+            dialogStage.showAndWait();
             
-            if (confirmAlert.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
-                statusLabel.setText("Tournament end cancelled.");
-                return;
-            }
+            // Refresh tournament lists after dialog closes
+            refreshTournamentLists();
             
-            // Call the administrator's endTournament method
-            if (currentAdmin != null) {
-                currentAdmin.endTournament();
-            }
-            
-            // Log the action
-            logActivity("Ended tournament: " + tournamentName);
-            
-            statusLabel.setText("Tournament ended successfully!");
-            System.out.println("✓ Tournament ended: " + tournamentName);
-            
-            // Remove from combo boxes
-            rulesComboBox.getItems().remove(tournamentName);
-            reportComboBox.getItems().remove(tournamentName);
-            endTournamentComboBox.getItems().remove(tournamentName);
-            
-            // Show confirmation
-            showAlert("Success", "Tournament '" + tournamentName + "' has been ended successfully!");
+            logActivity("Opened End Tournament dialog");
+            statusLabel.setText("End Tournament dialog closed.");
             
         } catch (Exception e) {
-            statusLabel.setText("Error ending tournament: " + e.getMessage());
+            statusLabel.setText("Error opening End Tournament dialog: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
-            showAlert("Error", "Failed to end tournament: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Failed to open End Tournament dialog: " + e.getMessage());
         }
     }
     
@@ -320,6 +254,22 @@ public class AdministratorController {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to return to login screen: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Refreshes tournament lists in combo boxes.
+     */
+    private void refreshTournamentLists() {
+        try {
+            TournamentService tournamentService = new TournamentService();
+            List<Tournament> tournaments = tournamentService.viewAllTournaments();
+            
+            System.out.println("Loaded " + tournaments.size() + " tournaments from database");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error refreshing tournament lists: " + e.getMessage());
         }
     }
 }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.EndTournamentDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="End Tournament" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament to End:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose tournament..." prefWidth="400"
+                  onAction="#handleTournamentSelection"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Tournament Details -->
+    <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #f44336; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #fff3f3;">
+        <Label text="Tournament Details" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+        <GridPane hgap="15" vgap="8">
+            <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <Label fx:id="tournamentNameLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="Sport:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <Label fx:id="sportLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+            <Label fx:id="typeLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            
+            <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+            <Label fx:id="currentStatusLabel" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            
+            <Label text="Total Teams:" GridPane.columnIndex="2" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalTeamsLabel" text="0" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+            
+            <Label text="Total Matches:" GridPane.columnIndex="2" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <Label fx:id="totalMatchesLabel" text="0" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            
+            <Label text="Completed Matches:" GridPane.columnIndex="2" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+            <Label fx:id="completedMatchesLabel" text="0" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+        </GridPane>
+    </VBox>
+    
+    <!-- Warning Message -->
+    <VBox spacing="8" style="-fx-padding: 15; -fx-border-color: #FF9800; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #fff8e1;">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="⚠" style="-fx-font-size: 24px; -fx-text-fill: #FF9800;"/>
+            <VBox spacing="5">
+                <Label text="Warning: This action cannot be undone!" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <Label text="Ending a tournament will:" wrapText="true"/>
+                <VBox spacing="3" style="-fx-padding: 5 0 0 20;">
+                    <Label text="• Mark the tournament as COMPLETED"/>
+                    <Label text="• Finalize all standings and results"/>
+                    <Label text="• Prevent any further modifications"/>
+                    <Label text="• Archive all tournament data"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+    
+    <!-- Confirmation -->
+    <VBox spacing="8">
+        <Label text="Final Notes (Optional):" style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="finalNotesArea" promptText="Enter any final notes or comments about the tournament..." 
+                  prefHeight="80" wrapText="true"/>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" text="" style="-fx-text-fill: #666;"/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="End Tournament" onAction="#handleEndTournament" 
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="140"/>
+        <Button text="Cancel" onAction="#handleCancel" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>

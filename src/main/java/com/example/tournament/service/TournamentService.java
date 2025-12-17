@@ -87,4 +87,67 @@ public class TournamentService {
             em.close();
         }
     }
+    
+    /**
+     * Creates a new tournament in the system.
+     * 
+     * @param tournament the tournament to create
+     * @return true if successful, false otherwise
+     */
+    public boolean createTournament(Tournament tournament) {
+        EntityManager em = JPAUtil.getEntityManager();
+        
+        try {
+            em.getTransaction().begin();
+            
+            // Set initial status if not set
+            if (tournament.getStatus() == null) {
+                tournament.setStatus(TournamentStatus.SCHEDULED);
+            }
+            
+            em.persist(tournament);
+            
+            em.getTransaction().commit();
+            return true;
+            
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return false;
+            
+        } finally {
+            em.close();
+        }
+    }
+    
+    /**
+     * Updates an existing tournament.
+     * 
+     * @param tournament the tournament to update
+     * @return true if successful, false otherwise
+     */
+    public boolean updateTournament(Tournament tournament) {
+        EntityManager em = JPAUtil.getEntityManager();
+        
+        try {
+            em.getTransaction().begin();
+            
+            em.merge(tournament);
+            
+            em.getTransaction().commit();
+            return true;
+            
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return false;
+            
+        } finally {
+            em.close();
+        }
+    }
 }

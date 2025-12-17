@@ -46,9 +46,8 @@
                     <Label text="Create Tournament" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
                     <Label text="Create a new tournament in the system" wrapText="true" style="-fx-text-fill: #666;"/>
                     
-                    <VBox spacing="8" VBox.vgrow="ALWAYS">
-                        <Label text="Tournament Name:"/>
-                        <TextField fx:id="tournamentNameField" promptText="Enter tournament name"/>
+                    <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <Label text="Opens a dialog to create a new tournament" wrapText="true" style="-fx-text-fill: #888; -fx-font-style: italic;"/>
                     </VBox>
                     
                     <Button fx:id="createTournamentButton" text="Create Tournament" 
@@ -63,9 +62,8 @@
                     <Label text="Define Tournament Rules" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
                     <Label text="Set rules and regulations for tournaments" wrapText="true" style="-fx-text-fill: #666;"/>
                     
-                    <VBox spacing="8" VBox.vgrow="ALWAYS">
-                        <Label text="Tournament:"/>
-                        <ComboBox fx:id="rulesComboBox" promptText="Select tournament" prefWidth="200"/>
+                    <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <Label text="Opens a dialog to define tournament rules" wrapText="true" style="-fx-text-fill: #888; -fx-font-style: italic;"/>
                     </VBox>
                     
                     <Button fx:id="defineRulesButton" text="Define Rules" 
@@ -80,9 +78,8 @@
                     <Label text="View Tournament Report" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
                     <Label text="View detailed reports and statistics" wrapText="true" style="-fx-text-fill: #666;"/>
                     
-                    <VBox spacing="8" VBox.vgrow="ALWAYS">
-                        <Label text="Tournament:"/>
-                        <ComboBox fx:id="reportComboBox" promptText="Select tournament" prefWidth="200"/>
+                    <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <Label text="Opens a dialog with comprehensive tournament report" wrapText="true" style="-fx-text-fill: #888; -fx-font-style: italic;"/>
                     </VBox>
                     
                     <Button fx:id="viewReportButton" text="View Report" 
@@ -97,9 +94,8 @@
                     <Label text="End Tournament" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
                     <Label text="Finalize and close a tournament" wrapText="true" style="-fx-text-fill: #666;"/>
                     
-                    <VBox spacing="8" VBox.vgrow="ALWAYS">
-                        <Label text="Tournament:"/>
-                        <ComboBox fx:id="endTournamentComboBox" promptText="Select tournament" prefWidth="200"/>
+                    <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="CENTER">
+                        <Label text="Opens a dialog to finalize and end a tournament" wrapText="true" style="-fx-text-fill: #888; -fx-font-style: italic;"/>
                     </VBox>
                     
                     <Button fx:id="endTournamentButton" text="End Tournament" 
