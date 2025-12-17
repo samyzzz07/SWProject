@@ -26,7 +26,7 @@
         <TableView fx:id="scheduleTableView" prefHeight="250">
             <columns>
                 <TableColumn fx:id="matchColumn" text="Match" prefWidth="180"/>
-                <TableColumn fx:id="dateTimeColumn" text="Date & Time" prefWidth="130"/>
+                <TableColumn fx:id="dateTimeColumn" text="Date &amp; Time" prefWidth="130"/>
                 <TableColumn fx:id="venueColumn" text="Venue" prefWidth="120"/>
                 <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
             </columns>

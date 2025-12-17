@@ -14,7 +14,7 @@ public class TournamentOrganizer extends User {
     
     private String organization;
     
-    @OneToMany(mappedBy = "organizer")
+    @OneToMany(mappedBy = "organizer", fetch = FetchType.EAGER)
     private List<Tournament> tournaments = new ArrayList<>();
     
     // Constructors

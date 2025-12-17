@@ -29,7 +29,7 @@
         </VBox>
         <VBox spacing="5" HBox.hgrow="ALWAYS">
             <Label text="Total Collected:" style="-fx-font-weight: bold;"/>
-            <Label fx:id="totalCollectedLabel" text="$0" style="-fx-font-size: 16px;"/>
+            <Label fx:id="totalCollectedLabel" text="" style="-fx-font-size: 16px;"/>
         </VBox>
     </HBox>
     
