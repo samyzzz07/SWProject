@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.ComputeStandingsDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Compute Tournament Standings" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose a tournament..." prefWidth="500"/>
+    </VBox>
+    
+    <!-- Tournament Info -->
+    <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: #e3f2fd; -fx-border-radius: 5;">
+        <Label fx:id="tournamentInfoLabel" text="" style="-fx-font-size: 12px;"/>
+    </VBox>
+    
+    <Button text="Compute Standings" onAction="#handleComputeStandings"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"
+            prefWidth="180" prefHeight="40"/>
+    
+    <Separator/>
+    
+    <!-- Standings Table -->
+    <Label text="Tournament Standings:" style="-fx-font-weight: bold;"/>
+    <TableView fx:id="standingsTable" VBox.vgrow="ALWAYS" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="rankColumn" text="Rank" prefWidth="50"/>
+            <TableColumn fx:id="teamColumn" text="Team" prefWidth="150"/>
+            <TableColumn fx:id="playedColumn" text="Played" prefWidth="60"/>
+            <TableColumn fx:id="winsColumn" text="Wins" prefWidth="60"/>
+            <TableColumn fx:id="drawsColumn" text="Draws" prefWidth="60"/>
+            <TableColumn fx:id="lossesColumn" text="Losses" prefWidth="60"/>
+            <TableColumn fx:id="goalsColumn" text="Goals (F:A)" prefWidth="90"/>
+            <TableColumn fx:id="pointsColumn" text="Points" prefWidth="60"/>
+        </columns>
+    </TableView>
+    
+    <!-- Status and Actions -->
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+        <Label text="Status:" style="-fx-font-weight: bold;"/>
+        <Label fx:id="statusLabel" text="Ready" HBox.hgrow="ALWAYS"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Export Report" onAction="#handleExport"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="120"/>
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #9C27B0; -fx-text-fill: white;"
+                prefWidth="100"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="100"/>
+    </HBox>
+    
+</VBox>
