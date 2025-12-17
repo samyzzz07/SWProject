@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -392,7 +393,7 @@ public class TournamentOrganizerController {
             Stage dialogStage = new Stage();
             dialogStage.setTitle(title);
             dialogStage.initOwner(statusLabel.getScene().getWindow());
-            dialogStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.setScene(new Scene(root, width, height));
             dialogStage.setResizable(false);
             dialogStage.show();
