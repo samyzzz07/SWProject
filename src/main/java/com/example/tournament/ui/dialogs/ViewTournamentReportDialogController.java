@@ -192,6 +192,8 @@ public class ViewTournamentReportDialogController {
         
         if (selectedTournament instanceof LeagueTournament) {
             typeLabel.setText("League/Round Robin");
+        } else if (selectedTournament instanceof RoundRobinTournament) {
+            typeLabel.setText("Round Robin");
         } else if (selectedTournament instanceof KnockoutTournament) {
             typeLabel.setText("Knockout");
         } else {
@@ -253,6 +255,40 @@ public class ViewTournamentReportDialogController {
         if (selectedTournament instanceof LeagueTournament) {
             LeagueTournament league = (LeagueTournament) selectedTournament;
             var standingsMap = league.getStandings();
+            
+            int position = 1;
+            for (var entry : standingsMap.entrySet()) {
+                Team team = entry.getKey();
+                int points = entry.getValue();
+                
+                // Calculate team statistics
+                int played = 0, wins = 0, draws = 0, losses = 0;
+                for (Match match : selectedTournament.getMatches()) {
+                    if (match.getStatus() == Match.MatchStatus.COMPLETED &&
+                        match.getTeam1Score() != null && match.getTeam2Score() != null &&
+                        (match.getTeam1().equals(team) || match.getTeam2().equals(team))) {
+                        played++;
+                        
+                        int score1 = match.getTeam1Score();
+                        int score2 = match.getTeam2Score();
+                        
+                        if (match.getTeam1().equals(team)) {
+                            if (score1 > score2) wins++;
+                            else if (score1 == score2) draws++;
+                            else losses++;
+                        } else {
+                            if (score2 > score1) wins++;
+                            else if (score2 == score1) draws++;
+                            else losses++;
+                        }
+                    }
+                }
+                
+                standings.add(new StandingData(position++, team.getName(), played, wins, draws, losses, points));
+            }
+        } else if (selectedTournament instanceof RoundRobinTournament) {
+            RoundRobinTournament roundRobin = (RoundRobinTournament) selectedTournament;
+            var standingsMap = roundRobin.getStandings();
             
             int position = 1;
             for (var entry : standingsMap.entrySet()) {

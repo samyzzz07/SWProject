@@ -105,8 +105,10 @@ public class CreateTournamentDialogController {
             Tournament tournament;
             if ("Knockout".equalsIgnoreCase(type)) {
                 tournament = new KnockoutTournament(name, sport, startDate, endDate);
+            } else if ("Round Robin".equalsIgnoreCase(type)) {
+                tournament = new RoundRobinTournament(name, sport, startDate, endDate);
             } else {
-                // League or Round Robin both use LeagueTournament
+                // League type uses LeagueTournament
                 tournament = new LeagueTournament(name, sport, startDate, endDate);
             }
             

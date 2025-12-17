@@ -111,6 +111,8 @@ public class EndTournamentDialogController {
                 
                 if (selectedTournament instanceof LeagueTournament) {
                     typeLabel.setText("League/Round Robin");
+                } else if (selectedTournament instanceof RoundRobinTournament) {
+                    typeLabel.setText("Round Robin");
                 } else if (selectedTournament instanceof KnockoutTournament) {
                     typeLabel.setText("Knockout");
                 } else {
