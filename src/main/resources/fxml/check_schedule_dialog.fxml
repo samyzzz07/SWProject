@@ -48,7 +48,7 @@
         <TableView fx:id="scheduleTableView" prefHeight="200">
             <columns>
                 <TableColumn fx:id="matchColumn" text="Match" prefWidth="150"/>
-                <TableColumn fx:id="dateTimeColumn" text="Date & Time" prefWidth="130"/>
+                <TableColumn fx:id="dateTimeColumn" text="Date &amp; Time" prefWidth="130"/>
                 <TableColumn fx:id="venueColumn" text="Venue" prefWidth="100"/>
                 <TableColumn fx:id="refereeColumn" text="Referee" prefWidth="100"/>
                 <TableColumn fx:id="issuesColumn" text="Issues" prefWidth="100"/>
@@ -58,7 +58,7 @@
     
     <!-- Issues Log -->
     <VBox spacing="5">
-        <Label text="Issues & Warnings:" style="-fx-font-weight: bold;"/>
+        <Label text="Issues &amp; Warnings:" style="-fx-font-weight: bold;"/>
         <TextArea fx:id="issuesArea" editable="false" prefHeight="80" wrapText="true"
                   style="-fx-font-family: monospace;"/>
     </VBox>
