@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.List;
+import java.util.Map;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -252,43 +253,14 @@ public class ViewTournamentReportDialogController {
     private void populateStandings() {
         ObservableList<StandingData> standings = FXCollections.observableArrayList();
         
-        if (selectedTournament instanceof LeagueTournament) {
-            LeagueTournament league = (LeagueTournament) selectedTournament;
-            var standingsMap = league.getStandings();
-            
-            int position = 1;
-            for (var entry : standingsMap.entrySet()) {
-                Team team = entry.getKey();
-                int points = entry.getValue();
-                
-                // Calculate team statistics
-                int played = 0, wins = 0, draws = 0, losses = 0;
-                for (Match match : selectedTournament.getMatches()) {
-                    if (match.getStatus() == Match.MatchStatus.COMPLETED &&
-                        match.getTeam1Score() != null && match.getTeam2Score() != null &&
-                        (match.getTeam1().equals(team) || match.getTeam2().equals(team))) {
-                        played++;
-                        
-                        int score1 = match.getTeam1Score();
-                        int score2 = match.getTeam2Score();
-                        
-                        if (match.getTeam1().equals(team)) {
-                            if (score1 > score2) wins++;
-                            else if (score1 == score2) draws++;
-                            else losses++;
-                        } else {
-                            if (score2 > score1) wins++;
-                            else if (score2 == score1) draws++;
-                            else losses++;
-                        }
-                    }
-                }
-                
-                standings.add(new StandingData(position++, team.getName(), played, wins, draws, losses, points));
+        if (selectedTournament instanceof LeagueTournament || selectedTournament instanceof RoundRobinTournament) {
+            // Both League and Round Robin tournaments use the same standings logic
+            Map<Team, Integer> standingsMap;
+            if (selectedTournament instanceof LeagueTournament) {
+                standingsMap = ((LeagueTournament) selectedTournament).getStandings();
+            } else {
+                standingsMap = ((RoundRobinTournament) selectedTournament).getStandings();
             }
-        } else if (selectedTournament instanceof RoundRobinTournament) {
-            RoundRobinTournament roundRobin = (RoundRobinTournament) selectedTournament;
-            var standingsMap = roundRobin.getStandings();
             
             int position = 1;
             for (var entry : standingsMap.entrySet()) {
