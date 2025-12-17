@@ -246,10 +246,17 @@ public class ParticipantTeamController {
             welcomeLabel.setText("Welcome, " + user.getUsername() + " (" + user.getRole() + ")");
         }
         
-        // If the user is a TeamManager, also set as currentManager and load teams
+        // If the user is a TeamManager, also set as currentManager
         if (user instanceof TeamManager) {
             this.currentManager = (TeamManager) user;
-            loadTeamsForManager(currentManager);
+            // Load teams in a background thread to avoid blocking the UI
+            new Thread(() -> {
+                try {
+                    loadTeamsForManager(currentManager);
+                } catch (Exception e) {
+                    System.err.println("Error loading teams in background: " + e.getMessage());
+                }
+            }).start();
         }
     }
     
@@ -257,9 +264,20 @@ public class ParticipantTeamController {
      * Loads teams for the given team manager.
      */
     private void loadTeamsForManager(TeamManager manager) {
-        teams.clear();
-        teams.addAll(manager.getTeams());
-        System.out.println("Loaded " + teams.size() + " teams for manager: " + manager.getUsername());
+        try {
+            // Check if teams is initialized before accessing
+            if (manager.getTeams() != null) {
+                // Update UI on JavaFX thread
+                javafx.application.Platform.runLater(() -> {
+                    teams.clear();
+                    teams.addAll(manager.getTeams());
+                    System.out.println("Loaded " + teams.size() + " teams for manager: " + manager.getUsername());
+                });
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading teams: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     /**
