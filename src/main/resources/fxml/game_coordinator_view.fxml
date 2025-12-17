@@ -60,6 +60,15 @@
                        style="-fx-text-fill: #666; -fx-font-size: 12px;"/>
             </VBox>
             
+            <!-- Manage Venues Button -->
+            <VBox spacing="10" alignment="CENTER" style="-fx-padding: 20; -fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-background-radius: 10;">
+                <Button text="Manage Venues" onAction="#manageVenues"
+                        style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"
+                        prefWidth="350" prefHeight="60"/>
+                <Label text="Add and manage tournament venues" 
+                       style="-fx-text-fill: #666; -fx-font-size: 12px;"/>
+            </VBox>
+            
         </VBox>
     </center>
     

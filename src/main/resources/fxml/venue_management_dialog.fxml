@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.example.tournament.ui.dialogs.VenueManagementDialogController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Venue Management" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+    
+    <Separator/>
+    
+    <!-- Venue Input Form -->
+    <VBox spacing="10" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;">
+        <Label text="Add New Venue:" style="-fx-font-weight: bold;"/>
+        
+        <GridPane hgap="10" vgap="10">
+            <Label text="Venue Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="venueNameField" promptText="Enter venue name..." GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250"/>
+            
+            <Label text="Location:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="locationField" promptText="Enter location..." GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="250"/>
+            
+            <Label text="Capacity:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="capacityField" promptText="Enter capacity (optional)..." GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250"/>
+        </GridPane>
+        
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="Add Venue" onAction="#handleAddVenue" 
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"
+                    prefWidth="120"/>
+            <Button text="Clear" onAction="#handleClear" 
+                    style="-fx-background-color: #757575; -fx-text-fill: white;"
+                    prefWidth="80"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Existing Venues List -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Existing Venues:" style="-fx-font-weight: bold;"/>
+        <TableView fx:id="venueTableView" prefHeight="250">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="Venue Name" prefWidth="150"/>
+                <TableColumn fx:id="locationColumn" text="Location" prefWidth="180"/>
+                <TableColumn fx:id="capacityColumn" text="Capacity" prefWidth="100"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </VBox>
+    
+    <Separator/>
+    
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                prefWidth="100"/>
+        <Button text="Close" onAction="#handleClose" 
+                style="-fx-background-color: #757575; -fx-text-fill: white;"
+                prefWidth="80"/>
+    </HBox>
+    
+</VBox>
