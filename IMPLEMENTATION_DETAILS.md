@@ -13,7 +13,7 @@ This implementation successfully addresses the requirements specified in the Spo
 ### What was implemented:
 - **Comprehensive SQL Schema Documentation** (`src/main/resources/sql/schema.sql`)
   - Documents the complete database structure
-  - Includes all tables: users, tournaments, teams, matches, referees, etc.
+  - Includes all tables: users, tournaments, teams, matches, etc.
   - Defines indexes for performance optimization
   - Includes actor roles and permissions as documentation
 
@@ -80,17 +80,15 @@ The system uses **JPA/Hibernate** for database persistence with support for:
   - Updated welcome label text
 
 #### LoginController Updates:
-- ✅ Role dropdown now includes all 7 roles:
+- ✅ Role dropdown now includes 4 core roles:
   - ADMINISTRATOR
   - TEAM_MANAGER
   - GAME_COORDINATOR
   - TOURNAMENT_ORGANIZER
-  - PLAYER
-  - NON_MANAGER
-  - REFEREE
 
 - ✅ User creation logic handles all roles
 - ✅ Navigation logic properly routes all roles to appropriate views
+- ✅ Removed deprecated roles: PLAYER, NON_MANAGER, REFEREE
 
 #### Documentation Updates:
 - ✅ `README.md` - Updated with new role names and SQL database info
@@ -109,7 +107,7 @@ Based on the Sports Tournament Management use case:
 **Permissions:** View_Tournament, Register_Team, Add_Games, View_Schedule
 
 ### Game_Coordinator
-**Permissions:** Add_Games, Collect_Fees, View_Schedule, Manage_Referee, Final_Tournament, Post_Scores, Record_Match_Results, View_Games, View_Tournament
+**Permissions:** Add_Games, Collect_Fees, View_Schedule, Final_Tournament, Post_Scores, Record_Match_Results, View_Games, View_Tournament
 
 ### Tournament_Organizer
 **Permissions:** Post_Scores

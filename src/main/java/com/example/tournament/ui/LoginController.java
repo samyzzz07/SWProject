@@ -57,10 +57,7 @@ public class LoginController {
             UserRole.ADMINISTRATOR,
             UserRole.TEAM_MANAGER,
             UserRole.GAME_COORDINATOR,
-            UserRole.TOURNAMENT_ORGANIZER,
-            UserRole.PLAYER,
-            UserRole.NON_MANAGER,
-            UserRole.REFEREE
+            UserRole.TOURNAMENT_ORGANIZER
         );
         
         statusLabel.setText("Ready - Please login or register");
@@ -167,9 +164,6 @@ public class LoginController {
             case TEAM_MANAGER -> new TeamManager(username, password, email);
             case GAME_COORDINATOR -> new GameCoordinator(username, password, email);
             case TOURNAMENT_ORGANIZER -> new TournamentOrganizer(username, password, email);
-            case PLAYER -> new Player(username, password, email);
-            case NON_MANAGER -> new NonManager(username, password, email);
-            case REFEREE -> new Referee(username, password, email);
             default -> throw new IllegalArgumentException("Unsupported role: " + role);
         };
     }
@@ -182,13 +176,10 @@ public class LoginController {
             System.out.println("Opening view for user role: " + user.getRole());
             
             String fxmlFile = switch (user.getRole()) {
-                case ADMINISTRATOR -> "/fxml/participant_team_view.fxml"; // Using fallback for now
-                case TEAM_MANAGER -> "/fxml/participant_team_view.fxml"; // Using fallback for now
+                case ADMINISTRATOR -> "/fxml/participant_team_view.fxml";
+                case TEAM_MANAGER -> "/fxml/participant_team_view.fxml";
                 case GAME_COORDINATOR -> "/fxml/game_coordinator_view.fxml";
-                case TOURNAMENT_ORGANIZER -> "/fxml/participant_team_view.fxml"; // Using fallback for now
-                case PLAYER -> "/fxml/player_view.fxml";
-                case NON_MANAGER -> "/fxml/non_manager_view.fxml";
-                case REFEREE -> "/fxml/referee_view.fxml";
+                case TOURNAMENT_ORGANIZER -> "/fxml/participant_team_view.fxml";
                 default -> "/fxml/participant_team_view.fxml"; // Fallback
             };
             
@@ -200,14 +191,8 @@ public class LoginController {
             Object controller = loader.getController();
             System.out.println("Controller loaded: " + controller.getClass().getSimpleName());
             
-            if (controller instanceof PlayerController) {
-                ((PlayerController) controller).setCurrentUser(user);
-            } else if (controller instanceof NonManagerController) {
-                ((NonManagerController) controller).setCurrentUser(user);
-            } else if (controller instanceof GameCoordinatorController) {
+            if (controller instanceof GameCoordinatorController) {
                 ((GameCoordinatorController) controller).setCurrentUser(user);
-            } else if (controller instanceof RefereeController) {
-                ((RefereeController) controller).setCurrentUser(user);
             } else if (controller instanceof ParticipantTeamController) {
                 ((ParticipantTeamController) controller).setCurrentUser(user);
             }

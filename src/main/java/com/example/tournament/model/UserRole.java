@@ -8,8 +8,5 @@ public enum UserRole {
     ADMINISTRATOR,           // Top-level operations, high-level management
     TEAM_MANAGER,           // Team-specific tasks, registration
     GAME_COORDINATOR,       // Game creation, scheduling, referee management
-    TOURNAMENT_ORGANIZER,   // Submitting final scores and results
-    PLAYER,                 // Tournament participants
-    NON_MANAGER,            // Team captains and general users
-    REFEREE                 // Officials responsible for scoring
+    TOURNAMENT_ORGANIZER    // Submitting final scores and results
 }

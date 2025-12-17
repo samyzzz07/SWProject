@@ -15,26 +15,23 @@ import java.io.IOException;
 
 /**
  * Controller for GameCoordinator interface.
- * GameCoordinator can perform: AddGames, CollectFees, ViewSchedule, ManageReferee, 
+ * GameCoordinator can perform: AddGames, CollectFees, ViewSchedule, 
  * FinalTournament, PostScores, RecordMatchResults
  */
 public class GameCoordinatorController {
     
     @FXML private Label welcomeLabel;
     @FXML private ListView<Match> scheduleListView;
-    @FXML private ListView<Referee> refereeListView;
     @FXML private ListView<Tournament> tournamentListView;
     @FXML private TextField team1ScoreField;
     @FXML private TextField team2ScoreField;
     @FXML private Button postScoreButton;
     @FXML private Button addGameButton;
     @FXML private Button finalizeButton;
-    @FXML private Button manageRefereeButton;
     @FXML private Label statusLabel;
     
     private User currentUser;
     private ScheduleService scheduleService;
-    private RefereeService refereeService;
     private TournamentService tournamentService;
     private ScoringService scoringService;
     private GameService gameService;
@@ -42,7 +39,6 @@ public class GameCoordinatorController {
     @FXML
     public void initialize() {
         scheduleService = new ScheduleService();
-        refereeService = new RefereeService();
         tournamentService = new TournamentService();
         scoringService = new ScoringService();
         gameService = new GameService();
@@ -62,12 +58,6 @@ public class GameCoordinatorController {
             scheduleService.viewSchedule()
         );
         scheduleListView.setItems(schedule);
-        
-        // View Referees
-        ObservableList<Referee> referees = FXCollections.observableArrayList(
-            refereeService.getAllReferees()
-        );
-        refereeListView.setItems(referees);
         
         // View Tournaments
         ObservableList<Tournament> tournaments = FXCollections.observableArrayList(
@@ -121,12 +111,6 @@ public class GameCoordinatorController {
         } else {
             statusLabel.setText("Failed to finalize tournament");
         }
-    }
-    
-    @FXML
-    private void handleManageReferee() {
-        statusLabel.setText("Manage referee functionality");
-        showAlert("Manage Referee", "This would open a dialog to add/edit/remove referees");
     }
     
     @FXML
