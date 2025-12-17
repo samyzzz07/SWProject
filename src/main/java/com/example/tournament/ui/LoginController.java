@@ -179,7 +179,7 @@ public class LoginController {
                 case ADMINISTRATOR -> "/fxml/administrator_view.fxml";
                 case TEAM -> "/fxml/participant_team_view.fxml";
                 case GAME_COORDINATOR -> "/fxml/game_coordinator_view.fxml";
-                case TOURNAMENT_ORGANIZER -> "/fxml/participant_team_view.fxml";
+                case TOURNAMENT_ORGANIZER -> "/fxml/tournament_organizer_view.fxml";
                 default -> "/fxml/participant_team_view.fxml"; // Fallback
             };
             
@@ -197,6 +197,8 @@ public class LoginController {
                 ((ParticipantTeamController) controller).setCurrentUser(user);
             } else if (controller instanceof AdministratorController) {
                 ((AdministratorController) controller).setCurrentUser(user);
+            } else if (controller instanceof TournamentOrganizerController) {
+                ((TournamentOrganizerController) controller).setCurrentUser(user);
             }
             
             System.out.println("User set in controller successfully");
