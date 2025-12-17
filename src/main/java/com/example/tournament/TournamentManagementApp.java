@@ -1,5 +1,6 @@
 package com.example.tournament;
 
+import com.example.tournament.util.JPAUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,19 @@ import javafx.stage.Stage;
  * This is the application class you should run to start the tournament management application.
  */
 public class TournamentManagementApp extends Application {
+    
+    @Override
+    public void init() {
+        // Initialize database connection at startup
+        System.out.println("Initializing database connection...");
+        try {
+            JPAUtil.initialize();
+            System.out.println("Database connection initialized successfully!");
+        } catch (Exception e) {
+            System.err.println("Failed to initialize database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     
     @Override
     public void start(Stage primaryStage) {
@@ -30,6 +44,12 @@ public class TournamentManagementApp extends Application {
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
             
+            // Set up shutdown hook to close database connection
+            primaryStage.setOnCloseRequest(event -> {
+                System.out.println("Application closing...");
+                JPAUtil.shutdown();
+            });
+            
             // Show the application window
             primaryStage.show();
             
@@ -39,6 +59,13 @@ public class TournamentManagementApp extends Application {
             System.err.println("Error starting application: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public void stop() {
+        // Ensure database connection is closed on application exit
+        System.out.println("Shutting down application...");
+        JPAUtil.shutdown();
     }
     
     /**
