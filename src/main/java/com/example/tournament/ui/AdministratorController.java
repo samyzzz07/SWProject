@@ -227,7 +227,7 @@ public class AdministratorController {
             confirmAlert.setHeaderText("End Tournament: " + tournamentName);
             confirmAlert.setContentText("Are you sure you want to end this tournament? This action cannot be undone.");
             
-            if (confirmAlert.showAndWait().get() != ButtonType.OK) {
+            if (confirmAlert.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
                 statusLabel.setText("Tournament end cancelled.");
                 return;
             }
