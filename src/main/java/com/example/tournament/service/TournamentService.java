@@ -23,14 +23,30 @@ public class TournamentService {
         EntityManager em = JPAUtil.getEntityManager();
         
         try {
-            TypedQuery<Tournament> query = em.createQuery(
+            // First query: fetch tournaments with teams
+            TypedQuery<Tournament> query1 = em.createQuery(
                 "SELECT DISTINCT t FROM Tournament t " +
                 "LEFT JOIN FETCH t.teams " +
-                "LEFT JOIN FETCH t.matches " +
                 "ORDER BY t.startDate DESC",
                 Tournament.class
             );
-            return query.getResultList();
+            List<Tournament> tournaments = query1.getResultList();
+            
+            // Second query: fetch matches for the tournaments
+            // The query result is not stored because the matches are populated
+            // into the tournaments already loaded in the persistence context
+            if (!tournaments.isEmpty()) {
+                TypedQuery<Tournament> query2 = em.createQuery(
+                    "SELECT DISTINCT t FROM Tournament t " +
+                    "LEFT JOIN FETCH t.matches " +
+                    "WHERE t IN :tournaments",
+                    Tournament.class
+                );
+                query2.setParameter("tournaments", tournaments);
+                query2.getResultList();
+            }
+            
+            return tournaments;
             
         } finally {
             em.close();
@@ -47,16 +63,35 @@ public class TournamentService {
         EntityManager em = JPAUtil.getEntityManager();
         
         try {
-            TypedQuery<Tournament> query = em.createQuery(
+            // First query: fetch tournament with teams
+            TypedQuery<Tournament> query1 = em.createQuery(
                 "SELECT t FROM Tournament t " +
                 "LEFT JOIN FETCH t.teams " +
+                "WHERE t.id = :id",
+                Tournament.class
+            );
+            query1.setParameter("id", tournamentId);
+            List<Tournament> results = query1.getResultList();
+            
+            if (results.isEmpty()) {
+                return null;
+            }
+            
+            Tournament tournament = results.get(0);
+            
+            // Second query: fetch matches for the tournament
+            // The query result is not stored because the matches are populated
+            // into the tournament already loaded in the persistence context
+            TypedQuery<Tournament> query2 = em.createQuery(
+                "SELECT t FROM Tournament t " +
                 "LEFT JOIN FETCH t.matches " +
                 "WHERE t.id = :id",
                 Tournament.class
             );
-            query.setParameter("id", tournamentId);
-            List<Tournament> results = query.getResultList();
-            return results.isEmpty() ? null : results.get(0);
+            query2.setParameter("id", tournamentId);
+            query2.getResultList();
+            
+            return tournament;
             
         } finally {
             em.close();
