@@ -392,6 +392,7 @@ public class TournamentOrganizerController {
             Stage dialogStage = new Stage();
             dialogStage.setTitle(title);
             dialogStage.initOwner(statusLabel.getScene().getWindow());
+            dialogStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
             dialogStage.setScene(new Scene(root, width, height));
             dialogStage.setResizable(false);
             dialogStage.show();
@@ -421,6 +422,7 @@ public class TournamentOrganizerController {
             Scene scene = new Scene(root, 800, 600);
             stage.setScene(scene);
             stage.setTitle("Tournament Management System - Login");
+            stage.setFullScreen(true);  // Maintain fullscreen mode
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to return to login screen: " + e.getMessage());

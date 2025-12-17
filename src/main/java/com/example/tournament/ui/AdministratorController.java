@@ -316,6 +316,7 @@ public class AdministratorController {
             Scene scene = new Scene(root, 800, 600);
             stage.setScene(scene);
             stage.setTitle("Tournament Management System - Login");
+            stage.setFullScreen(true);  // Maintain fullscreen mode
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to return to login screen: " + e.getMessage());
