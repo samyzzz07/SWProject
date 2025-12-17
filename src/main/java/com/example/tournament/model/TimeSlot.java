@@ -20,6 +20,10 @@ public class TimeSlot {
     @Column(nullable = false)
     private LocalDateTime endTime;
     
+    @ManyToOne
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
+    
     // Constructors
     public TimeSlot() {
     }
@@ -52,6 +56,14 @@ public class TimeSlot {
     
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+    
+    public Venue getVenue() {
+        return venue;
+    }
+    
+    public void setVenue(Venue venue) {
+        this.venue = venue;
     }
     
     /**
