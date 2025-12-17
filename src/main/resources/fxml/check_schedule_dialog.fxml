@@ -58,7 +58,7 @@
     
     <!-- Issues Log -->
     <VBox spacing="5">
-        <Label text="Issues & Warnings:" style="-fx-font-weight: bold;"/>
+        <Label text="Issues &amp; Warnings:" style="-fx-font-weight: bold;"/>
         <TextArea fx:id="issuesArea" editable="false" prefHeight="80" wrapText="true"
                   style="-fx-font-family: monospace;"/>
     </VBox>
