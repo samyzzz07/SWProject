@@ -83,8 +83,8 @@ Features:
 - ✅ Warning section about permanent action
 - ✅ Final notes text area (optional)
 - ✅ Double confirmation dialog
-- ✅ **Updates database** - Sets tournament status to COMPLETED
-- ✅ Removes ended tournament from dropdown after completion
+- ✅ **Deletes from database** - **Tournament and all matches are permanently removed**
+- ✅ Deleted tournament no longer appears in any view for any user
 
 ## 🔄 Database Integration
 
@@ -93,12 +93,13 @@ Features:
 ✅ **Create Tournament** → Saves new tournament to database
 ✅ **Define Rules** → Loads tournaments from database, saves rules back
 ✅ **View Report** → Loads all data (tournaments, teams, matches) from database
-✅ **End Tournament** → Loads active tournaments, updates status in database
+✅ **End Tournament** → **Deletes tournament and all matches from database**
 
 **Service Layer Enhancements:**
 - `TournamentService.createTournament()` - Creates and persists tournaments
 - `TournamentService.updateTournament()` - Updates tournament rules
-- `TournamentService.finalizeTournament()` - Ends tournaments
+- `TournamentService.deleteTournament()` - **Deletes tournaments and all associated matches**
+- `TournamentService.finalizeTournament()` - Ends tournaments (sets status to COMPLETED)
 - `TournamentService.viewAllTournaments()` - Retrieves all tournaments
 - `SportService.getSportByName()` - Retrieves sports by name
 - `SportService.createSport()` - Creates new sports
@@ -129,8 +130,8 @@ Features:
 4. **End Tournament**
    - Click "End Tournament" → Dialog opens
    - Select "Spring Championship 2025"
-   - Confirm action → Tournament marked as COMPLETED ✅
-   - Tournament archived, no longer in active list
+   - Confirm action → **Tournament and all matches deleted from database** ✅
+   - Tournament no longer appears in any view for any user
 
 ## 🛡️ Quality Assurance
 
