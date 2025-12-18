@@ -63,6 +63,32 @@ public class ManageTimeWindowsDialogController {
             tournamentService.viewAllTournaments()
         );
         tournamentComboBox.setItems(tournaments);
+        
+        // Custom cell factory for tournaments to show user-friendly names
+        tournamentComboBox.setCellFactory(lv -> new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
     }
     
     private void loadVenues() {

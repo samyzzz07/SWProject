@@ -1,11 +1,18 @@
 package com.example.tournament.ui.dialogs;
 
+import com.example.tournament.model.Match;
+import com.example.tournament.model.Tournament;
+import com.example.tournament.service.TournamentService;
+import com.example.tournament.util.JPAUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +22,10 @@ import java.util.Map;
 public class AssignRefereesDialogController {
     
     @FXML
-    private ComboBox<String> matchComboBox;
+    private ComboBox<Tournament> tournamentComboBox;
+    
+    @FXML
+    private ComboBox<Match> matchComboBox;
     
     @FXML
     private Label matchDetailsLabel;
@@ -26,25 +36,24 @@ public class AssignRefereesDialogController {
     @FXML
     private Label currentRefereeLabel;
     
+    private TournamentService tournamentService;
+    private ObservableList<Tournament> tournaments;
+    private ObservableList<Match> matches;
+    
     // Store match-referee assignments
-    private Map<String, String> matchRefereeAssignments = new HashMap<>();
+    private Map<Long, String> matchRefereeAssignments = new HashMap<>();
     
     /**
-     * Initialize the dialog with sample data.
+     * Initialize the dialog with data from database.
      */
     @FXML
     public void initialize() {
-        // Populate sample matches
-        ObservableList<String> matches = FXCollections.observableArrayList(
-            "Match 1: Team Alpha vs Team Beta - Dec 20, 2025 14:00",
-            "Match 2: Team Gamma vs Team Delta - Dec 21, 2025 16:00",
-            "Match 3: Team Epsilon vs Team Zeta - Dec 22, 2025 18:00",
-            "Match 4: Team Alpha vs Team Gamma - Dec 23, 2025 14:00",
-            "Match 5: Team Beta vs Team Delta - Dec 24, 2025 16:00"
-        );
-        matchComboBox.setItems(matches);
+        tournamentService = new TournamentService();
         
-        // Populate sample referees
+        // Load tournaments from database
+        loadTournaments();
+        
+        // Populate sample referees (can be loaded from database in future)
         ObservableList<String> referees = FXCollections.observableArrayList(
             "John Smith - Certified Level A",
             "Jane Doe - Certified Level A",
@@ -55,20 +64,121 @@ public class AssignRefereesDialogController {
         );
         refereeListView.setItems(referees);
         
+        // Set up tournament selection listener
+        tournamentComboBox.setOnAction(event -> handleTournamentSelection());
+        
         // Set up match selection listener
         matchComboBox.setOnAction(event -> updateMatchDetails());
+    }
+    
+    private void loadTournaments() {
+        tournaments = FXCollections.observableArrayList(
+            tournamentService.viewAllTournaments()
+        );
+        tournamentComboBox.setItems(tournaments);
+        
+        // Custom cell factory for tournaments to show user-friendly names
+        tournamentComboBox.setCellFactory(lv -> new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+    }
+    
+    private void handleTournamentSelection() {
+        Tournament selected = tournamentComboBox.getValue();
+        if (selected != null) {
+            EntityManager em = JPAUtil.getEntityManager();
+            try {
+                // Load matches for selected tournament
+                TypedQuery<Match> query = em.createQuery(
+                    "SELECT m FROM Match m WHERE m.tournament = :tournament ORDER BY m.id",
+                    Match.class
+                );
+                query.setParameter("tournament", selected);
+                matches = FXCollections.observableArrayList(query.getResultList());
+                matchComboBox.setItems(matches);
+                
+                // Custom cell factory for matches
+                matchComboBox.setCellFactory(lv -> new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            String time = item.getScheduledTime() != null ? 
+                                " - " + item.getScheduledTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) : "";
+                            setText(team1 + " vs " + team2 + time);
+                        }
+                    }
+                });
+                matchComboBox.setButtonCell(new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            String time = item.getScheduledTime() != null ? 
+                                " - " + item.getScheduledTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) : "";
+                            setText(team1 + " vs " + team2 + time);
+                        }
+                    }
+                });
+                
+                // Clear previous selection
+                clearMatchDetails();
+            } finally {
+                em.close();
+            }
+        }
     }
     
     /**
      * Update match details when a match is selected.
      */
     private void updateMatchDetails() {
-        String selectedMatch = matchComboBox.getValue();
+        Match selectedMatch = matchComboBox.getValue();
         if (selectedMatch != null) {
-            matchDetailsLabel.setText("Venue: Stadium A | Duration: 90 minutes");
+            // Display match details
+            String details = "";
+            if (selectedMatch.getVenue() != null) {
+                details = "Venue: " + selectedMatch.getVenue().getName();
+            } else {
+                details = "Venue: Not assigned";
+            }
+            if (selectedMatch.getScheduledTime() != null) {
+                details += " | Time: " + selectedMatch.getScheduledTime().format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            }
+            matchDetailsLabel.setText(details);
             
             // Check if referee is already assigned
-            String assignedReferee = matchRefereeAssignments.get(selectedMatch);
+            String assignedReferee = matchRefereeAssignments.get(selectedMatch.getId());
             if (assignedReferee != null) {
                 currentRefereeLabel.setText(assignedReferee);
                 currentRefereeLabel.setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
@@ -79,13 +189,26 @@ public class AssignRefereesDialogController {
         }
     }
     
+    private void clearMatchDetails() {
+        matchComboBox.setValue(null);
+        matchDetailsLabel.setText("");
+        currentRefereeLabel.setText("None");
+        currentRefereeLabel.setStyle("-fx-text-fill: #f44336;");
+    }
+    
     /**
      * Handle assign button click.
      */
     @FXML
     private void handleAssign() {
-        String selectedMatch = matchComboBox.getValue();
+        Tournament selectedTournament = tournamentComboBox.getValue();
+        Match selectedMatch = matchComboBox.getValue();
         String selectedReferee = refereeListView.getSelectionModel().getSelectedItem();
+        
+        if (selectedTournament == null) {
+            showAlert("No Tournament Selected", "Please select a tournament first.", Alert.AlertType.WARNING);
+            return;
+        }
         
         if (selectedMatch == null) {
             showAlert("No Match Selected", "Please select a match to assign a referee.", Alert.AlertType.WARNING);
@@ -98,11 +221,14 @@ public class AssignRefereesDialogController {
         }
         
         // Assign referee to match
-        matchRefereeAssignments.put(selectedMatch, selectedReferee);
+        matchRefereeAssignments.put(selectedMatch.getId(), selectedReferee);
         currentRefereeLabel.setText(selectedReferee);
         currentRefereeLabel.setStyle("-fx-text-fill: #4CAF50; -fx-font-weight: bold;");
         
-        showAlert("Success", "Referee " + selectedReferee + " has been assigned to " + selectedMatch, Alert.AlertType.INFORMATION);
+        String team1 = selectedMatch.getTeam1() != null ? selectedMatch.getTeam1().getName() : "TBD";
+        String team2 = selectedMatch.getTeam2() != null ? selectedMatch.getTeam2().getName() : "TBD";
+        showAlert("Success", "Referee " + selectedReferee + " has been assigned to match: " + 
+                 team1 + " vs " + team2, Alert.AlertType.INFORMATION);
     }
     
     /**
@@ -110,18 +236,21 @@ public class AssignRefereesDialogController {
      */
     @FXML
     private void handleClear() {
-        String selectedMatch = matchComboBox.getValue();
+        Match selectedMatch = matchComboBox.getValue();
         
         if (selectedMatch == null) {
             showAlert("No Match Selected", "Please select a match to clear the referee assignment.", Alert.AlertType.WARNING);
             return;
         }
         
-        matchRefereeAssignments.remove(selectedMatch);
+        matchRefereeAssignments.remove(selectedMatch.getId());
         currentRefereeLabel.setText("None");
         currentRefereeLabel.setStyle("-fx-text-fill: #f44336;");
         
-        showAlert("Cleared", "Referee assignment has been cleared for " + selectedMatch, Alert.AlertType.INFORMATION);
+        String team1 = selectedMatch.getTeam1() != null ? selectedMatch.getTeam1().getName() : "TBD";
+        String team2 = selectedMatch.getTeam2() != null ? selectedMatch.getTeam2().getName() : "TBD";
+        showAlert("Cleared", "Referee assignment has been cleared for match: " + 
+                 team1 + " vs " + team2, Alert.AlertType.INFORMATION);
     }
     
     /**
@@ -129,7 +258,7 @@ public class AssignRefereesDialogController {
      */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) matchComboBox.getScene().getWindow();
+        Stage stage = (Stage) tournamentComboBox.getScene().getWindow();
         stage.close();
     }
     

@@ -13,6 +13,12 @@
     
     <Separator/>
     
+    <!-- Tournament Selection -->
+    <VBox spacing="5">
+        <Label text="Select Tournament:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="tournamentComboBox" promptText="Choose a tournament..." prefWidth="400"/>
+    </VBox>
+    
     <!-- Match Selection -->
     <VBox spacing="5">
         <Label text="Select Match to Postpone:" style="-fx-font-weight: bold;"/>

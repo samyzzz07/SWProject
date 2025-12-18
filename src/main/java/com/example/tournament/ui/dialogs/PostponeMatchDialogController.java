@@ -1,11 +1,20 @@
 package com.example.tournament.ui.dialogs;
 
+import com.example.tournament.model.Match;
+import com.example.tournament.model.Tournament;
+import com.example.tournament.model.Venue;
+import com.example.tournament.service.TournamentService;
+import com.example.tournament.util.JPAUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Controller for the Postpone Match Dialog.
@@ -13,7 +22,10 @@ import java.time.LocalDate;
 public class PostponeMatchDialogController {
     
     @FXML
-    private ComboBox<String> matchComboBox;
+    private ComboBox<Tournament> tournamentComboBox;
+    
+    @FXML
+    private ComboBox<Match> matchComboBox;
     
     @FXML
     private Label matchDetailsLabel;
@@ -31,37 +43,164 @@ public class PostponeMatchDialogController {
     private TextField newTimeField;
     
     @FXML
-    private ComboBox<String> venueComboBox;
+    private ComboBox<Venue> venueComboBox;
     
     @FXML
     private TextArea reasonArea;
     
+    private TournamentService tournamentService;
+    private ObservableList<Tournament> tournaments;
+    private ObservableList<Match> matches;
+    private ObservableList<Venue> venues;
+    
     /**
-     * Initialize the dialog with sample data.
+     * Initialize the dialog with data from database.
      */
     @FXML
     public void initialize() {
-        // Populate scheduled matches
-        ObservableList<String> matches = FXCollections.observableArrayList(
-            "Match 1: Team Alpha vs Team Beta",
-            "Match 2: Team Gamma vs Team Delta",
-            "Match 3: Team Epsilon vs Team Zeta",
-            "Match 4: Team Alpha vs Team Gamma",
-            "Match 5: Team Beta vs Team Delta"
-        );
-        matchComboBox.setItems(matches);
+        tournamentService = new TournamentService();
         
-        // Populate venues
-        ObservableList<String> venues = FXCollections.observableArrayList(
-            "Stadium A - Main Field",
-            "Stadium B - North Field",
-            "Stadium C - South Field",
-            "Arena D - Indoor Court"
-        );
-        venueComboBox.setItems(venues);
+        // Load tournaments from database
+        loadTournaments();
+        
+        // Load venues from database
+        loadVenues();
         
         // Set minimum date to today
         newDatePicker.setValue(LocalDate.now().plusDays(1));
+        
+        // Set up tournament selection listener
+        tournamentComboBox.setOnAction(event -> handleTournamentSelection());
+        
+        // Set up match selection listener
+        matchComboBox.setOnAction(event -> handleMatchSelection());
+    }
+    
+    private void loadTournaments() {
+        tournaments = FXCollections.observableArrayList(
+            tournamentService.viewAllTournaments()
+        );
+        tournamentComboBox.setItems(tournaments);
+        
+        // Custom cell factory for tournaments to show user-friendly names
+        tournamentComboBox.setCellFactory(lv -> new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+    }
+    
+    private void loadVenues() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Venue> query = em.createQuery(
+                "SELECT v FROM Venue v ORDER BY v.name",
+                Venue.class
+            );
+            venues = FXCollections.observableArrayList(query.getResultList());
+            venueComboBox.setItems(venues);
+            
+            // Custom cell factory for venues
+            venueComboBox.setCellFactory(lv -> new ListCell<Venue>() {
+                @Override
+                protected void updateItem(Venue item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        String location = item.getLocation() != null ? " - " + item.getLocation() : "";
+                        setText(item.getName() + location);
+                    }
+                }
+            });
+            venueComboBox.setButtonCell(new ListCell<Venue>() {
+                @Override
+                protected void updateItem(Venue item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        String location = item.getLocation() != null ? " - " + item.getLocation() : "";
+                        setText(item.getName() + location);
+                    }
+                }
+            });
+        } finally {
+            em.close();
+        }
+    }
+    
+    private void handleTournamentSelection() {
+        Tournament selected = tournamentComboBox.getValue();
+        if (selected != null) {
+            EntityManager em = JPAUtil.getEntityManager();
+            try {
+                // Load matches for selected tournament
+                TypedQuery<Match> query = em.createQuery(
+                    "SELECT m FROM Match m WHERE m.tournament = :tournament AND m.status != 'COMPLETED' ORDER BY m.id",
+                    Match.class
+                );
+                query.setParameter("tournament", selected);
+                matches = FXCollections.observableArrayList(query.getResultList());
+                matchComboBox.setItems(matches);
+                
+                // Custom cell factory for matches
+                matchComboBox.setCellFactory(lv -> new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            String time = item.getScheduledTime() != null ? 
+                                " - " + item.getScheduledTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) : "";
+                            setText(team1 + " vs " + team2 + time);
+                        }
+                    }
+                });
+                matchComboBox.setButtonCell(new ListCell<Match>() {
+                    @Override
+                    protected void updateItem(Match item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            String team1 = item.getTeam1() != null ? item.getTeam1().getName() : "TBD";
+                            String team2 = item.getTeam2() != null ? item.getTeam2().getName() : "TBD";
+                            String time = item.getScheduledTime() != null ? 
+                                " - " + item.getScheduledTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) : "";
+                            setText(team1 + " vs " + team2 + time);
+                        }
+                    }
+                });
+                
+                // Clear previous selection
+                clearMatchDetails();
+            } finally {
+                em.close();
+            }
+        }
     }
     
     /**
@@ -69,13 +208,35 @@ public class PostponeMatchDialogController {
      */
     @FXML
     private void handleMatchSelection() {
-        String selectedMatch = matchComboBox.getValue();
+        Match selectedMatch = matchComboBox.getValue();
         if (selectedMatch != null) {
-            // Display sample match information
-            matchDetailsLabel.setText("Scheduled for December 20, 2025 at 14:00");
-            currentDateLabel.setText("December 20, 2025 - 14:00");
-            currentVenueLabel.setText("Stadium A - Main Field");
+            // Display match information
+            if (selectedMatch.getScheduledTime() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy - HH:mm");
+                String dateTime = selectedMatch.getScheduledTime().format(formatter);
+                matchDetailsLabel.setText("Scheduled for " + dateTime);
+                currentDateLabel.setText(dateTime);
+            } else {
+                matchDetailsLabel.setText("Match time not yet scheduled");
+                currentDateLabel.setText("Not scheduled");
+            }
+            
+            if (selectedMatch.getVenue() != null) {
+                String venueName = selectedMatch.getVenue().getName();
+                String location = selectedMatch.getVenue().getLocation() != null ? 
+                    " - " + selectedMatch.getVenue().getLocation() : "";
+                currentVenueLabel.setText(venueName + location);
+            } else {
+                currentVenueLabel.setText("Not assigned");
+            }
         }
+    }
+    
+    private void clearMatchDetails() {
+        matchComboBox.setValue(null);
+        matchDetailsLabel.setText("");
+        currentDateLabel.setText("-");
+        currentVenueLabel.setText("-");
     }
     
     /**
@@ -83,13 +244,19 @@ public class PostponeMatchDialogController {
      */
     @FXML
     private void handlePostpone() {
-        String selectedMatch = matchComboBox.getValue();
+        Tournament selectedTournament = tournamentComboBox.getValue();
+        Match selectedMatch = matchComboBox.getValue();
         LocalDate newDate = newDatePicker.getValue();
         String newTime = newTimeField.getText();
-        String newVenue = venueComboBox.getValue();
+        Venue newVenue = venueComboBox.getValue();
         String reason = reasonArea.getText();
         
         // Validate inputs
+        if (selectedTournament == null) {
+            showAlert("No Tournament Selected", "Please select a tournament first.", Alert.AlertType.WARNING);
+            return;
+        }
+        
         if (selectedMatch == null) {
             showAlert("No Match Selected", "Please select a match to postpone.", Alert.AlertType.WARNING);
             return;
@@ -115,22 +282,28 @@ public class PostponeMatchDialogController {
             return;
         }
         
+        // Build match description
+        String team1 = selectedMatch.getTeam1() != null ? selectedMatch.getTeam1().getName() : "TBD";
+        String team2 = selectedMatch.getTeam2() != null ? selectedMatch.getTeam2().getName() : "TBD";
+        String matchDesc = team1 + " vs " + team2;
+        
         // Confirm postponement
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Postponement");
-        confirm.setHeaderText("Postpone " + selectedMatch + "?");
+        confirm.setHeaderText("Postpone " + matchDesc + "?");
         confirm.setContentText("New date: " + newDate + " at " + newTime + "\n" +
-                              "New venue: " + newVenue + "\n\n" +
+                              "New venue: " + newVenue.getName() + "\n\n" +
                               "Both teams will be notified of this change.");
         
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                showAlert("Success", selectedMatch + " has been postponed!\n\n" +
+                showAlert("Success", matchDesc + " has been postponed!\n\n" +
                          "New schedule: " + newDate + " at " + newTime + "\n" +
-                         "Venue: " + newVenue + "\n\n" +
+                         "Venue: " + newVenue.getName() + "\n\n" +
                          "Reason: " + reason, Alert.AlertType.INFORMATION);
                 
                 // Clear form
+                tournamentComboBox.setValue(null);
                 matchComboBox.setValue(null);
                 matchDetailsLabel.setText("");
                 currentDateLabel.setText("-");
@@ -148,7 +321,7 @@ public class PostponeMatchDialogController {
      */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) matchComboBox.getScene().getWindow();
+        Stage stage = (Stage) tournamentComboBox.getScene().getWindow();
         stage.close();
     }
     
