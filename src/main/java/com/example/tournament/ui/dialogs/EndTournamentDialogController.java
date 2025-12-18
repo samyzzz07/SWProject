@@ -157,8 +157,10 @@ public class EndTournamentDialogController {
         confirmAlert.setHeaderText("End Tournament: " + selectedTournament.getName());
         confirmAlert.setContentText("Are you absolutely sure you want to end this tournament?\n\n" +
                                    "This action is PERMANENT and CANNOT be undone.\n\n" +
+                                   "The tournament and all its matches will be DELETED from the database.\n\n" +
                                    "Tournament: " + selectedTournament.getName() + "\n" +
-                                   "Status will be changed to: COMPLETED");
+                                   "Teams: " + selectedTournament.getTeams().size() + "\n" +
+                                   "Matches: " + selectedTournament.getMatches().size());
         
         ButtonType result = confirmAlert.showAndWait().orElse(ButtonType.CANCEL);
         
@@ -169,21 +171,21 @@ public class EndTournamentDialogController {
         }
         
         try {
-            // End the tournament
-            boolean success = tournamentService.finalizeTournament(selectedTournament.getId());
+            // Delete the tournament and its matches
+            boolean success = tournamentService.deleteTournament(selectedTournament.getId());
             
             if (success) {
-                statusLabel.setText("Tournament ended successfully!");
+                statusLabel.setText("Tournament deleted successfully!");
                 statusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
                 
                 String finalNotes = finalNotesArea.getText().trim();
                 String notesMessage = finalNotes.isEmpty() ? "" : "\n\nFinal Notes: " + finalNotes;
                 
                 showAlert("Success", 
-                         "Tournament '" + selectedTournament.getName() + "' has been ended!\n\n" +
-                         "Status: COMPLETED\n" +
+                         "Tournament '" + selectedTournament.getName() + "' has been ended and deleted!\n\n" +
+                         "The tournament and all its matches have been removed from the database.\n" +
                          "Total Teams: " + selectedTournament.getTeams().size() + "\n" +
-                         "Total Matches: " + selectedTournament.getMatches().size() + "\n" +
+                         "Total Matches Deleted: " + selectedTournament.getMatches().size() + "\n" +
                          "Completed Matches: " + completedMatchesLabel.getText() +
                          notesMessage,
                          Alert.AlertType.INFORMATION);
@@ -193,9 +195,9 @@ public class EndTournamentDialogController {
                 stage.close();
                 
             } else {
-                statusLabel.setText("Failed to end tournament");
+                statusLabel.setText("Failed to delete tournament");
                 statusLabel.setStyle("-fx-text-fill: red;");
-                showAlert("Error", "Failed to end tournament. Please try again.", Alert.AlertType.ERROR);
+                showAlert("Error", "Failed to delete tournament. Please try again.", Alert.AlertType.ERROR);
             }
             
         } catch (Exception e) {
