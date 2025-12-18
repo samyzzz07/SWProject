@@ -104,6 +104,29 @@ public class GameCoordinatorController {
         }
     }
     
+    /**
+     * Opens dialog to manage venues.
+     */
+    @FXML
+    private void manageVenues() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/venue_management_dialog.fxml"));
+            Parent root = loader.load();
+            
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Venue Management");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(welcomeLabel.getScene().getWindow());
+            dialogStage.setScene(new Scene(root, 650, 600));
+            dialogStage.showAndWait();
+            
+            statusLabel.setText("Venue management completed");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open venue management dialog: " + e.getMessage());
+        }
+    }
+    
     @FXML
     private void handleLogout() {
         try {
