@@ -54,6 +54,9 @@ public class ParticipantTeamController {
     private ComboBox<String> sportComboBox;
     
     @FXML
+    private ComboBox<Tournament> tournamentComboBox;
+    
+    @FXML
     private Label welcomeLabel;
     
     @FXML
@@ -115,6 +118,10 @@ public class ParticipantTeamController {
     // Service for team operations
     private TeamService teamService = new TeamService();
     
+    // Service for tournament operations
+    private com.example.tournament.service.TournamentService tournamentService = 
+        new com.example.tournament.service.TournamentService();
+    
     /**
      * Initializes the controller.
      * Called automatically by JavaFX after FXML loading.
@@ -138,6 +145,9 @@ public class ParticipantTeamController {
             "Football", "Basketball", "Tennis", "Volleyball", "Cricket"
         );
         sportComboBox.setItems(sports);
+        
+        // Load tournaments from database
+        loadTournaments();
         
         // Set up selection listeners
         teamListView.getSelectionModel().selectedItemProperty().addListener(
@@ -228,6 +238,13 @@ public class ParticipantTeamController {
                 return;
             }
             
+            Tournament selectedTournament = tournamentComboBox.getValue();
+            if (selectedTournament == null) {
+                statusLabel.setText("Error: Please select a tournament.");
+                showAlert("Missing Information", "Please select a tournament to register for.");
+                return;
+            }
+            
             // Create new team
             Team newTeam = new Team(teamNameField.getText());
             newTeam.setContactInfo(contactInfoField.getText());
@@ -236,22 +253,44 @@ public class ParticipantTeamController {
             // Register team through team manager
             currentManager.registerTeam(newTeam);
             
+            // Persist the team to database
+            boolean teamSaved = teamService.registerTeam(newTeam);
+            
+            if (!teamSaved) {
+                statusLabel.setText("Error: Failed to save team to database.");
+                showAlert("Error", "Failed to save team to database.", Alert.AlertType.ERROR);
+                return;
+            }
+            
+            // Add team to selected tournament
+            selectedTournament.addTeam(newTeam);
+            
+            // Update tournament in database
+            boolean tournamentUpdated = tournamentService.updateTournament(selectedTournament);
+            
+            if (!tournamentUpdated) {
+                statusLabel.setText("Warning: Team saved but not added to tournament.");
+                showAlert("Warning", "Team was saved but could not be added to tournament.", Alert.AlertType.WARNING);
+            }
+            
             // Add to observable list for UI
             teams.add(newTeam);
             
             statusLabel.setText("Team registered successfully!");
-            System.out.println("✓ Team registered: " + newTeam.getName());
+            System.out.println("✓ Team registered: " + newTeam.getName() + " for tournament: " + selectedTournament.getName());
             
             // Clear input fields
             teamNameField.clear();
             contactInfoField.clear();
+            tournamentComboBox.setValue(null);
             
             // Show confirmation
-            showAlert("Success", "Team '" + newTeam.getName() + "' has been registered successfully!");
+            showAlert("Success", "Team '" + newTeam.getName() + "' has been registered for " + selectedTournament.getName() + "!");
             
         } catch (Exception e) {
             statusLabel.setText("Error registering team: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
             showAlert("Error", "Failed to register team: " + e.getMessage());
         }
     }
@@ -408,20 +447,29 @@ public class ParticipantTeamController {
             boolean added = selectedTeam.addPlayer(newPlayer);
             
             if (added) {
-                // Update observable list
-                players.add(newPlayer);
-                updatePlayerCount();
+                // Persist the updated team to database to save the player
+                boolean success = teamService.updateTeam(selectedTeam);
                 
-                statusLabel.setText("Player added successfully!");
-                System.out.println("✓ Player added: " + newPlayer.getName());
-                
-                // Clear input fields
-                playerNameField.clear();
-                jerseyNumberField.clear();
-                positionField.clear();
-                
-                // Show confirmation
-                showAlert("Success", "Player '" + newPlayer.getName() + "' has been added to " + selectedTeam.getName() + "!");
+                if (success) {
+                    // Reload team from database to get player IDs
+                    reloadSelectedTeamFromDatabase();
+                    
+                    statusLabel.setText("Player added successfully!");
+                    System.out.println("✓ Player added: " + newPlayer.getName() + " with ID: " + newPlayer.getId());
+                    
+                    // Clear input fields
+                    playerNameField.clear();
+                    jerseyNumberField.clear();
+                    positionField.clear();
+                    
+                    // Show confirmation
+                    showAlert("Success", "Player '" + newPlayer.getName() + "' has been added to " + selectedTeam.getName() + "!");
+                } else {
+                    statusLabel.setText("Error: Failed to save player to database.");
+                    showAlert("Error", "Failed to save player to database.", Alert.AlertType.ERROR);
+                    // Remove player from team since it wasn't saved
+                    selectedTeam.getPlayers().remove(newPlayer);
+                }
             } else {
                 statusLabel.setText("Error: Failed to add player.");
                 showAlert("Error", "Failed to add player. The player may already exist in the team.");
@@ -430,6 +478,7 @@ public class ParticipantTeamController {
         } catch (Exception e) {
             statusLabel.setText("Error adding player: " + e.getMessage());
             System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
             showAlert("Error", "Failed to add player: " + e.getMessage());
         }
     }
@@ -771,6 +820,80 @@ public class ParticipantTeamController {
     public void UpdateTeam() {
         if (selectedTeam != null) {
             selectedTeam.UpdateTeam();
+        }
+    }
+    
+    /**
+     * Loads available tournaments from the database.
+     */
+    private void loadTournaments() {
+        try {
+            List<Tournament> tournaments = tournamentService.viewAllTournaments();
+            ObservableList<Tournament> tournamentList = FXCollections.observableArrayList(tournaments);
+            tournamentComboBox.setItems(tournamentList);
+            
+            // Set custom cell factory to display tournament name
+            tournamentComboBox.setCellFactory(param -> new ListCell<Tournament>() {
+                @Override
+                protected void updateItem(Tournament item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+            
+            // Set button cell to display tournament name in the combo box
+            tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+                @Override
+                protected void updateItem(Tournament item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+            
+            System.out.println("Loaded " + tournaments.size() + " tournaments");
+        } catch (Exception e) {
+            System.err.println("Error loading tournaments: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Reloads the selected team from database to get updated player IDs.
+     */
+    private void reloadSelectedTeamFromDatabase() {
+        if (selectedTeam != null && selectedTeam.getId() != null) {
+            try {
+                // Find the team in the database
+                List<Team> allTeams = teamService.getAllTeams();
+                for (Team team : allTeams) {
+                    if (team.getId().equals(selectedTeam.getId())) {
+                        selectedTeam = team;
+                        
+                        // Update the teams list
+                        for (int i = 0; i < teams.size(); i++) {
+                            if (teams.get(i).getId() != null && teams.get(i).getId().equals(team.getId())) {
+                                teams.set(i, team);
+                                break;
+                            }
+                        }
+                        
+                        // Refresh player list
+                        loadTeamPlayers(selectedTeam);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error reloading team: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 }
