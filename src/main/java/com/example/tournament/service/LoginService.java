@@ -1,10 +1,12 @@
 package com.example.tournament.service;
 
+import com.example.tournament.model.TeamManager;
 import com.example.tournament.model.User;
 import com.example.tournament.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.Hibernate;
 
 /**
  * Service class for user authentication and login functionality.
@@ -33,7 +35,16 @@ public class LoginService {
             query.setParameter("username", username);
             query.setParameter("password", password);
             
-            return query.getSingleResult();
+            User user = query.getSingleResult();
+            
+            // Eagerly initialize the teams collection for TeamManager to avoid LazyInitializationException
+            if (user instanceof TeamManager) {
+                TeamManager manager = (TeamManager) user;
+                // Initialize the teams collection while the session is still open
+                Hibernate.initialize(manager.getTeams());
+            }
+            
+            return user;
             
         } catch (NoResultException e) {
             return null; // Invalid credentials
