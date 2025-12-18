@@ -81,7 +81,7 @@ public class TeamService {
         
         try {
             TypedQuery<Team> query = em.createQuery(
-                "SELECT t FROM Team t ORDER BY t.name",
+                "SELECT DISTINCT t FROM Team t LEFT JOIN FETCH t.players ORDER BY t.name",
                 Team.class
             );
             return query.getResultList();
