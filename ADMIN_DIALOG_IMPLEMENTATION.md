@@ -110,19 +110,19 @@ This implementation adds comprehensive dialog windows for all administrator dash
   - Total Teams, Total Matches, Completed Matches
 - **Warning Section**: Prominent warning about permanent action:
   - Cannot be undone
-  - Marks tournament as COMPLETED
-  - Finalizes standings and results
-  - Prevents further modifications
-  - Archives tournament data
+  - **DELETES tournament and all matches from database**
+  - Tournament will no longer appear in any views
+  - All match data will be permanently removed
 - **Final Notes**: Optional text area for closing comments
-- **Confirmation Dialog**: Double confirmation before finalizing
-- **Database Integration**: Updates tournament status to COMPLETED
-- **Auto-refresh**: Updates tournament lists after ending
+- **Confirmation Dialog**: Double confirmation before deletion
+- **Database Integration**: **Deletes tournament and all associated matches**
+- **Auto-refresh**: Updates tournament lists after deletion
 
 **Database Operations**:
 - Fetches active tournaments (status != COMPLETED)
-- Finalizes tournament via `TournamentService.finalizeTournament()`
-- Updates tournament status to `COMPLETED`
+- **Deletes tournament via `TournamentService.deleteTournament()`**
+- **Removes tournament and all matches from database**
+- **Clears join table entries (tournament-teams associations)**
 - Persists changes to database
 
 ## Service Layer Updates
@@ -141,11 +141,17 @@ This implementation adds comprehensive dialog windows for all administrator dash
    - Used for saving rule changes
    - Returns success/failure boolean
 
-3. **`finalizeTournament(Long tournamentId)`** (existing, documented)
+3. **`deleteTournament(Long tournamentId)`** (new, replaces finalizeTournament for end tournament functionality)
+   - **Deletes tournament and all associated matches from database**
+   - Clears tournament-team associations in join table
+   - Cascades deletion to all matches
+   - Returns success/failure boolean
+
+4. **`finalizeTournament(Long tournamentId)`** (existing, kept for potential other uses)
    - Marks tournament as COMPLETED
    - Finalizes standings and results
 
-4. **`viewAllTournaments()`** (existing, documented)
+5. **`viewAllTournaments()`** (existing, documented)
    - Retrieves all tournaments from database
    - Ordered by start date (descending)
 

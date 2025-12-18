@@ -197,4 +197,45 @@ public class TournamentService {
             em.close();
         }
     }
+    
+    /**
+     * Deletes a tournament and all its associated matches from the database.
+     * 
+     * @param tournamentId the ID of the tournament to delete
+     * @return true if successful, false otherwise
+     */
+    public boolean deleteTournament(Long tournamentId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        
+        try {
+            em.getTransaction().begin();
+            
+            Tournament tournament = em.find(Tournament.class, tournamentId);
+            if (tournament == null) {
+                em.getTransaction().rollback();
+                return false;
+            }
+            
+            // Clear the teams list to remove join table entries before deletion.
+            // While JPA should handle this automatically, explicitly clearing ensures
+            // the join table entries are removed in all JPA implementations.
+            tournament.getTeams().clear();
+            
+            // Delete the tournament (cascade will delete matches due to CascadeType.ALL)
+            em.remove(tournament);
+            
+            em.getTransaction().commit();
+            return true;
+            
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            return false;
+            
+        } finally {
+            em.close();
+        }
+    }
 }
