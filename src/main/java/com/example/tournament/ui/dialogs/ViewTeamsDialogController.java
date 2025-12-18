@@ -50,7 +50,7 @@ public class ViewTeamsDialogController {
         
         // Set up status filter
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
-            "All", "APPROVED", "PENDING", "REJECTED", "NOT_REQUESTED"
+            "All", Team.STATUS_APPROVED, Team.STATUS_PENDING, Team.STATUS_REJECTED, Team.STATUS_NOT_REQUESTED
         ));
         statusFilterComboBox.setValue("All");
         
@@ -83,7 +83,7 @@ public class ViewTeamsDialogController {
             for (Team team : teams) {
                 String managerName = team.getManager() != null ? team.getManager().getUsername() : "No Manager";
                 String contact = team.getContactInfo() != null ? team.getContactInfo() : "N/A";
-                String status = team.getApprovalStatus() != null ? team.getApprovalStatus() : "NOT_REQUESTED";
+                String status = team.getApprovalStatus() != null ? team.getApprovalStatus() : Team.STATUS_NOT_REQUESTED;
                 
                 allTeams.add(new TeamData(
                     team.getName(),

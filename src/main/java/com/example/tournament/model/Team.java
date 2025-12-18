@@ -35,8 +35,14 @@ public class Team {
     
     private String contactInfo;
     
+    // Approval status constants
+    public static final String STATUS_NOT_REQUESTED = "NOT_REQUESTED";
+    public static final String STATUS_PENDING = "PENDING";
+    public static final String STATUS_APPROVED = "APPROVED";
+    public static final String STATUS_REJECTED = "REJECTED";
+    
     @Column(name = "approval_status")
-    private String approvalStatus = "NOT_REQUESTED"; // NOT_REQUESTED, PENDING, APPROVED, REJECTED
+    private String approvalStatus = STATUS_NOT_REQUESTED;
     
     // Constructors
     public Team() {
@@ -194,7 +200,7 @@ public class Team {
      * Sets the approval status to PENDING.
      */
     public void RequestApproval() {
-        this.approvalStatus = "PENDING";
+        this.approvalStatus = STATUS_PENDING;
         System.out.println("Team " + name + " requested approval. Status: " + approvalStatus);
     }
     

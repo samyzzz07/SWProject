@@ -90,12 +90,12 @@ public class DataInitializer {
             Team teamZeta = createTeamWithPlayers(em, "Team Zeta", "zeta@team.com");
             
             // Set approval statuses
-            teamAlpha.setApprovalStatus("APPROVED");
-            teamBeta.setApprovalStatus("PENDING");
-            teamGamma.setApprovalStatus("APPROVED");
-            teamDelta.setApprovalStatus("PENDING");
-            teamEpsilon.setApprovalStatus("APPROVED");
-            teamZeta.setApprovalStatus("REJECTED");
+            teamAlpha.setApprovalStatus(Team.STATUS_APPROVED);
+            teamBeta.setApprovalStatus(Team.STATUS_PENDING);
+            teamGamma.setApprovalStatus(Team.STATUS_APPROVED);
+            teamDelta.setApprovalStatus(Team.STATUS_PENDING);
+            teamEpsilon.setApprovalStatus(Team.STATUS_APPROVED);
+            teamZeta.setApprovalStatus(Team.STATUS_REJECTED);
             
             // Associate teams with tournaments
             summerFootball.addTeam(teamAlpha);
