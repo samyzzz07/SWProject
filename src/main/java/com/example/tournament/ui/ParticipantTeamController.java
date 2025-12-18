@@ -446,6 +446,9 @@ public class ParticipantTeamController {
                 positionField.getText()
             );
             
+            // Save team name before reload (to prevent NPE if selectedTeam becomes null during reload)
+            String teamName = selectedTeam.getName();
+            
             // Add player to selected team
             boolean added = selectedTeam.addPlayer(newPlayer);
             
@@ -472,13 +475,15 @@ public class ParticipantTeamController {
                     jerseyNumberField.clear();
                     positionField.clear();
                     
-                    // Show confirmation
-                    showAlert("Success", "Player '" + newPlayer.getName() + "' has been added to " + selectedTeam.getName() + "!");
+                    // Show confirmation using saved team name
+                    showAlert("Success", "Player '" + newPlayer.getName() + "' has been added to " + teamName + "!");
                 } else {
                     statusLabel.setText("Error: Failed to save player to database.");
                     showAlert("Error", "Failed to save player to database.", Alert.AlertType.ERROR);
                     // Remove player from team since it wasn't saved
-                    selectedTeam.getPlayers().remove(newPlayer);
+                    if (selectedTeam != null) {
+                        selectedTeam.getPlayers().remove(newPlayer);
+                    }
                 }
             } else {
                 statusLabel.setText("Error: Failed to add player.");
@@ -939,12 +944,19 @@ public class ParticipantTeamController {
             if (foundTeam != null) {
                 selectedTeam = foundTeam;
                 
-                // Update the teams list
+                // Update the teams list and maintain ListView selection
+                int selectedIndex = -1;
                 for (int i = 0; i < teams.size(); i++) {
                     if (teams.get(i).getId() != null && teams.get(i).getId().equals(teamId)) {
                         teams.set(i, foundTeam);
+                        selectedIndex = i;
                         break;
                     }
+                }
+                
+                // Restore selection in ListView to prevent selectedTeam from becoming null
+                if (selectedIndex >= 0) {
+                    teamListView.getSelectionModel().select(selectedIndex);
                 }
                 
                 // Refresh player list
