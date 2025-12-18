@@ -6,6 +6,7 @@ import com.example.tournament.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.Hibernate;
 
 /**
  * Service class for user authentication and login functionality.
@@ -39,8 +40,8 @@ public class LoginService {
             // Eagerly initialize the teams collection for TeamManager to avoid LazyInitializationException
             if (user instanceof TeamManager) {
                 TeamManager manager = (TeamManager) user;
-                // Access the teams collection to force Hibernate to load it while the session is still open
-                manager.getTeams().size();
+                // Initialize the teams collection while the session is still open
+                Hibernate.initialize(manager.getTeams());
             }
             
             return user;
