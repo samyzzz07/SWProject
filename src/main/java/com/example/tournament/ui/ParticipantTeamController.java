@@ -455,7 +455,14 @@ public class ParticipantTeamController {
                 
                 if (success) {
                     // Reload team from database to get player IDs
-                    reloadSelectedTeamFromDatabase();
+                    boolean reloaded = reloadSelectedTeamFromDatabase();
+                    
+                    // Check if reload was successful
+                    if (!reloaded || selectedTeam == null) {
+                        statusLabel.setText("Warning: Player added but team data could not be refreshed.");
+                        showAlert("Warning", "Player was successfully added to the database, but the team data could not be refreshed. Please refresh the page manually.", Alert.AlertType.WARNING);
+                        return;
+                    }
                     
                     statusLabel.setText("Player added successfully!");
                     System.out.println("✓ Player added: " + newPlayer.getName() + " with ID: " + newPlayer.getId());
@@ -696,6 +703,12 @@ public class ParticipantTeamController {
      * Loads players for a selected team.
      */
     private void loadTeamPlayers(Team team) {
+        if (team == null) {
+            System.err.println("Cannot load players: team is null");
+            players.clear();
+            updatePlayerCount();
+            return;
+        }
         System.out.println("Loading players for team: " + team.getName());
         players.clear();
         players.addAll(team.getPlayers());
@@ -902,33 +915,49 @@ public class ParticipantTeamController {
     
     /**
      * Reloads the selected team from database to get updated player IDs.
+     * @return true if team was successfully reloaded, false otherwise
      */
-    private void reloadSelectedTeamFromDatabase() {
-        if (selectedTeam != null && selectedTeam.getId() != null) {
-            try {
-                // Find the team in the database
-                List<Team> allTeams = teamService.getAllTeams();
-                for (Team team : allTeams) {
-                    if (team.getId().equals(selectedTeam.getId())) {
-                        selectedTeam = team;
-                        
-                        // Update the teams list
-                        for (int i = 0; i < teams.size(); i++) {
-                            if (teams.get(i).getId() != null && teams.get(i).getId().equals(team.getId())) {
-                                teams.set(i, team);
-                                break;
-                            }
-                        }
-                        
-                        // Refresh player list
-                        loadTeamPlayers(selectedTeam);
+    private boolean reloadSelectedTeamFromDatabase() {
+        if (selectedTeam == null || selectedTeam.getId() == null) {
+            System.err.println("Cannot reload team: selectedTeam or its ID is null");
+            return false;
+        }
+        
+        Long teamId = selectedTeam.getId();
+        try {
+            // Find the team in the database
+            List<Team> allTeams = teamService.getAllTeams();
+            Team foundTeam = null;
+            
+            for (Team team : allTeams) {
+                if (team != null && team.getId() != null && team.getId().equals(teamId)) {
+                    foundTeam = team;
+                    break;
+                }
+            }
+            
+            if (foundTeam != null) {
+                selectedTeam = foundTeam;
+                
+                // Update the teams list
+                for (int i = 0; i < teams.size(); i++) {
+                    if (teams.get(i).getId() != null && teams.get(i).getId().equals(teamId)) {
+                        teams.set(i, foundTeam);
                         break;
                     }
                 }
-            } catch (Exception e) {
-                System.err.println("Error reloading team: " + e.getMessage());
-                e.printStackTrace();
+                
+                // Refresh player list
+                loadTeamPlayers(selectedTeam);
+                return true;
+            } else {
+                System.err.println("Warning: Team with ID " + teamId + " not found in database during reload");
+                return false;
             }
+        } catch (Exception e) {
+            System.err.println("Error reloading team: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 }
