@@ -1,5 +1,6 @@
 package com.example.tournament.service;
 
+import com.example.tournament.model.TeamManager;
 import com.example.tournament.model.User;
 import com.example.tournament.util.JPAUtil;
 import jakarta.persistence.EntityManager;
@@ -36,8 +37,8 @@ public class LoginService {
             User user = query.getSingleResult();
             
             // Eagerly initialize the teams collection for TeamManager to avoid LazyInitializationException
-            if (user instanceof com.example.tournament.model.TeamManager) {
-                com.example.tournament.model.TeamManager manager = (com.example.tournament.model.TeamManager) user;
+            if (user instanceof TeamManager) {
+                TeamManager manager = (TeamManager) user;
                 // Access the teams collection to force Hibernate to load it while the session is still open
                 manager.getTeams().size();
             }
