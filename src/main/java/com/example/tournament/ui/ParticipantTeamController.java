@@ -270,7 +270,14 @@ public class ParticipantTeamController {
      * Shows an alert dialog.
      */
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        showAlert(title, message, Alert.AlertType.INFORMATION);
+    }
+    
+    /**
+     * Shows an alert dialog with specified type.
+     */
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -530,11 +537,11 @@ public class ParticipantTeamController {
                 showAlert("Success", "Team '" + selectedTeam.getName() + "' has been updated!");
             } else {
                 statusLabel.setText("Error: Failed to persist team update.");
-                showAlert("Error", "Failed to save team update to database.");
+                showAlert("Error", "Failed to save team update to database.", Alert.AlertType.ERROR);
             }
         } catch (Exception e) {
             statusLabel.setText("Error updating team: " + e.getMessage());
-            showAlert("Error", "Failed to update team: " + e.getMessage());
+            showAlert("Error", "Failed to update team: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
@@ -593,11 +600,11 @@ public class ParticipantTeamController {
                 showAlert("Success", "Approval request for team '" + selectedTeam.getName() + "' has been submitted!");
             } else {
                 statusLabel.setText("Error: Failed to save approval request.");
-                showAlert("Error", "Failed to save approval request to database.");
+                showAlert("Error", "Failed to save approval request to database.", Alert.AlertType.ERROR);
             }
         } catch (Exception e) {
             statusLabel.setText("Error requesting approval: " + e.getMessage());
-            showAlert("Error", "Failed to request approval: " + e.getMessage());
+            showAlert("Error", "Failed to request approval: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
