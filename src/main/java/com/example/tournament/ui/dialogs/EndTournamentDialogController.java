@@ -151,6 +151,9 @@ public class EndTournamentDialogController {
             return;
         }
         
+        // Note: selectedTournament's teams and matches are already loaded via viewAllTournaments()
+        // which uses JOIN FETCH, so no lazy loading issues here
+        
         // Confirm the action
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirm End Tournament");

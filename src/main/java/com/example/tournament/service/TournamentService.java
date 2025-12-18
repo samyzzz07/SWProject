@@ -216,7 +216,9 @@ public class TournamentService {
                 return false;
             }
             
-            // Clear the teams list to remove join table entries
+            // Clear the teams list to remove join table entries before deletion.
+            // While JPA should handle this automatically, explicitly clearing ensures
+            // the join table entries are removed in all JPA implementations.
             tournament.getTeams().clear();
             
             // Delete the tournament (cascade will delete matches due to CascadeType.ALL)
