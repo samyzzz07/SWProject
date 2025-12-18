@@ -1,10 +1,15 @@
 package com.example.tournament.ui.dialogs;
 
+import com.example.tournament.model.Team;
+import com.example.tournament.service.TeamService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for the Approve Team Dialog.
@@ -12,7 +17,7 @@ import javafx.collections.ObservableList;
 public class ApproveTeamDialogController {
     
     @FXML
-    private ComboBox<String> teamComboBox;
+    private ComboBox<Team> teamComboBox;
     
     @FXML
     private Label teamNameLabel;
@@ -32,19 +37,50 @@ public class ApproveTeamDialogController {
     @FXML
     private TextArea notesArea;
     
+    // Service for team operations
+    private TeamService teamService = new TeamService();
+    
     /**
-     * Initialize the dialog with sample data.
+     * Initialize the dialog with teams from database.
      */
     @FXML
     public void initialize() {
-        // Populate pending teams
-        ObservableList<String> pendingTeams = FXCollections.observableArrayList(
-            "Team Beta",
-            "Team Delta",
-            "Team Theta",
-            "Team Omega"
-        );
-        teamComboBox.setItems(pendingTeams);
+        // Load pending teams from database
+        loadPendingTeams();
+        
+        // Configure the ComboBox to display team names
+        teamComboBox.setConverter(new javafx.util.StringConverter<Team>() {
+            @Override
+            public String toString(Team team) {
+                return team != null ? team.getName() : "";
+            }
+            
+            @Override
+            public Team fromString(String string) {
+                return null; // Not needed for this use case
+            }
+        });
+    }
+    
+    /**
+     * Load teams with PENDING approval status from the database.
+     */
+    private void loadPendingTeams() {
+        try {
+            List<Team> allTeams = teamService.getAllTeams();
+            List<Team> pendingTeams = allTeams.stream()
+                .filter(team -> "PENDING".equals(team.getApprovalStatus()))
+                .collect(Collectors.toList());
+            
+            ObservableList<Team> teamList = FXCollections.observableArrayList(pendingTeams);
+            teamComboBox.setItems(teamList);
+            
+            System.out.println("Loaded " + pendingTeams.size() + " pending teams for approval");
+        } catch (Exception e) {
+            System.err.println("Error loading pending teams: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Failed to load pending teams: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
     
     /**
@@ -52,41 +88,18 @@ public class ApproveTeamDialogController {
      */
     @FXML
     private void handleTeamSelection() {
-        String selectedTeam = teamComboBox.getValue();
+        Team selectedTeam = teamComboBox.getValue();
         if (selectedTeam != null) {
-            // Display sample team information based on selection
-            switch (selectedTeam) {
-                case "Team Beta":
-                    teamNameLabel.setText("Team Beta");
-                    managerLabel.setText("Jane Leader");
-                    contactLabel.setText("beta@team.com | (555) 123-4567");
-                    playersLabel.setText("11 registered players");
-                    registrationDateLabel.setText("December 5, 2025");
-                    break;
-                case "Team Delta":
-                    teamNameLabel.setText("Team Delta");
-                    managerLabel.setText("Sarah Director");
-                    contactLabel.setText("delta@team.com | (555) 234-5678");
-                    playersLabel.setText("10 registered players");
-                    registrationDateLabel.setText("December 8, 2025");
-                    break;
-                case "Team Theta":
-                    teamNameLabel.setText("Team Theta");
-                    managerLabel.setText("Robert Coach");
-                    contactLabel.setText("theta@team.com | (555) 345-6789");
-                    playersLabel.setText("12 registered players");
-                    registrationDateLabel.setText("December 10, 2025");
-                    break;
-                case "Team Omega":
-                    teamNameLabel.setText("Team Omega");
-                    managerLabel.setText("Lisa Manager");
-                    contactLabel.setText("omega@team.com | (555) 456-7890");
-                    playersLabel.setText("11 registered players");
-                    registrationDateLabel.setText("December 12, 2025");
-                    break;
-                default:
-                    clearTeamInfo();
-            }
+            // Display team information
+            teamNameLabel.setText(selectedTeam.getName());
+            managerLabel.setText(selectedTeam.getManager() != null ? 
+                selectedTeam.getManager().getUsername() : "N/A");
+            contactLabel.setText(selectedTeam.getContactInfo() != null ? 
+                selectedTeam.getContactInfo() : "N/A");
+            playersLabel.setText(selectedTeam.getPlayers().size() + " registered players");
+            registrationDateLabel.setText("N/A"); // Could add a registration date field to Team if needed
+        } else {
+            clearTeamInfo();
         }
     }
     
@@ -106,7 +119,7 @@ public class ApproveTeamDialogController {
      */
     @FXML
     private void handleApprove() {
-        String selectedTeam = teamComboBox.getValue();
+        Team selectedTeam = teamComboBox.getValue();
         
         if (selectedTeam == null) {
             showAlert("No Team Selected", "Please select a team to approve.", Alert.AlertType.WARNING);
@@ -116,21 +129,35 @@ public class ApproveTeamDialogController {
         // Confirm approval
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Approval");
-        confirm.setHeaderText("Approve " + selectedTeam + "?");
+        confirm.setHeaderText("Approve " + selectedTeam.getName() + "?");
         confirm.setContentText("Are you sure you want to approve this team for tournament participation?");
         
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // In a real application, this would update the database
-                String notes = notesArea.getText();
-                showAlert("Success", selectedTeam + " has been approved for tournament participation!\n\n" +
-                         (notes.isEmpty() ? "" : "Notes: " + notes), Alert.AlertType.INFORMATION);
-                
-                // Remove from pending list
-                teamComboBox.getItems().remove(selectedTeam);
-                teamComboBox.setValue(null);
-                clearTeamInfo();
-                notesArea.clear();
+                try {
+                    // Update the approval status
+                    selectedTeam.setApprovalStatus("APPROVED");
+                    
+                    // Persist to database
+                    boolean success = teamService.updateTeam(selectedTeam);
+                    
+                    if (success) {
+                        String notes = notesArea.getText();
+                        showAlert("Success", selectedTeam.getName() + " has been approved for tournament participation!\n\n" +
+                                 (notes.isEmpty() ? "" : "Notes: " + notes), Alert.AlertType.INFORMATION);
+                        
+                        // Remove from pending list
+                        teamComboBox.getItems().remove(selectedTeam);
+                        teamComboBox.setValue(null);
+                        clearTeamInfo();
+                        notesArea.clear();
+                    } else {
+                        showAlert("Error", "Failed to save approval status to database.", Alert.AlertType.ERROR);
+                    }
+                } catch (Exception e) {
+                    showAlert("Error", "Failed to approve team: " + e.getMessage(), Alert.AlertType.ERROR);
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -140,7 +167,7 @@ public class ApproveTeamDialogController {
      */
     @FXML
     private void handleReject() {
-        String selectedTeam = teamComboBox.getValue();
+        Team selectedTeam = teamComboBox.getValue();
         
         if (selectedTeam == null) {
             showAlert("No Team Selected", "Please select a team to reject.", Alert.AlertType.WARNING);
@@ -150,20 +177,35 @@ public class ApproveTeamDialogController {
         // Confirm rejection
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Rejection");
-        confirm.setHeaderText("Reject " + selectedTeam + "?");
+        confirm.setHeaderText("Reject " + selectedTeam.getName() + "?");
         confirm.setContentText("Are you sure you want to reject this team's registration?");
         
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                String notes = notesArea.getText();
-                showAlert("Rejected", selectedTeam + " has been rejected.\n\n" +
-                         (notes.isEmpty() ? "" : "Reason: " + notes), Alert.AlertType.INFORMATION);
-                
-                // Remove from pending list
-                teamComboBox.getItems().remove(selectedTeam);
-                teamComboBox.setValue(null);
-                clearTeamInfo();
-                notesArea.clear();
+                try {
+                    // Update the approval status
+                    selectedTeam.setApprovalStatus("REJECTED");
+                    
+                    // Persist to database
+                    boolean success = teamService.updateTeam(selectedTeam);
+                    
+                    if (success) {
+                        String notes = notesArea.getText();
+                        showAlert("Rejected", selectedTeam.getName() + " has been rejected.\n\n" +
+                                 (notes.isEmpty() ? "" : "Reason: " + notes), Alert.AlertType.INFORMATION);
+                        
+                        // Remove from pending list
+                        teamComboBox.getItems().remove(selectedTeam);
+                        teamComboBox.setValue(null);
+                        clearTeamInfo();
+                        notesArea.clear();
+                    } else {
+                        showAlert("Error", "Failed to save rejection status to database.", Alert.AlertType.ERROR);
+                    }
+                } catch (Exception e) {
+                    showAlert("Error", "Failed to reject team: " + e.getMessage(), Alert.AlertType.ERROR);
+                    e.printStackTrace();
+                }
             }
         });
     }

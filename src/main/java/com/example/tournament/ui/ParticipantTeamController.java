@@ -1,6 +1,7 @@
 package com.example.tournament.ui;
 
 import com.example.tournament.model.*;
+import com.example.tournament.service.TeamService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -110,6 +111,9 @@ public class ParticipantTeamController {
     
     // Currently selected team for adding time slots
     private Team selectedTeam;
+    
+    // Service for team operations
+    private TeamService teamService = new TeamService();
     
     /**
      * Initializes the controller.
@@ -511,9 +515,23 @@ public class ParticipantTeamController {
         }
         
         try {
+            // Call UpdateTeam on the model
             selectedTeam.UpdateTeam();
-            statusLabel.setText("Team updated successfully!");
-            showAlert("Success", "Team '" + selectedTeam.getName() + "' has been updated!");
+            
+            // Persist the updated team to the database
+            boolean success = teamService.updateTeam(selectedTeam);
+            
+            if (success) {
+                // Refresh the player list to show updated data
+                loadTeamPlayers(selectedTeam);
+                updatePlayerCount();
+                
+                statusLabel.setText("Team updated successfully!");
+                showAlert("Success", "Team '" + selectedTeam.getName() + "' has been updated!");
+            } else {
+                statusLabel.setText("Error: Failed to persist team update.");
+                showAlert("Error", "Failed to save team update to database.");
+            }
         } catch (Exception e) {
             statusLabel.setText("Error updating team: " + e.getMessage());
             showAlert("Error", "Failed to update team: " + e.getMessage());
@@ -564,9 +582,19 @@ public class ParticipantTeamController {
                 return;
             }
             
+            // Set approval status to PENDING
             selectedTeam.RequestApproval();
-            statusLabel.setText("Approval request sent successfully!");
-            showAlert("Success", "Approval request for team '" + selectedTeam.getName() + "' has been submitted!");
+            
+            // Persist the approval status to the database
+            boolean success = teamService.updateTeam(selectedTeam);
+            
+            if (success) {
+                statusLabel.setText("Approval request sent successfully!");
+                showAlert("Success", "Approval request for team '" + selectedTeam.getName() + "' has been submitted!");
+            } else {
+                statusLabel.setText("Error: Failed to save approval request.");
+                showAlert("Error", "Failed to save approval request to database.");
+            }
         } catch (Exception e) {
             statusLabel.setText("Error requesting approval: " + e.getMessage());
             showAlert("Error", "Failed to request approval: " + e.getMessage());
