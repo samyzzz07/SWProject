@@ -81,11 +81,9 @@ public class Player {
     
     @Override
     public String toString() {
-        return "Player{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", jerseyNumber=" + jerseyNumber +
-                ", position='" + position + '\'' +
-                '}';
+        return "ID: " + (id != null ? id : "N/A") + 
+                " | Name: " + name +
+                " | Jersey #" + jerseyNumber +
+                " | Position: " + (position != null && !position.isEmpty() ? position : "N/A");
     }
 }

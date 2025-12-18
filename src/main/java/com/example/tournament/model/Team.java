@@ -35,6 +35,9 @@ public class Team {
     
     private String contactInfo;
     
+    @Column(name = "approval_status")
+    private String approvalStatus = "NOT_REQUESTED"; // NOT_REQUESTED, PENDING, APPROVED, REJECTED
+    
     // Constructors
     public Team() {
     }
@@ -87,6 +90,14 @@ public class Team {
     
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
+    }
+    
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+    
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
     
     public void addPreferredTimeSlot(TimeSlot timeSlot) {
@@ -179,11 +190,12 @@ public class Team {
     }
     
     /**
-     * Requests approval for the team (placeholder method).
-     * In a real application, this would create an approval request.
+     * Requests approval for the team.
+     * Sets the approval status to PENDING.
      */
     public void RequestApproval() {
-        System.out.println("Team " + name + " requested approval.");
+        this.approvalStatus = "PENDING";
+        System.out.println("Team " + name + " requested approval. Status: " + approvalStatus);
     }
     
     /**
