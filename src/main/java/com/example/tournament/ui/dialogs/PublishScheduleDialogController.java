@@ -23,7 +23,7 @@ import java.util.Map;
 public class PublishScheduleDialogController {
     
     @FXML
-    private ComboBox<String> tournamentComboBox;
+    private ComboBox<Tournament> tournamentComboBox;
     
     @FXML
     private TableView<MatchData> scheduleTableView;
@@ -60,7 +60,6 @@ public class PublishScheduleDialogController {
     
     private TournamentService tournamentService;
     private MatchService matchService;
-    private Map<String, Tournament> tournamentMap;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy - HH:mm");
     
@@ -71,7 +70,6 @@ public class PublishScheduleDialogController {
     public void initialize() {
         tournamentService = new TournamentService();
         matchService = new MatchService();
-        tournamentMap = new HashMap<>();
         
         // Set up table columns
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("match"));
@@ -79,40 +77,46 @@ public class PublishScheduleDialogController {
         venueColumn.setCellValueFactory(new PropertyValueFactory<>("venue"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         
-        // Load tournaments from database and add dummy data
+        // Load tournaments from database
         loadTournaments();
     }
     
     /**
-     * Load tournaments from database and add dummy data.
+     * Load tournaments from database.
      */
     private void loadTournaments() {
-        ObservableList<String> tournamentNames = FXCollections.observableArrayList();
+        List<Tournament> tournaments = tournamentService.viewAllTournaments();
+        tournamentComboBox.setItems(FXCollections.observableArrayList(tournaments));
         
-        // Load from database
-        List<Tournament> dbTournaments = tournamentService.viewAllTournaments();
-        for (Tournament tournament : dbTournaments) {
-            String name = tournament.getName();
-            tournamentNames.add(name);
-            tournamentMap.put(name, tournament);
-        }
-        
-        // Add dummy tournaments to maintain backward compatibility
-        if (!tournamentNames.contains("Winter Championship 2025")) {
-            tournamentNames.add("Winter Championship 2025");
-        }
-        if (!tournamentNames.contains("Spring League 2025")) {
-            tournamentNames.add("Spring League 2025");
-        }
-        if (!tournamentNames.contains("Summer Cup 2025")) {
-            tournamentNames.add("Summer Cup 2025");
-        }
-        
-        tournamentComboBox.setItems(tournamentNames);
+        // Custom cell factory for tournaments to show user-friendly names
+        tournamentComboBox.setCellFactory(lv -> new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
         
         // Set default selection
-        if (!tournamentNames.isEmpty()) {
-            tournamentComboBox.setValue(tournamentNames.get(0));
+        if (!tournaments.isEmpty()) {
+            tournamentComboBox.setValue(tournaments.get(0));
             handleTournamentSelection();
         }
     }
@@ -122,66 +126,31 @@ public class PublishScheduleDialogController {
      */
     @FXML
     private void handleTournamentSelection() {
-        String selected = tournamentComboBox.getValue();
+        Tournament selected = tournamentComboBox.getValue();
         if (selected != null) {
             ObservableList<MatchData> scheduleData = FXCollections.observableArrayList();
             
-            // Check if this is a database tournament
-            Tournament tournament = tournamentMap.get(selected);
-            if (tournament != null) {
-                // Load matches from database
-                List<Match> matches = matchService.getMatchesByTournament(tournament.getId());
+            // Load matches from database
+            List<Match> matches = matchService.getMatchesByTournament(selected.getId());
+            
+            for (Match match : matches) {
+                String matchName = (match.getTeam1() != null ? match.getTeam1().getName() : "TBD") 
+                                 + " vs " 
+                                 + (match.getTeam2() != null ? match.getTeam2().getName() : "TBD");
+                String dateTime = match.getScheduledTime() != null 
+                                ? match.getScheduledTime().format(dateTimeFormatter) 
+                                : "Not scheduled";
+                String venueName = match.getVenue() != null ? match.getVenue().getName() : "TBD";
+                String status = match.getStatus() != null ? match.getStatus().toString() : "SCHEDULED";
                 
-                for (Match match : matches) {
-                    String matchName = (match.getTeam1() != null ? match.getTeam1().getName() : "TBD") 
-                                     + " vs " 
-                                     + (match.getTeam2() != null ? match.getTeam2().getName() : "TBD");
-                    String dateTime = match.getScheduledTime() != null 
-                                    ? match.getScheduledTime().format(dateTimeFormatter) 
-                                    : "Not scheduled";
-                    String venueName = match.getVenue() != null ? match.getVenue().getName() : "TBD";
-                    String status = match.getStatus() != null ? match.getStatus().toString() : "SCHEDULED";
-                    
-                    scheduleData.add(new MatchData(matchName, dateTime, venueName, status));
-                }
-                
-                // Update schedule info from database
-                totalMatchesLabel.setText(String.valueOf(matches.size()));
-                startDateLabel.setText(tournament.getStartDate() != null ? tournament.getStartDate().format(dateFormatter) : "-");
-                endDateLabel.setText(tournament.getEndDate() != null ? tournament.getEndDate().format(dateFormatter) : "-");
-                publishedStatusLabel.setText(matches.isEmpty() ? "Not Published" : "Published");
-            } else {
-                // Use dummy data for backward compatibility
-                if (selected.equals("Winter Championship 2025")) {
-                    scheduleData.addAll(FXCollections.observableArrayList(
-                        new MatchData("Team Alpha vs Team Beta", "Dec 20, 2025 - 14:00", "Stadium A", "Scheduled"),
-                        new MatchData("Team Gamma vs Team Delta", "Dec 21, 2025 - 16:00", "Stadium B", "Scheduled"),
-                        new MatchData("Team Epsilon vs Team Zeta", "Dec 22, 2025 - 18:00", "Stadium A", "Scheduled"),
-                        new MatchData("Team Alpha vs Team Gamma", "Dec 23, 2025 - 14:00", "Stadium C", "Scheduled"),
-                        new MatchData("Team Beta vs Team Delta", "Dec 24, 2025 - 16:00", "Stadium B", "Scheduled")
-                    ));
-                    startDateLabel.setText("December 20, 2025");
-                    endDateLabel.setText("December 24, 2025");
-                } else if (selected.equals("Spring League 2025")) {
-                    scheduleData.addAll(FXCollections.observableArrayList(
-                        new MatchData("Lions vs Tigers", "Mar 15, 2025 - 15:00", "Arena 1", "Scheduled"),
-                        new MatchData("Bears vs Wolves", "Mar 16, 2025 - 17:00", "Arena 2", "Scheduled"),
-                        new MatchData("Eagles vs Hawks", "Mar 17, 2025 - 19:00", "Arena 1", "Scheduled")
-                    ));
-                    startDateLabel.setText("March 15, 2025");
-                    endDateLabel.setText("March 17, 2025");
-                } else if (selected.equals("Summer Cup 2025")) {
-                    scheduleData.addAll(FXCollections.observableArrayList(
-                        new MatchData("Sharks vs Dolphins", "Jun 10, 2025 - 16:00", "Pool Complex", "Scheduled"),
-                        new MatchData("Whales vs Seals", "Jun 11, 2025 - 18:00", "Pool Complex", "Scheduled")
-                    ));
-                    startDateLabel.setText("June 10, 2025");
-                    endDateLabel.setText("June 11, 2025");
-                }
-                
-                totalMatchesLabel.setText(String.valueOf(scheduleData.size()));
-                publishedStatusLabel.setText("Not Published");
+                scheduleData.add(new MatchData(matchName, dateTime, venueName, status));
             }
+            
+            // Update schedule info from database
+            totalMatchesLabel.setText(String.valueOf(matches.size()));
+            startDateLabel.setText(selected.getStartDate() != null ? selected.getStartDate().format(dateFormatter) : "-");
+            endDateLabel.setText(selected.getEndDate() != null ? selected.getEndDate().format(dateFormatter) : "-");
+            publishedStatusLabel.setText(matches.isEmpty() ? "Not Published" : "Published");
             
             scheduleTableView.setItems(scheduleData);
         }
@@ -192,15 +161,14 @@ public class PublishScheduleDialogController {
      */
     @FXML
     private void handlePublish() {
-        String tournamentName = tournamentComboBox.getValue();
+        Tournament tournament = tournamentComboBox.getValue();
         
-        if (tournamentName == null) {
+        if (tournament == null) {
             showAlert("No Tournament Selected", "Please select a tournament to publish.", Alert.AlertType.WARNING);
             return;
         }
         
-        // Check if this is a database tournament
-        Tournament tournament = tournamentMap.get(tournamentName);
+        String tournamentName = tournament.getName();
         
         // Confirm publication
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
@@ -212,55 +180,41 @@ public class PublishScheduleDialogController {
         
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // For database tournaments, save matches if they don't already exist
-                if (tournament != null) {
-                    // Generate schedule and save matches to database
-                    try {
-                        tournament.generateSchedule();
-                        
-                        // Save generated matches to database
-                        List<Match> matches = tournament.getMatches();
-                        if (!matches.isEmpty()) {
-                            boolean success = matchService.saveMatches(matches);
-                            if (success) {
-                                publishedStatusLabel.setText("Published");
-                                publishedStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-                                
-                                showAlert("Success", 
-                                    "Schedule has been published successfully and saved to database!\n\n" +
-                                    "Tournament: " + tournamentName + "\n" +
-                                    "Total Matches: " + matches.size() + "\n" +
-                                    (notifyTeamsCheckBox.isSelected() ? "Teams have been notified via email.\n" : "") +
-                                    (publicAccessCheckBox.isSelected() ? "Schedule is now publicly accessible." : ""),
-                                    Alert.AlertType.INFORMATION);
-                                
-                                // Refresh the display
-                                handleTournamentSelection();
-                            } else {
-                                showAlert("Error", "Failed to save matches to database.", Alert.AlertType.ERROR);
-                            }
-                        } else {
-                            showAlert("Warning", 
-                                "No matches generated. Please ensure the tournament has teams assigned.",
-                                Alert.AlertType.WARNING);
-                        }
-                    } catch (Exception e) {
-                        showAlert("Error", 
-                            "Failed to generate or save schedule: " + e.getMessage(),
-                            Alert.AlertType.ERROR);
-                        e.printStackTrace();
-                    }
-                } else {
-                    // For dummy tournaments, just show success message
-                    publishedStatusLabel.setText("Published");
-                    publishedStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                // Generate schedule and save matches to database
+                try {
+                    tournament.generateSchedule();
                     
-                    showAlert("Success", "Schedule has been published successfully!\n\n" +
-                             "Tournament: " + tournamentName + "\n" +
-                             "Total Matches: " + totalMatchesLabel.getText() + "\n" +
-                             (notifyTeamsCheckBox.isSelected() ? "Teams have been notified via email.\n" : "") +
-                             (publicAccessCheckBox.isSelected() ? "Schedule is now publicly accessible." : ""),
-                             Alert.AlertType.INFORMATION);
+                    // Save generated matches to database
+                    List<Match> matches = tournament.getMatches();
+                    if (!matches.isEmpty()) {
+                        boolean success = matchService.saveMatches(matches);
+                        if (success) {
+                            publishedStatusLabel.setText("Published");
+                            publishedStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                            
+                            showAlert("Success", 
+                                "Schedule has been published successfully and saved to database!\n\n" +
+                                "Tournament: " + tournamentName + "\n" +
+                                "Total Matches: " + matches.size() + "\n" +
+                                (notifyTeamsCheckBox.isSelected() ? "Teams have been notified via email.\n" : "") +
+                                (publicAccessCheckBox.isSelected() ? "Schedule is now publicly accessible." : ""),
+                                Alert.AlertType.INFORMATION);
+                            
+                            // Refresh the display
+                            handleTournamentSelection();
+                        } else {
+                            showAlert("Error", "Failed to save matches to database.", Alert.AlertType.ERROR);
+                        }
+                    } else {
+                        showAlert("Warning", 
+                            "No matches generated. Please ensure the tournament has teams assigned.",
+                            Alert.AlertType.WARNING);
+                    }
+                } catch (Exception e) {
+                    showAlert("Error", 
+                        "Failed to generate or save schedule: " + e.getMessage(),
+                        Alert.AlertType.ERROR);
+                    e.printStackTrace();
                 }
             }
         });
