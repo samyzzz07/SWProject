@@ -146,6 +146,9 @@ public class ParticipantTeamController {
         );
         sportComboBox.setItems(sports);
         
+        // Add listener to filter tournaments by selected sport
+        sportComboBox.setOnAction(event -> handleSportSelection());
+        
         // Load tournaments from database
         loadTournaments();
         
@@ -827,12 +830,28 @@ public class ParticipantTeamController {
      * Loads available tournaments from the database.
      */
     private void loadTournaments() {
+        loadTournaments(null);
+    }
+    
+    /**
+     * Loads available tournaments from the database, optionally filtered by sport.
+     * @param sportName the name of the sport to filter by, or null to load all tournaments
+     */
+    private void loadTournaments(String sportName) {
         try {
             List<Tournament> tournaments = tournamentService.viewAllTournaments();
+            
+            // Filter by sport if specified
+            if (sportName != null && !sportName.isEmpty()) {
+                tournaments = tournaments.stream()
+                    .filter(t -> t.getSport() != null && t.getSport().getName().equalsIgnoreCase(sportName))
+                    .collect(java.util.stream.Collectors.toList());
+            }
+            
             ObservableList<Tournament> tournamentList = FXCollections.observableArrayList(tournaments);
             tournamentComboBox.setItems(tournamentList);
             
-            // Set custom cell factory to display tournament name
+            // Set custom cell factory to display tournament name with sport
             tournamentComboBox.setCellFactory(param -> new ListCell<Tournament>() {
                 @Override
                 protected void updateItem(Tournament item, boolean empty) {
@@ -840,7 +859,8 @@ public class ParticipantTeamController {
                     if (empty || item == null) {
                         setText(null);
                     } else {
-                        setText(item.getName());
+                        String sportLabel = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                        setText(item.getName() + sportLabel);
                     }
                 }
             });
@@ -853,15 +873,30 @@ public class ParticipantTeamController {
                     if (empty || item == null) {
                         setText(null);
                     } else {
-                        setText(item.getName());
+                        String sportLabel = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                        setText(item.getName() + sportLabel);
                     }
                 }
             });
             
-            System.out.println("Loaded " + tournaments.size() + " tournaments");
+            System.out.println("Loaded " + tournaments.size() + " tournaments" + 
+                             (sportName != null ? " for sport: " + sportName : ""));
         } catch (Exception e) {
             System.err.println("Error loading tournaments: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Handles sport selection to filter tournaments.
+     */
+    private void handleSportSelection() {
+        String selectedSport = sportComboBox.getValue();
+        if (selectedSport != null) {
+            loadTournaments(selectedSport);
+            System.out.println("Filtered tournaments for sport: " + selectedSport);
+        } else {
+            loadTournaments(null);
         }
     }
     

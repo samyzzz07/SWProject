@@ -55,57 +55,82 @@ public class DataInitializer {
             em.persist(basketball);
             em.persist(cricket);
             
-            // Create standard tournaments
-            RoundRobinTournament summerFootball = new RoundRobinTournament(
-                "Summer Football Championship",
-                football,
-                LocalDate.of(2025, 6, 1),
-                LocalDate.of(2025, 6, 30)
-            );
-            
-            KnockoutTournament winterBasketball = new KnockoutTournament(
-                "Winter Basketball League",
+            // Create standard tournaments with standardized names
+            KnockoutTournament winterChampionship = new KnockoutTournament(
+                "Winter Championship 2025",
                 basketball,
                 LocalDate.of(2025, 12, 1),
                 LocalDate.of(2025, 12, 31)
             );
             
-            RoundRobinTournament springCricket = new RoundRobinTournament(
-                "Spring Cricket Cup",
-                cricket,
+            RoundRobinTournament springLeague = new RoundRobinTournament(
+                "Spring League 2025",
+                football,
                 LocalDate.of(2025, 3, 1),
                 LocalDate.of(2025, 3, 31)
             );
             
-            em.persist(summerFootball);
-            em.persist(winterBasketball);
-            em.persist(springCricket);
+            RoundRobinTournament summerCup = new RoundRobinTournament(
+                "Summer Cup 2025",
+                cricket,
+                LocalDate.of(2025, 6, 1),
+                LocalDate.of(2025, 6, 30)
+            );
             
-            // Create standard teams with players
-            Team teamAlpha = createTeamWithPlayers(em, "Team Alpha", "alpha@team.com");
-            Team teamBeta = createTeamWithPlayers(em, "Team Beta", "beta@team.com");
-            Team teamGamma = createTeamWithPlayers(em, "Team Gamma", "gamma@team.com");
-            Team teamDelta = createTeamWithPlayers(em, "Team Delta", "delta@team.com");
-            Team teamEpsilon = createTeamWithPlayers(em, "Team Epsilon", "epsilon@team.com");
-            Team teamZeta = createTeamWithPlayers(em, "Team Zeta", "zeta@team.com");
+            em.persist(winterChampionship);
+            em.persist(springLeague);
+            em.persist(summerCup);
+            
+            // Create standard teams with players for each tournament
+            // Winter Championship 2025 (Basketball) teams
+            Team basketballAlpha = createTeamWithPlayers(em, "Team Alpha", "alpha@team.com");
+            Team basketballBeta = createTeamWithPlayers(em, "Team Beta", "beta@team.com");
+            Team basketballGamma = createTeamWithPlayers(em, "Team Gamma", "gamma@team.com");
+            Team basketballDelta = createTeamWithPlayers(em, "Team Delta", "delta@team.com");
+            
+            // Spring League 2025 (Football) teams
+            Team footballAlpha = createTeamWithPlayers(em, "Team Epsilon", "epsilon@team.com");
+            Team footballBeta = createTeamWithPlayers(em, "Team Zeta", "zeta@team.com");
+            Team footballGamma = createTeamWithPlayers(em, "Team Eta", "eta@team.com");
+            Team footballDelta = createTeamWithPlayers(em, "Team Theta", "theta@team.com");
+            
+            // Summer Cup 2025 (Cricket) teams
+            Team cricketAlpha = createTeamWithPlayers(em, "Team Iota", "iota@team.com");
+            Team cricketBeta = createTeamWithPlayers(em, "Team Kappa", "kappa@team.com");
+            Team cricketGamma = createTeamWithPlayers(em, "Team Lambda", "lambda@team.com");
+            Team cricketDelta = createTeamWithPlayers(em, "Team Mu", "mu@team.com");
             
             // Set approval statuses
-            teamAlpha.setApprovalStatus(Team.STATUS_APPROVED);
-            teamBeta.setApprovalStatus(Team.STATUS_PENDING);
-            teamGamma.setApprovalStatus(Team.STATUS_APPROVED);
-            teamDelta.setApprovalStatus(Team.STATUS_PENDING);
-            teamEpsilon.setApprovalStatus(Team.STATUS_APPROVED);
-            teamZeta.setApprovalStatus(Team.STATUS_REJECTED);
+            basketballAlpha.setApprovalStatus(Team.STATUS_APPROVED);
+            basketballBeta.setApprovalStatus(Team.STATUS_APPROVED);
+            basketballGamma.setApprovalStatus(Team.STATUS_APPROVED);
+            basketballDelta.setApprovalStatus(Team.STATUS_APPROVED);
+            
+            footballAlpha.setApprovalStatus(Team.STATUS_APPROVED);
+            footballBeta.setApprovalStatus(Team.STATUS_APPROVED);
+            footballGamma.setApprovalStatus(Team.STATUS_APPROVED);
+            footballDelta.setApprovalStatus(Team.STATUS_APPROVED);
+            
+            cricketAlpha.setApprovalStatus(Team.STATUS_APPROVED);
+            cricketBeta.setApprovalStatus(Team.STATUS_APPROVED);
+            cricketGamma.setApprovalStatus(Team.STATUS_APPROVED);
+            cricketDelta.setApprovalStatus(Team.STATUS_APPROVED);
             
             // Associate teams with tournaments
-            summerFootball.addTeam(teamAlpha);
-            summerFootball.addTeam(teamBeta);
-            summerFootball.addTeam(teamGamma);
+            winterChampionship.addTeam(basketballAlpha);
+            winterChampionship.addTeam(basketballBeta);
+            winterChampionship.addTeam(basketballGamma);
+            winterChampionship.addTeam(basketballDelta);
             
-            winterBasketball.addTeam(teamDelta);
-            winterBasketball.addTeam(teamEpsilon);
+            springLeague.addTeam(footballAlpha);
+            springLeague.addTeam(footballBeta);
+            springLeague.addTeam(footballGamma);
+            springLeague.addTeam(footballDelta);
             
-            springCricket.addTeam(teamZeta);
+            summerCup.addTeam(cricketAlpha);
+            summerCup.addTeam(cricketBeta);
+            summerCup.addTeam(cricketGamma);
+            summerCup.addTeam(cricketDelta);
             
             // Create some venues
             Venue stadiumA = new Venue("Stadium A", "123 Main St", 5000);
@@ -115,6 +140,11 @@ public class DataInitializer {
             em.persist(stadiumA);
             em.persist(stadiumB);
             em.persist(stadiumC);
+            
+            // Generate schedules for all tournaments to create matches
+            winterChampionship.generateSchedule();
+            springLeague.generateSchedule();
+            summerCup.generateSchedule();
             
             em.getTransaction().commit();
             
@@ -159,9 +189,9 @@ public class DataInitializer {
      */
     public static List<String> getStandardTournamentNames() {
         List<String> names = new ArrayList<>();
-        names.add("Summer Football Championship");
-        names.add("Winter Basketball League");
-        names.add("Spring Cricket Cup");
+        names.add("Winter Championship 2025");
+        names.add("Spring League 2025");
+        names.add("Summer Cup 2025");
         return names;
     }
     
@@ -176,6 +206,12 @@ public class DataInitializer {
         names.add("Team Delta");
         names.add("Team Epsilon");
         names.add("Team Zeta");
+        names.add("Team Eta");
+        names.add("Team Theta");
+        names.add("Team Iota");
+        names.add("Team Kappa");
+        names.add("Team Lambda");
+        names.add("Team Mu");
         return names;
     }
 }
