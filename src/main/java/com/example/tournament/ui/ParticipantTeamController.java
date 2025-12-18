@@ -55,9 +55,52 @@ public class ParticipantTeamController {
     @FXML
     private Label welcomeLabel;
     
+    @FXML
+    private Button updateTeamButton;
+    
+    @FXML
+    private Button saveTeamButton;
+    
+    @FXML
+    private Button requestApprovalButton;
+    
+    @FXML
+    private Button viewStatsButton;
+    
+    @FXML
+    private TextField playerNameField;
+    
+    @FXML
+    private TextField jerseyNumberField;
+    
+    @FXML
+    private TextField positionField;
+    
+    @FXML
+    private Button addPlayerButton;
+    
+    @FXML
+    private TextField removePlayerIdField;
+    
+    @FXML
+    private Button removePlayerButton;
+    
+    @FXML
+    private ListView<Player> playerListView;
+    
+    @FXML
+    private Label selectedTeamLabel;
+    
+    @FXML
+    private Label playerCountLabel;
+    
+    @FXML
+    private Button refreshPlayersButton;
+    
     // Observable lists for UI binding
     private ObservableList<TimeSlot> timeSlots;
     private ObservableList<Team> teams;
+    private ObservableList<Player> players;
     
     // Current user (can be any type of user)
     private User currentUser;
@@ -79,10 +122,12 @@ public class ParticipantTeamController {
         // Initialize observable lists
         timeSlots = FXCollections.observableArrayList();
         teams = FXCollections.observableArrayList();
+        players = FXCollections.observableArrayList();
         
         // Bind lists to UI components
         timeSlotListView.setItems(timeSlots);
         teamListView.setItems(teams);
+        playerListView.setItems(players);
         
         // Set up sport combo box with placeholder values
         ObservableList<String> sports = FXCollections.observableArrayList(
@@ -97,6 +142,8 @@ public class ParticipantTeamController {
                 if (selectedTeam != null) {
                     System.out.println("Selected team: " + selectedTeam.getName());
                     loadTeamTimeSlots(selectedTeam);
+                    loadTeamPlayers(selectedTeam);
+                    updateSelectedTeamLabel();
                 }
             }
         );
@@ -303,13 +350,307 @@ public class ParticipantTeamController {
     }
     
     /**
+     * Handles the Add Player button click.
+     */
+    @FXML
+    private void handleAddPlayer() {
+        System.out.println("=== Add Player Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team before adding players.");
+            return;
+        }
+        
+        try {
+            // Validate inputs
+            if (playerNameField.getText().isEmpty()) {
+                statusLabel.setText("Error: Player name is required.");
+                showAlert("Missing Information", "Please enter a player name.");
+                return;
+            }
+            
+            if (jerseyNumberField.getText().isEmpty()) {
+                statusLabel.setText("Error: Jersey number is required.");
+                showAlert("Missing Information", "Please enter a jersey number.");
+                return;
+            }
+            
+            // Parse jersey number
+            int jerseyNumber;
+            try {
+                jerseyNumber = Integer.parseInt(jerseyNumberField.getText());
+            } catch (NumberFormatException e) {
+                statusLabel.setText("Error: Invalid jersey number.");
+                showAlert("Invalid Input", "Jersey number must be a valid number.");
+                return;
+            }
+            
+            // Create new player
+            Player newPlayer = new Player(
+                playerNameField.getText(),
+                jerseyNumber,
+                positionField.getText()
+            );
+            
+            // Add player to selected team
+            boolean added = selectedTeam.addPlayer(newPlayer);
+            
+            if (added) {
+                // Update observable list
+                players.add(newPlayer);
+                updatePlayerCount();
+                
+                statusLabel.setText("Player added successfully!");
+                System.out.println("✓ Player added: " + newPlayer.getName());
+                
+                // Clear input fields
+                playerNameField.clear();
+                jerseyNumberField.clear();
+                positionField.clear();
+                
+                // Show confirmation
+                showAlert("Success", "Player '" + newPlayer.getName() + "' has been added to " + selectedTeam.getName() + "!");
+            } else {
+                statusLabel.setText("Error: Failed to add player.");
+                showAlert("Error", "Failed to add player. The player may already exist in the team.");
+            }
+            
+        } catch (Exception e) {
+            statusLabel.setText("Error adding player: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
+            showAlert("Error", "Failed to add player: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the Remove Player button click.
+     */
+    @FXML
+    private void handleRemovePlayer() {
+        System.out.println("=== Remove Player Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team before removing players.");
+            return;
+        }
+        
+        try {
+            if (removePlayerIdField.getText().isEmpty()) {
+                statusLabel.setText("Error: Player ID is required.");
+                showAlert("Missing Information", "Please enter a player ID to remove.");
+                return;
+            }
+            
+            // Parse player ID
+            int playerId;
+            try {
+                playerId = Integer.parseInt(removePlayerIdField.getText());
+            } catch (NumberFormatException e) {
+                statusLabel.setText("Error: Invalid player ID.");
+                showAlert("Invalid Input", "Player ID must be a valid number.");
+                return;
+            }
+            
+            // Remove player from selected team
+            boolean removed = selectedTeam.removePlayer(playerId);
+            
+            if (removed) {
+                // Reload player list
+                loadTeamPlayers(selectedTeam);
+                
+                statusLabel.setText("Player removed successfully!");
+                System.out.println("✓ Player with ID " + playerId + " removed");
+                
+                // Clear input field
+                removePlayerIdField.clear();
+                
+                // Show confirmation
+                showAlert("Success", "Player has been removed from " + selectedTeam.getName() + "!");
+            } else {
+                statusLabel.setText("Error: Player not found.");
+                showAlert("Error", "No player with ID " + playerId + " found in " + selectedTeam.getName() + ".");
+            }
+            
+        } catch (Exception e) {
+            statusLabel.setText("Error removing player: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
+            showAlert("Error", "Failed to remove player: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the Refresh Players button click.
+     */
+    @FXML
+    private void handleRefreshPlayers() {
+        System.out.println("=== Refresh Players Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team to view its players.");
+            return;
+        }
+        
+        loadTeamPlayers(selectedTeam);
+        statusLabel.setText("Player list refreshed!");
+    }
+    
+    /**
+     * Handles the Update Team button click.
+     */
+    @FXML
+    private void handleUpdateTeam() {
+        System.out.println("=== Update Team Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team to update.");
+            return;
+        }
+        
+        try {
+            selectedTeam.UpdateTeam();
+            statusLabel.setText("Team updated successfully!");
+            showAlert("Success", "Team '" + selectedTeam.getName() + "' has been updated!");
+        } catch (Exception e) {
+            statusLabel.setText("Error updating team: " + e.getMessage());
+            showAlert("Error", "Failed to update team: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the Save Team button click.
+     */
+    @FXML
+    private void handleSaveTeam() {
+        System.out.println("=== Save Team Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team to save.");
+            return;
+        }
+        
+        try {
+            selectedTeam.SaveTeam();
+            statusLabel.setText("Team saved successfully!");
+            showAlert("Success", "Team '" + selectedTeam.getName() + "' has been saved!");
+        } catch (Exception e) {
+            statusLabel.setText("Error saving team: " + e.getMessage());
+            showAlert("Error", "Failed to save team: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the Request Approval button click.
+     */
+    @FXML
+    private void handleRequestApproval() {
+        System.out.println("=== Request Approval Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team to request approval.");
+            return;
+        }
+        
+        try {
+            // Validate team info before requesting approval
+            if (!selectedTeam.ValidateInfo()) {
+                statusLabel.setText("Error: Team information is invalid.");
+                showAlert("Invalid Team Info", "Please ensure the team has a valid name before requesting approval.");
+                return;
+            }
+            
+            selectedTeam.RequestApproval();
+            statusLabel.setText("Approval request sent successfully!");
+            showAlert("Success", "Approval request for team '" + selectedTeam.getName() + "' has been submitted!");
+        } catch (Exception e) {
+            statusLabel.setText("Error requesting approval: " + e.getMessage());
+            showAlert("Error", "Failed to request approval: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Handles the View Stats button click.
+     */
+    @FXML
+    private void handleViewStats() {
+        System.out.println("=== View Stats Action ===");
+        
+        if (selectedTeam == null) {
+            statusLabel.setText("Error: Please select a team first.");
+            showAlert("No Team Selected", "Please select a team to view its statistics.");
+            return;
+        }
+        
+        try {
+            TeamStats stats = selectedTeam.getTeamStats();
+            
+            StringBuilder statsMessage = new StringBuilder();
+            statsMessage.append("Team: ").append(selectedTeam.getName()).append("\n\n");
+            statsMessage.append("Games Played: ").append(stats.getGamesPlayed()).append("\n");
+            statsMessage.append("Wins: ").append(stats.getWins()).append("\n");
+            statsMessage.append("Losses: ").append(stats.getLosses()).append("\n");
+            statsMessage.append("Draws: ").append(stats.getDraws()).append("\n");
+            statsMessage.append("Total Players: ").append(selectedTeam.getPlayers().size()).append("\n");
+            
+            statusLabel.setText("Displaying team statistics");
+            showAlert("Team Statistics", statsMessage.toString());
+        } catch (Exception e) {
+            statusLabel.setText("Error viewing stats: " + e.getMessage());
+            showAlert("Error", "Failed to view team statistics: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Loads players for a selected team.
+     */
+    private void loadTeamPlayers(Team team) {
+        System.out.println("Loading players for team: " + team.getName());
+        players.clear();
+        players.addAll(team.getPlayers());
+        updatePlayerCount();
+        System.out.println("Loaded " + players.size() + " players.");
+    }
+    
+    /**
+     * Updates the player count label.
+     */
+    private void updatePlayerCount() {
+        if (playerCountLabel != null) {
+            playerCountLabel.setText("Total Players: " + players.size());
+        }
+    }
+    
+    /**
+     * Updates the selected team label.
+     */
+    private void updateSelectedTeamLabel() {
+        if (selectedTeamLabel != null) {
+            if (selectedTeam != null) {
+                selectedTeamLabel.setText(selectedTeam.getName());
+            } else {
+                selectedTeamLabel.setText("No team selected");
+            }
+        }
+    }
+    
+    /**
      * Adds a player to the selected team.
      * @param p the player to add
      * @return true if player was added successfully, false otherwise
      */
     public boolean addPlayer(Player p) {
         if (selectedTeam != null) {
-            return selectedTeam.addPlayer(p);
+            boolean added = selectedTeam.addPlayer(p);
+            if (added) {
+                players.add(p);
+                updatePlayerCount();
+            }
+            return added;
         }
         return false;
     }
