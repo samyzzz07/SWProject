@@ -1,5 +1,9 @@
 package com.example.tournament.ui.dialogs;
 
+import com.example.tournament.model.Match;
+import com.example.tournament.model.Tournament;
+import com.example.tournament.service.TournamentService;
+import com.example.tournament.service.MatchService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -8,13 +12,16 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 /**
  * Controller for the Check Schedule Dialog.
  */
 public class CheckScheduleDialogController {
     
     @FXML
-    private ComboBox<String> tournamentComboBox;
+    private ComboBox<Tournament> tournamentComboBox;
     
     @FXML
     private Label matchesScheduledLabel;
@@ -49,17 +56,17 @@ public class CheckScheduleDialogController {
     @FXML
     private TextArea issuesArea;
     
+    private TournamentService tournamentService;
+    private MatchService matchService;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd, HH:mm");
+
     /**
-     * Initialize the dialog with sample data.
+     * Initialize the dialog with data from database.
      */
     @FXML
     public void initialize() {
-        // Populate tournaments
-        tournamentComboBox.setItems(FXCollections.observableArrayList(
-            "Winter Championship 2025",
-            "Spring League 2025",
-            "Summer Cup 2025"
-        ));
+        tournamentService = new TournamentService();
+        matchService = new MatchService();
         
         // Set up table columns
         matchColumn.setCellValueFactory(new PropertyValueFactory<>("match"));
@@ -68,9 +75,48 @@ public class CheckScheduleDialogController {
         refereeColumn.setCellValueFactory(new PropertyValueFactory<>("referee"));
         issuesColumn.setCellValueFactory(new PropertyValueFactory<>("issues"));
         
+        // Load tournaments from database
+        loadTournaments();
+    }
+    
+    /**
+     * Load tournaments from database.
+     */
+    private void loadTournaments() {
+        List<Tournament> tournaments = tournamentService.viewAllTournaments();
+        tournamentComboBox.setItems(FXCollections.observableArrayList(tournaments));
+        
+        // Custom cell factory for tournaments to show user-friendly names
+        tournamentComboBox.setCellFactory(lv -> new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        tournamentComboBox.setButtonCell(new ListCell<Tournament>() {
+            @Override
+            protected void updateItem(Tournament item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sportName = item.getSport() != null ? " (" + item.getSport().getName() + ")" : "";
+                    setText(item.getName() + sportName);
+                }
+            }
+        });
+        
         // Set default selection
-        tournamentComboBox.setValue("Winter Championship 2025");
-        handleTournamentSelection();
+        if (!tournaments.isEmpty()) {
+            tournamentComboBox.setValue(tournaments.get(0));
+            handleTournamentSelection();
+        }
     }
     
     /**
@@ -78,16 +124,26 @@ public class CheckScheduleDialogController {
      */
     @FXML
     private void handleTournamentSelection() {
-        String selected = tournamentComboBox.getValue();
+        Tournament selected = tournamentComboBox.getValue();
         if (selected != null) {
-            // Create sample schedule data
-            ObservableList<ScheduleData> scheduleData = FXCollections.observableArrayList(
-                new ScheduleData("Alpha vs Beta", "Dec 20, 14:00", "Stadium A", "John Smith", "None"),
-                new ScheduleData("Gamma vs Delta", "Dec 21, 16:00", "Stadium B", "Jane Doe", "None"),
-                new ScheduleData("Epsilon vs Zeta", "Dec 22, 18:00", "Stadium A", "Mike Johnson", "None"),
-                new ScheduleData("Alpha vs Gamma", "Dec 23, 14:00", "Stadium C", "Sarah Williams", "None"),
-                new ScheduleData("Beta vs Delta", "Dec 24, 16:00", "Stadium B", "David Brown", "None")
-            );
+            // Load actual matches from database
+            List<Match> matches = matchService.getMatchesByTournament(selected.getId());
+            
+            ObservableList<ScheduleData> scheduleData = FXCollections.observableArrayList();
+            
+            for (Match match : matches) {
+                String matchName = (match.getTeam1() != null ? match.getTeam1().getName() : "TBD") 
+                                 + " vs " 
+                                 + (match.getTeam2() != null ? match.getTeam2().getName() : "TBD");
+                String dateTime = match.getScheduledTime() != null 
+                                ? match.getScheduledTime().format(dateTimeFormatter) 
+                                : "Not scheduled";
+                String venueName = match.getVenue() != null ? match.getVenue().getName() : "TBD";
+                String referee = "TBD"; // Referees are not yet assigned in the system
+                String issues = "None";
+                
+                scheduleData.add(new ScheduleData(matchName, dateTime, venueName, referee, issues));
+            }
             
             scheduleTableView.setItems(scheduleData);
             
