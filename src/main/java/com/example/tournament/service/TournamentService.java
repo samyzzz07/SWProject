@@ -216,6 +216,9 @@ public class TournamentService {
                 return false;
             }
             
+            // Clear the teams list to remove join table entries
+            tournament.getTeams().clear();
+            
             // Delete the tournament (cascade will delete matches due to CascadeType.ALL)
             em.remove(tournament);
             
