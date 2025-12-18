@@ -458,7 +458,7 @@ public class ParticipantTeamController {
                     boolean reloaded = reloadSelectedTeamFromDatabase();
                     
                     // Check if reload was successful
-                    if (!reloaded || selectedTeam == null) {
+                    if (!reloaded) {
                         statusLabel.setText("Warning: Player added but team data could not be refreshed.");
                         showAlert("Warning", "Player was successfully added to the database, but the team data could not be refreshed. Please refresh the page manually.", Alert.AlertType.WARNING);
                         return;
