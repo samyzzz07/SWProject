@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * JavaFX Controller for participant team management.
@@ -226,14 +227,6 @@ public class ParticipantTeamController {
     }
     
     /**
-     * Sets the current team manager (called from login or session management).
-     */
-    public void setCurrentManager(TeamManager manager) {
-        // Delegate to setCurrentUser to avoid duplication
-        setCurrentUser(manager);
-    }
-    
-    /**
      * Sets the current user (called from login).
      * This is a generic method that works for all user types.
      */
@@ -306,6 +299,102 @@ public class ParticipantTeamController {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to return to login screen: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Adds a player to the selected team.
+     * @param p the player to add
+     * @return true if player was added successfully, false otherwise
+     */
+    public boolean addPlayer(Player p) {
+        if (selectedTeam != null) {
+            return selectedTeam.addPlayer(p);
+        }
+        return false;
+    }
+    
+    /**
+     * Removes a player from the selected team by player ID.
+     * @param playerId the ID of the player to remove
+     * @return true if player was removed successfully, false otherwise
+     */
+    public boolean removePlayer(int playerId) {
+        if (selectedTeam != null) {
+            return selectedTeam.removePlayer(playerId);
+        }
+        return false;
+    }
+    
+    /**
+     * Gets the list of players in the selected team.
+     * @return list of players, or null if no team is selected
+     */
+    public List<Player> getPlayers() {
+        if (selectedTeam != null) {
+            return selectedTeam.getPlayers();
+        }
+        return null;
+    }
+    
+    /**
+     * Gets the team statistics for the selected team.
+     * @return team statistics, or null if no team is selected
+     */
+    public TeamStats getTeamStats() {
+        if (selectedTeam != null) {
+            return selectedTeam.getTeamStats();
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if the selected team has a player with the given ID.
+     * @param playerId the ID of the player to check
+     * @return true if player exists in team, false otherwise
+     */
+    public boolean hasPlayer(int playerId) {
+        if (selectedTeam != null) {
+            return selectedTeam.hasPlayer(playerId);
+        }
+        return false;
+    }
+    
+    /**
+     * Validates the selected team information.
+     * @return true if team info is valid, false otherwise
+     */
+    public boolean ValidateInfo() {
+        if (selectedTeam != null) {
+            return selectedTeam.ValidateInfo();
+        }
+        return false;
+    }
+    
+    /**
+     * Saves the selected team.
+     */
+    public void SaveTeam() {
+        if (selectedTeam != null) {
+            selectedTeam.SaveTeam();
+        }
+    }
+    
+    /**
+     * Requests approval for the selected team.
+     */
+    public void RequestApproval() {
+        if (selectedTeam != null) {
+            selectedTeam.RequestApproval();
+        }
+    }
+    
+    /**
+     * Updates the selected team information.
+     */
+    public void UpdateTeam() {
+        if (selectedTeam != null) {
+            selectedTeam.UpdateTeam();
         }
     }
 }
