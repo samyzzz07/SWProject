@@ -57,6 +57,11 @@
                             <ComboBox fx:id="sportComboBox" promptText="Select sport" prefWidth="200.0"/>
                         </VBox>
                         
+                        <VBox spacing="8">
+                            <Label text="Tournament:"/>
+                            <ComboBox fx:id="tournamentComboBox" promptText="Select tournament to register for" prefWidth="200.0"/>
+                        </VBox>
+                        
                         <Button fx:id="registerTeamButton" text="Register Team" 
                                 onAction="#handleRegisterTeamButton"
                                 style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"

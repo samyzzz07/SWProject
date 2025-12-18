@@ -36,6 +36,9 @@ public class JPAUtil {
                 logger.info("Initializing JPA with persistence unit: {}", persistenceUnitName);
                 entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
                 logger.info("JPA initialized successfully!");
+                
+                // Initialize standard dummy data
+                DataInitializer.initializeData();
             } catch (Exception e) {
                 logger.error("Failed to initialize JPA: {}", e.getMessage(), e);
                 throw new RuntimeException("Failed to create EntityManagerFactory", e);

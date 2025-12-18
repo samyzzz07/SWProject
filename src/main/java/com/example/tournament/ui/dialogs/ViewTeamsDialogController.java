@@ -1,5 +1,7 @@
 package com.example.tournament.ui.dialogs;
 
+import com.example.tournament.model.Team;
+import com.example.tournament.service.TeamService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -7,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
+
+import java.util.List;
 
 /**
  * Controller for the View Teams Dialog.
@@ -35,15 +39,18 @@ public class ViewTeamsDialogController {
     private TextArea teamDetailsArea;
     
     private ObservableList<TeamData> allTeams;
+    private TeamService teamService;
     
     /**
-     * Initialize the dialog with sample data.
+     * Initialize the dialog with data from the database.
      */
     @FXML
     public void initialize() {
+        teamService = new TeamService();
+        
         // Set up status filter
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
-            "All", "Approved", "Pending", "Rejected"
+            "All", Team.STATUS_APPROVED, Team.STATUS_PENDING, Team.STATUS_REJECTED, Team.STATUS_NOT_REQUESTED
         ));
         statusFilterComboBox.setValue("All");
         
@@ -53,15 +60,8 @@ public class ViewTeamsDialogController {
         contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         
-        // Create sample data
-        allTeams = FXCollections.observableArrayList(
-            new TeamData("Team Alpha", "John Manager", "alpha@team.com", "Approved"),
-            new TeamData("Team Beta", "Jane Leader", "beta@team.com", "Pending"),
-            new TeamData("Team Gamma", "Mike Coach", "gamma@team.com", "Approved"),
-            new TeamData("Team Delta", "Sarah Director", "delta@team.com", "Pending"),
-            new TeamData("Team Epsilon", "David Captain", "epsilon@team.com", "Approved"),
-            new TeamData("Team Zeta", "Emily Boss", "zeta@team.com", "Rejected")
-        );
+        // Load teams from database
+        loadTeamsFromDatabase();
         
         teamsTableView.setItems(allTeams);
         
@@ -69,6 +69,41 @@ public class ViewTeamsDialogController {
         teamsTableView.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> updateTeamDetails(newValue)
         );
+    }
+    
+    /**
+     * Load teams from the database.
+     */
+    private void loadTeamsFromDatabase() {
+        allTeams = FXCollections.observableArrayList();
+        
+        try {
+            List<Team> teams = teamService.getAllTeams();
+            
+            for (Team team : teams) {
+                String managerName = team.getManager() != null ? team.getManager().getUsername() : "No Manager";
+                String contact = team.getContactInfo() != null ? team.getContactInfo() : "N/A";
+                String status = team.getApprovalStatus() != null ? team.getApprovalStatus() : Team.STATUS_NOT_REQUESTED;
+                
+                allTeams.add(new TeamData(
+                    team.getName(),
+                    managerName,
+                    contact,
+                    status,
+                    team.getPlayers().size()
+                ));
+            }
+            
+            System.out.println("Loaded " + teams.size() + " teams from database");
+        } catch (Exception e) {
+            System.err.println("Error loading teams from database: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Show error in details area
+            if (teamDetailsArea != null) {
+                teamDetailsArea.setText("Error loading teams: " + e.getMessage());
+            }
+        }
     }
     
     /**
@@ -95,7 +130,10 @@ public class ViewTeamsDialogController {
      */
     @FXML
     private void handleRefresh() {
-        // In a real application, this would reload data from the database
+        // Reload data from the database
+        loadTeamsFromDatabase();
+        teamsTableView.setItems(allTeams);
+        handleFilterChange(); // Reapply current filter
         teamDetailsArea.setText("Data refreshed successfully.");
     }
     
@@ -122,9 +160,7 @@ public class ViewTeamsDialogController {
                 "Manager: " + team.getManager() + "\n" +
                 "Contact: " + team.getContact() + "\n" +
                 "Status: " + team.getStatus() + "\n" +
-                "Players: 11\n" +
-                "Registration Date: Dec 1, 2025\n" +
-                "Last Updated: Dec 15, 2025"
+                "Players: " + team.getPlayerCount() + "\n"
             );
         }
     }
@@ -157,17 +193,20 @@ public class ViewTeamsDialogController {
         private final SimpleStringProperty manager;
         private final SimpleStringProperty contact;
         private final SimpleStringProperty status;
+        private final int playerCount;
         
-        public TeamData(String teamName, String manager, String contact, String status) {
+        public TeamData(String teamName, String manager, String contact, String status, int playerCount) {
             this.teamName = new SimpleStringProperty(teamName);
             this.manager = new SimpleStringProperty(manager);
             this.contact = new SimpleStringProperty(contact);
             this.status = new SimpleStringProperty(status);
+            this.playerCount = playerCount;
         }
         
         public String getTeamName() { return teamName.get(); }
         public String getManager() { return manager.get(); }
         public String getContact() { return contact.get(); }
         public String getStatus() { return status.get(); }
+        public int getPlayerCount() { return playerCount; }
     }
 }
