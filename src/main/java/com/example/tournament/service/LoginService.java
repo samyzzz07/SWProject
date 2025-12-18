@@ -33,7 +33,16 @@ public class LoginService {
             query.setParameter("username", username);
             query.setParameter("password", password);
             
-            return query.getSingleResult();
+            User user = query.getSingleResult();
+            
+            // Eagerly initialize the teams collection for TeamManager to avoid LazyInitializationException
+            if (user instanceof com.example.tournament.model.TeamManager) {
+                com.example.tournament.model.TeamManager manager = (com.example.tournament.model.TeamManager) user;
+                // Access the teams collection to force Hibernate to load it while the session is still open
+                manager.getTeams().size();
+            }
+            
+            return user;
             
         } catch (NoResultException e) {
             return null; // Invalid credentials
